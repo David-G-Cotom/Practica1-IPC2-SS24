@@ -26,15 +26,88 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnSeleccionarArchivo = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        lblCarga = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtTiempo = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        btnSeleccionarRuta = new javax.swing.JButton();
+        btnProcesar = new javax.swing.JButton();
+        lblDescripcionProceso = new javax.swing.JLabel();
+
+        setTitle("Carga de Archivo");
+
+        btnSeleccionarArchivo.setText("Seleccionar Archivo");
+
+        jLabel1.setText("Procesando:");
+
+        lblCarga.setText(".");
+
+        jLabel2.setText("Ingrese la Velocidad en Segundos para Procesar el Archivo Seleccionado:");
+
+        jLabel3.setText("Seleccione la Ruta donde Quiere Recibir los Posibles Reportes:");
+
+        btnSeleccionarRuta.setText("Seleccionar Ruta");
+
+        btnProcesar.setText("Procesar Archivo");
+
+        lblDescripcionProceso.setText(".");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(170, 170, 170)
+                        .addComponent(btnSeleccionarArchivo))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(177, 177, 177)
+                        .addComponent(btnProcesar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnSeleccionarRuta))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblDescripcionProceso)
+                                    .addComponent(lblCarga))))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnSeleccionarArchivo)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(btnSeleccionarRuta))
+                .addGap(18, 18, 18)
+                .addComponent(btnProcesar)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lblCarga))
+                .addGap(18, 18, 18)
+                .addComponent(lblDescripcionProceso)
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         pack();
@@ -42,5 +115,14 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnProcesar;
+    private javax.swing.JButton btnSeleccionarArchivo;
+    private javax.swing.JButton btnSeleccionarRuta;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel lblCarga;
+    private javax.swing.JLabel lblDescripcionProceso;
+    private javax.swing.JTextField txtTiempo;
     // End of variables declaration//GEN-END:variables
 }
