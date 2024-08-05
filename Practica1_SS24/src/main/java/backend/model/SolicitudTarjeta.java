@@ -14,10 +14,10 @@ public class SolicitudTarjeta {
     private String fechaSolicitud;
     private String tipoTarjetaSolicitada;
     private String nombreSolicitante;
-    private int salarioSolicitante;
+    private double salarioSolicitante;
     private String direccionSolicitante;
 
-    public SolicitudTarjeta(int numeroSolicitud, String fechaSolicitud, String tipoTarjetaSolicitada, String nombreSolicitante, int salarioSolicitante, String direccionSolicitante) {
+    public SolicitudTarjeta(int numeroSolicitud, String fechaSolicitud, String tipoTarjetaSolicitada, String nombreSolicitante, double salarioSolicitante, String direccionSolicitante) {
         this.numeroSolicitud = numeroSolicitud;
         this.fechaSolicitud = fechaSolicitud;
         this.tipoTarjetaSolicitada = tipoTarjetaSolicitada;
@@ -58,11 +58,11 @@ public class SolicitudTarjeta {
         this.nombreSolicitante = nombreSolicitante;
     }
 
-    public int getSalarioSolicitante() {
+    public double getSalarioSolicitante() {
         return salarioSolicitante;
     }
 
-    public void setSalarioSolicitante(int salarioSolicitante) {
+    public void setSalarioSolicitante(double salarioSolicitante) {
         this.salarioSolicitante = salarioSolicitante;
     }
 

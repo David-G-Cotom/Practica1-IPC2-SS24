@@ -4,12 +4,21 @@
  */
 package frontend.model;
 
+import backend.model.LectorArchivo;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author Carlos Cotom
  */
 public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
 
+    private LectorArchivo lector;
+    private int respuestaArchivo;
+    private int respuestaCarpeta;
+    
     /**
      * Creates new form JIFIngresoArchivo
      */
@@ -26,6 +35,8 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFileChooser1 = new javax.swing.JFileChooser();
+        jFileChooser2 = new javax.swing.JFileChooser();
         btnSeleccionarArchivo = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         lblCarga = new javax.swing.JLabel();
@@ -36,21 +47,39 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
         btnProcesar = new javax.swing.JButton();
         lblDescripcionProceso = new javax.swing.JLabel();
 
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
         setTitle("Carga de Archivo");
 
         btnSeleccionarArchivo.setText("Seleccionar Archivo");
+        btnSeleccionarArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeleccionarArchivoActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Procesando:");
 
         lblCarga.setText(".");
 
-        jLabel2.setText("Ingrese la Velocidad en Segundos para Procesar el Archivo Seleccionado:");
+        jLabel2.setText("Ingrese la Velocidad en Mili Segundos para Procesar cada Instruccion del Archivo Seleccionado:");
 
         jLabel3.setText("Seleccione la Ruta donde Quiere Recibir los Posibles Reportes:");
 
         btnSeleccionarRuta.setText("Seleccionar Ruta");
+        btnSeleccionarRuta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeleccionarRutaActionPerformed(evt);
+            }
+        });
 
         btnProcesar.setText("Procesar Archivo");
+        btnProcesar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProcesarActionPerformed(evt);
+            }
+        });
 
         lblDescripcionProceso.setText(".");
 
@@ -61,48 +90,55 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(6, 6, 6)
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(txtTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtTiempo, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(170, 170, 170)
-                        .addComponent(btnSeleccionarArchivo))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(177, 177, 177)
-                        .addComponent(btnProcesar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
                                 .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
                                 .addComponent(btnSeleccionarRuta))
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblDescripcionProceso)
-                                    .addComponent(lblCarga))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(lblCarga))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(89, 89, 89)
+                                .addComponent(lblDescripcionProceso))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(230, 230, 230)
+                                .addComponent(btnSeleccionarArchivo))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(235, 235, 235)
+                                .addComponent(btnProcesar)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(6, 6, 6)
                 .addComponent(btnSeleccionarArchivo)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel2))
                     .addComponent(txtTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel3))
                     .addComponent(btnSeleccionarRuta))
                 .addGap(18, 18, 18)
                 .addComponent(btnProcesar)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(lblCarga))
                 .addGap(18, 18, 18)
@@ -113,11 +149,56 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnSeleccionarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarArchivoActionPerformed
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.txt", "txt");
+        jFileChooser1.setFileFilter(filtro);
+        jFileChooser1.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        jFileChooser1.setVisible(true);
+        respuestaArchivo = jFileChooser1.showOpenDialog(this);
+    }//GEN-LAST:event_btnSeleccionarArchivoActionPerformed
+
+    private void btnSeleccionarRutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarRutaActionPerformed
+        jFileChooser2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        jFileChooser2.setVisible(true);
+        respuestaCarpeta = jFileChooser2.showOpenDialog(this);
+    }//GEN-LAST:event_btnSeleccionarRutaActionPerformed
+
+    private void btnProcesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcesarActionPerformed
+        if (this.validarCampos()) {
+            this.btnProcesar.setEnabled(false);
+            this.btnSeleccionarArchivo.setEnabled(false);
+            this.btnSeleccionarRuta.setEnabled(false);
+            this.lector.start();            
+        }
+    }//GEN-LAST:event_btnProcesarActionPerformed
+    
+    private boolean validarCampos() {                  
+        if (respuestaArchivo != jFileChooser1.APPROVE_OPTION || jFileChooser1.getSelectedFile() == null) {
+            JOptionPane.showMessageDialog(this, "Debe Seleccionar el Archivo a Procesar", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (respuestaCarpeta != jFileChooser2.APPROVE_OPTION || jFileChooser2.getSelectedFile() == null) {
+            JOptionPane.showMessageDialog(this, "Debe Seleccionar la Carpeta para Guardar los Posibles Reportes", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (this.txtTiempo.getText() == "" || this.txtTiempo.getText() == null || this.txtTiempo.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Debe Ingresar el Tiempo de Porcesamiento para el Archivo Seleccionado", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        this.lector = new LectorArchivo(jFileChooser1.getSelectedFile(), this, lblCarga, lblDescripcionProceso, Integer.parseInt(this.txtTiempo.getText()));
+        return true;
+    }
+    
+    public void mostrarMensaje() {
+        JOptionPane.showMessageDialog(this, "Archivo Leido Exitosamente!!!");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnProcesar;
     private javax.swing.JButton btnSeleccionarArchivo;
     private javax.swing.JButton btnSeleccionarRuta;
+    private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JFileChooser jFileChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

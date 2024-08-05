@@ -39,7 +39,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         menuOtros = new javax.swing.JMenu();
         itmenuAutorizarTarjeta = new javax.swing.JMenuItem();
         itmenuCancelarTarjeta = new javax.swing.JMenuItem();
-        menuImportarDatos = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema Bancario");
@@ -84,15 +84,25 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         menuOtros.setText("Otros");
 
         itmenuAutorizarTarjeta.setText("Autorizar Tarjeta");
+        itmenuAutorizarTarjeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itmenuAutorizarTarjetaActionPerformed(evt);
+            }
+        });
         menuOtros.add(itmenuAutorizarTarjeta);
 
         itmenuCancelarTarjeta.setText("Cancelar Tarjeta");
         menuOtros.add(itmenuCancelarTarjeta);
 
-        jMenuBar1.add(menuOtros);
+        jMenuItem1.setText("Importar Datos");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        menuOtros.add(jMenuItem1);
 
-        menuImportarDatos.setText("Importar Datos");
-        jMenuBar1.add(menuImportarDatos);
+        jMenuBar1.add(menuOtros);
 
         setJMenuBar(jMenuBar1);
 
@@ -116,6 +126,16 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void itmenuAutorizarTarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmenuAutorizarTarjetaActionPerformed
+        
+    }//GEN-LAST:event_itmenuAutorizarTarjetaActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        JIFIngresoArchivo ingresoArchivo = new JIFIngresoArchivo();
+        this.jDesktopPane1.add(ingresoArchivo);
+        ingresoArchivo.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem itmenuAutorizarTarjeta;
     private javax.swing.JMenuItem itmenuCancelarTarjeta;
@@ -127,8 +147,8 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem itmenuSolicitudTarjeta;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenu menuConsultas;
-    private javax.swing.JMenu menuImportarDatos;
     private javax.swing.JMenu menuOtros;
     private javax.swing.JMenu menuRegistrar;
     // End of variables declaration//GEN-END:variables

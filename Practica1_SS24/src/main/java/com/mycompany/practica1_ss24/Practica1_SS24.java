@@ -4,6 +4,8 @@
 
 package com.mycompany.practica1_ss24;
 
+import frontend.model.InterfazPrincipal;
+
 /**
  *
  * @author Carlos Cotom
@@ -11,6 +13,7 @@ package com.mycompany.practica1_ss24;
 public class Practica1_SS24 {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        InterfazPrincipal app = new InterfazPrincipal();
+        app.setVisible(true);
     }
 }
