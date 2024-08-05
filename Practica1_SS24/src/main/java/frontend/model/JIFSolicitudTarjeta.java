@@ -41,6 +41,9 @@ public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
         jLabel7 = new javax.swing.JLabel();
         btnRegistrar = new javax.swing.JButton();
 
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
         setTitle("Solicitud de Tarjeta");
 
         jLabel1.setText("Numero de Solicitud: ");

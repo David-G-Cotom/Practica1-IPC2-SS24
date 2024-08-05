@@ -42,6 +42,9 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
         lblDireccionCliente = new javax.swing.JLabel();
         lblEstadoTarjeta = new javax.swing.JLabel();
 
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
         setTitle("Consulta de Tarjeta");
 
         jLabel1.setText("Numero de Tarjeta:");

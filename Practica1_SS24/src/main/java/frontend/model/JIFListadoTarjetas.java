@@ -32,16 +32,16 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
         btnConsultar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
         jLabel4 = new javax.swing.JLabel();
         txtFechaInicio = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtFechaFin = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         cmbTiposTarjeta = new javax.swing.JComboBox<>();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
 
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
         setTitle("Listado de Tarjetas dentro del Sistema Bancario");
 
         cmbEstadoTarjeta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTORIZADA", "CANCELADA" }));
@@ -62,39 +62,12 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
 
         cmbTiposTarjeta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NACIONAL", "REGIONAL", "INTERNACIONAL" }));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Numero de Tarjeta", "Tipo de Tarjeta", "Limite", "Nombre del Cliente", "Direccion del Cliente", "Fecha de Ultimo Estado", "Estado"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
-                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(181, 181, 181)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -125,8 +98,8 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(24, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
@@ -145,11 +118,7 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
                     .addComponent(cmbEstadoTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnConsultar)
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addGap(22, 22, 22))
         );
 
         pack();
@@ -166,9 +135,6 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField txtFechaFin;
     private javax.swing.JTextField txtFechaInicio;
     private javax.swing.JTextField txtLimiteTarjeta;

@@ -41,6 +41,9 @@ public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
         txtEstablecimiento = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
 
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
         setTitle("Movimiento de Tarjeta");
 
         jLabel1.setText("Numero de Tarjeta:");
