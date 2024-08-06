@@ -14,14 +14,14 @@ public class FiltroListadoTarjetas {
     private double limiteMinimo;
     private String fechaInicio;
     private String fechaFinal;
-    private String estado;
+    private String estadoTarjeta;
 
     public FiltroListadoTarjetas(String tipoTarjeta, double limiteMinimo, String fechaInicio, String fechaFinal, String estado) {
         this.tipoTarjeta = tipoTarjeta;
         this.limiteMinimo = limiteMinimo;
         this.fechaInicio = fechaInicio;
         this.fechaFinal = fechaFinal;
-        this.estado = estado;
+        this.estadoTarjeta = estado;
     }
 
     public String getTipoTarjeta() {
@@ -56,12 +56,12 @@ public class FiltroListadoTarjetas {
         this.fechaFinal = fechaFinal;
     }
 
-    public String getEstado() {
-        return estado;
+    public String getEstadoTarjeta() {
+        return estadoTarjeta;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setEstadoTarjeta(String estadoTarjeta) {
+        this.estadoTarjeta = estadoTarjeta;
     }        
     
 }

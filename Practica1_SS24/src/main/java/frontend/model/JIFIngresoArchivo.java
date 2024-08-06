@@ -189,8 +189,8 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
         return true;
     }
     
-    public void mostrarMensaje() {
-        JOptionPane.showMessageDialog(this, "Archivo Leido Exitosamente!!!");
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
