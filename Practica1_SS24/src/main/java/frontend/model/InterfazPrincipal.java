@@ -4,6 +4,8 @@
  */
 package frontend.model;
 
+import backend.model.SolicitudTarjeta;
+
 /**
  *
  * @author Carlos Cotom
@@ -39,7 +41,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         menuOtros = new javax.swing.JMenu();
         itmenuAutorizarTarjeta = new javax.swing.JMenuItem();
         itmenuCancelarTarjeta = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        itmenuImportarDatos = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema Bancario");
@@ -58,6 +60,11 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         menuRegistrar.setText("Registrar");
 
         itmenuSolicitudTarjeta.setText("Solicitud de Tarjeta");
+        itmenuSolicitudTarjeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itmenuSolicitudTarjetaActionPerformed(evt);
+            }
+        });
         menuRegistrar.add(itmenuSolicitudTarjeta);
 
         itmenuMovimientoTarjeta.setText("Movimiento de Tarjeta");
@@ -94,13 +101,13 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         itmenuCancelarTarjeta.setText("Cancelar Tarjeta");
         menuOtros.add(itmenuCancelarTarjeta);
 
-        jMenuItem1.setText("Importar Datos");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        itmenuImportarDatos.setText("Importar Datos");
+        itmenuImportarDatos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                itmenuImportarDatosActionPerformed(evt);
             }
         });
-        menuOtros.add(jMenuItem1);
+        menuOtros.add(itmenuImportarDatos);
 
         jMenuBar1.add(menuOtros);
 
@@ -130,24 +137,30 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         
     }//GEN-LAST:event_itmenuAutorizarTarjetaActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void itmenuImportarDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmenuImportarDatosActionPerformed
         JIFIngresoArchivo ingresoArchivo = new JIFIngresoArchivo();
         this.jDesktopPane1.add(ingresoArchivo);
         ingresoArchivo.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_itmenuImportarDatosActionPerformed
+
+    private void itmenuSolicitudTarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmenuSolicitudTarjetaActionPerformed
+        JIFSolicitudTarjeta solicitudTarjeta = new JIFSolicitudTarjeta();
+        this.jDesktopPane1.add(solicitudTarjeta);
+        solicitudTarjeta.setVisible(true);
+    }//GEN-LAST:event_itmenuSolicitudTarjetaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem itmenuAutorizarTarjeta;
     private javax.swing.JMenuItem itmenuCancelarTarjeta;
     private javax.swing.JMenuItem itmenuConsultarTarjeta;
     private javax.swing.JMenuItem itmenuEstadoCuenta;
+    private javax.swing.JMenuItem itmenuImportarDatos;
     private javax.swing.JMenuItem itmenuListadoSolicitudes;
     private javax.swing.JMenuItem itmenuListadoTarjetas;
     private javax.swing.JMenuItem itmenuMovimientoTarjeta;
     private javax.swing.JMenuItem itmenuSolicitudTarjeta;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenu menuConsultas;
     private javax.swing.JMenu menuOtros;
     private javax.swing.JMenu menuRegistrar;

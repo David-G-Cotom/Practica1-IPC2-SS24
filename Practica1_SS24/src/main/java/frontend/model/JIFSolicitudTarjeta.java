@@ -4,17 +4,25 @@
  */
 package frontend.model;
 
+import backend.model.Bancario;
+import backend.model.SolicitudTarjeta;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Carlos Cotom
  */
 public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
 
+    Bancario bancario;
+    SolicitudTarjeta solicitud;
+    
     /**
      * Creates new form JIFSolicitudTarjeta
      */
     public JIFSolicitudTarjeta() {
         initComponents();
+        this.bancario = new Bancario();        
     }
 
     /**
@@ -63,6 +71,11 @@ public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
         jLabel7.setText("Formato fecha: dd/mm/aaaa");
 
         btnRegistrar.setText("Registrar");
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -141,6 +154,46 @@ public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        if (this.camposValidos()) {
+            this.solicitud = new SolicitudTarjeta(Integer.parseInt(this.txtNumeroSolicitud.getText()), this.txtFecha.getText(),
+                    this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()), this.txtNombreSolicitante.getText(),
+                    Double.parseDouble(this.txtSalarioSolicitante.getText()), this.txtDireccionSolicitante.getText());
+            if (this.bancario.verificarSolicitudLeida(solicitud)) {
+                JOptionPane.showMessageDialog(this, "Solicitud Registrada Exitosamente!!!");
+                this.txtNumeroSolicitud.setText("");
+                this.txtFecha.setText("");
+                this.txtNombreSolicitante.setText("");
+                this.txtSalarioSolicitante.setText("");
+                this.txtDireccionSolicitante.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "La Solicitud NO se pudo Registrar por favor Vuelva a Revisar los Datos de cada Campo en el Formulario");
+            }
+        }
+    }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private boolean camposValidos() {
+        if ("".equals(this.txtNumeroSolicitud.getText()) || "".equals(this.txtFecha.getText())
+                || "".equals(this.txtNombreSolicitante.getText()) || "".equals(this.txtSalarioSolicitante.getText())
+                || "".equals(this.txtDireccionSolicitante.getText())) {
+            JOptionPane.showMessageDialog(this, "Debe Completar TODOS los Campos del Formulario");
+            return false;
+        }
+        if (!this.bancario.isDouble(this.txtSalarioSolicitante.getText())) {
+            JOptionPane.showMessageDialog(this, "Debe Colocar un Numero DECIMAL en el Campo de Salario del Solicitante");
+            return false;
+        }
+        if (!this.bancario.isInteger(this.txtNumeroSolicitud.getText())) {
+            JOptionPane.showMessageDialog(this, "Debe Colocar un Numero Entero en el Campo de Numero de Solicitud");
+            return false;
+        }
+        if (this.cmbTiposTarjeta.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(this, "No se seleccionó un Laberinto valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JComboBox<String> cmbTiposTarjeta;

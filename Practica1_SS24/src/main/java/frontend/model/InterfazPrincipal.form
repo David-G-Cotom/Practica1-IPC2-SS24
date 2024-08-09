@@ -13,6 +13,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Solicitud de Tarjeta"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itmenuSolicitudTarjetaActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itmenuMovimientoTarjeta">
               <Properties>
@@ -66,12 +69,12 @@
                 <Property name="text" type="java.lang.String" value="Cancelar Tarjeta"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+            <MenuItem class="javax.swing.JMenuItem" name="itmenuImportarDatos">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Importar Datos"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itmenuImportarDatosActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

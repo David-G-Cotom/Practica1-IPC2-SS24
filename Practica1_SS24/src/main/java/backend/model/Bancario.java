@@ -4,6 +4,7 @@
  */
 package backend.model;
 
+import backend.data.SolicitudTarjetaDB;
 import java.util.ArrayList;
 
 /**
@@ -18,8 +19,9 @@ public class Bancario {
     private final String[] ESTADO_SOLICITUD = {"APROBADA", "AUTORIZADA", "RECHAZADA"};
     
     public boolean isNumeroSolicitudRepetida(int numeroSolicitud) {
-        //Conectarse a la DB y extraer un arreglo que contenga todos los numeros de solicitud
-        ArrayList<Integer> solicitudesEnBS = null;
+        SolicitudTarjetaDB datosSolicitud = new SolicitudTarjetaDB();
+        ArrayList<Integer> solicitudesEnBS = datosSolicitud.getNumeroSolicitud();
+        System.out.println(solicitudesEnBS);
         for (int i = 0; i < solicitudesEnBS.size(); i++) {
             if (solicitudesEnBS.get(i) == numeroSolicitud) {
                 System.out.println("Error!!! Numero de Solicitud Repetida");
@@ -30,11 +32,12 @@ public class Bancario {
     }
     
     public String quitarComillas(String texto) {
-        String textoModificado = "";
+        String textoModificado;
         if (texto.contains("\"")) {
             textoModificado = texto.substring(1, texto.length()-1);
+            return textoModificado;
         }
-        return textoModificado;
+        return texto;
     }
     
     public boolean isFormatoFechaCorrecto(String fecha) {
@@ -143,15 +146,20 @@ public class Bancario {
         return false;
     }
     
-    public void verificarSolicitudLeida(SolicitudTarjeta solicitud) {
-        if (isFormatoFechaCorrecto(solicitud.getFechaSolicitud())
+    public boolean verificarSolicitudLeida(SolicitudTarjeta solicitud) {
+        if (!isNumeroSolicitudRepetida(solicitud.getNumeroSolicitud()) && isFormatoFechaCorrecto(solicitud.getFechaSolicitud())
                 && isTipoTarjetaValido(solicitud.getTipoTarjetaSolicitada())) {
             solicitud.setNombreSolicitante(this.quitarComillas(solicitud.getNombreSolicitante()));
             solicitud.setDireccionSolicitante(this.quitarComillas(solicitud.getDireccionSolicitante()));
+            solicitud.setFechaSolicitud(this.transformarFormatoFecha(this.quitarComillas(solicitud.getFechaSolicitud())));
             System.out.println("Solicitud de Tarjeta Valida para su Ejecucion\n");
-            return;
+            SolicitudTarjetaDB nuevaSolicitud = new SolicitudTarjetaDB(solicitud);            
+            nuevaSolicitud.crearCliente();
+            nuevaSolicitud.crearSolicitud();
+            return true;
         }
         System.out.println("Solicitud de Tarjeta NO Valida para su Ejecucion\n");
+        return false;
     }
     
     public void verificarMovimientoLeido(MovimientoTarjeta movimiento) {

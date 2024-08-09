@@ -12,17 +12,23 @@ public class Cliente {
     
     private int idCliente;
     private String nombre;
-    private int salario;
+    private double salario;
     private String direccion;
     private String numeroTarjeta;
 
-    public Cliente(int idCliente, String nombre, int salario, String direccion, String numeroTarjeta) {
+    public Cliente(int idCliente, String nombre, double salario, String direccion, String numeroTarjeta) {
         this.idCliente = idCliente;
         this.nombre = nombre;
         this.salario = salario;
         this.direccion = direccion;
         this.numeroTarjeta = numeroTarjeta;
     }
+
+    public Cliente(String nombre, double salario, String direccion) {
+        this.nombre = nombre;
+        this.salario = salario;
+        this.direccion = direccion;
+    }        
     
     public int getIdCliente() {
         return idCliente;
@@ -40,11 +46,11 @@ public class Cliente {
         this.nombre = nombre;
     }
 
-    public int getSalario() {
+    public double getSalario() {
         return salario;
     }
 
-    public void setSalario(int salario) {
+    public void setSalario(double salario) {
         this.salario = salario;
     }
 

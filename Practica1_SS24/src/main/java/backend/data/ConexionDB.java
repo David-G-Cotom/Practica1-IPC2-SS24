@@ -21,7 +21,7 @@ public class ConexionDB {
 
     public ConexionDB() {
         try {
-            connection = DriverManager.getConnection(USER, USER, PASSWORD);
+            connection = DriverManager.getConnection(URL_MYSQL, USER, PASSWORD);
         } catch (SQLException ex) {
             System.out.println("Error al conectarse con MySQL");
         }
