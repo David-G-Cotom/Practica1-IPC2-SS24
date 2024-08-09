@@ -13,13 +13,13 @@ public class FiltroEstadoCuenta {
     private String numeroTarjeta;
     private String TipoTarjeta;
     private double saldoMinimo;
-    private double iteresesMinomo;
+    private double iteresesMinimo;
 
     public FiltroEstadoCuenta(String numeroTarjeta, String TipoTarjeta, double saldoMinimo, double iteresesMinomo) {
         this.numeroTarjeta = numeroTarjeta;
         this.TipoTarjeta = TipoTarjeta;
         this.saldoMinimo = saldoMinimo;
-        this.iteresesMinomo = iteresesMinomo;
+        this.iteresesMinimo = iteresesMinomo;
     }
 
     public String getNumeroTarjeta() {
@@ -46,12 +46,12 @@ public class FiltroEstadoCuenta {
         this.saldoMinimo = saldoMinimo;
     }
 
-    public double getIteresesMinomo() {
-        return iteresesMinomo;
+    public double getIteresesMinimo() {
+        return iteresesMinimo;
     }
 
-    public void setIteresesMinomo(double iteresesMinomo) {
-        this.iteresesMinomo = iteresesMinomo;
+    public void setIteresesMinimo(double iteresesMinimo) {
+        this.iteresesMinimo = iteresesMinimo;
     }        
     
 }

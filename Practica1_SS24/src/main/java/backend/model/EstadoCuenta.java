@@ -11,11 +11,11 @@ package backend.model;
 public class EstadoCuenta {
     
     private String numeroTarjeta;
-    private String nombreClietne;
+    private String nombreCliente;
     private String direccionCliente;
     private String fechaMovimiento;
     private String tipoMovimiento;
-    private String desscripcionMovimiento;
+    private String descripcionMovimiento;
     private String establecimiento;
     private double montoEjecutado;
     private double montoTotalEjecutado;
@@ -24,11 +24,11 @@ public class EstadoCuenta {
 
     public EstadoCuenta(String numeroTarjeta, String nombreClietne, String direccionCliente, String fechaMovimiento, String tipoMovimiento, String desscripcionMovimiento, String establecimiento, double montoEjecutado, double montoTotalEjecutado, double intereses, double saldoTotal) {
         this.numeroTarjeta = numeroTarjeta;
-        this.nombreClietne = nombreClietne;
+        this.nombreCliente = nombreClietne;
         this.direccionCliente = direccionCliente;
         this.fechaMovimiento = fechaMovimiento;
         this.tipoMovimiento = tipoMovimiento;
-        this.desscripcionMovimiento = desscripcionMovimiento;
+        this.descripcionMovimiento = desscripcionMovimiento;
         this.establecimiento = establecimiento;
         this.montoEjecutado = montoEjecutado;
         this.montoTotalEjecutado = montoTotalEjecutado;
@@ -44,12 +44,12 @@ public class EstadoCuenta {
         this.numeroTarjeta = numeroTarjeta;
     }
 
-    public String getNombreClietne() {
-        return nombreClietne;
+    public String getNombreCliente() {
+        return nombreCliente;
     }
 
-    public void setNombreClietne(String nombreClietne) {
-        this.nombreClietne = nombreClietne;
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
     }
 
     public String getDireccionCliente() {
@@ -76,12 +76,12 @@ public class EstadoCuenta {
         this.tipoMovimiento = tipoMovimiento;
     }
 
-    public String getDesscripcionMovimiento() {
-        return desscripcionMovimiento;
+    public String getDescripcionMovimiento() {
+        return descripcionMovimiento;
     }
 
-    public void setDesscripcionMovimiento(String desscripcionMovimiento) {
-        this.desscripcionMovimiento = desscripcionMovimiento;
+    public void setDescripcionMovimiento(String descripcionMovimiento) {
+        this.descripcionMovimiento = descripcionMovimiento;
     }
 
     public String getEstablecimiento() {

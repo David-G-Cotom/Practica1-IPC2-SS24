@@ -17,7 +17,7 @@ public class Bancario {
     private final String[] ESTADO_TARJETA = {"AUTORIZADA", "ACTIVA", "CANCELADA"};
     private final String[] ESTADO_SOLICITUD = {"APROBADA", "AUTORIZADA", "RECHAZADA"};
     
-    public boolean verificarNumeroSolicitudRepetida(int numeroSolicitud) {
+    public boolean isNumeroSolicitudRepetida(int numeroSolicitud) {
         //Conectarse a la DB y extraer un arreglo que contenga todos los numeros de solicitud
         ArrayList<Integer> solicitudesEnBS = null;
         for (int i = 0; i < solicitudesEnBS.size(); i++) {
@@ -37,7 +37,7 @@ public class Bancario {
         return textoModificado;
     }
     
-    public boolean verificarFormatoFechaCorrecto(String fecha) {
+    public boolean isFormatoFechaCorrecto(String fecha) {
         fecha = this.quitarComillas(fecha);        
         if (fecha.contains("/")) {
             String[] datos = fecha.split("/");
@@ -57,7 +57,15 @@ public class Bancario {
         return false;
     }
     
-    public boolean verificarTipoTarjetaValido(String tipoTarjeta) {
+    public String transformarFormatoFecha(String fecha) {
+        String[] datos = fecha.split("/");
+        String yyyy = datos[2];
+        String mm = datos[1];
+        String dd = datos[0];                
+        return yyyy + "-" + mm + "-" + dd;
+    }
+    
+    public boolean isTipoTarjetaValido(String tipoTarjeta) {
         for (int i = 0; i < TIPO_TARJETAS.length; i++) {
             if (TIPO_TARJETAS[i].equalsIgnoreCase(tipoTarjeta)) {
                 System.out.println("Tipo de Tarjeta Valida");
@@ -68,7 +76,27 @@ public class Bancario {
         return false;        
     }
     
-    public boolean verificarTipoMovimientoValido(String tipoMovimiento) {
+    public boolean isInteger(String texto) {
+        try {
+            Integer.valueOf(texto);
+            return true;
+        } catch (NumberFormatException e) {
+            System.out.println("Error en la Lectura de Archivo: Texto ingresado Invalido para ser Entero");
+            return false;
+        }
+    }
+    
+    public boolean isDouble(String texto) {
+        try {
+            Double.valueOf(texto);
+            return true;
+        } catch (NumberFormatException e) {
+            System.out.println("Error en la Lectura de Archivo: Texto ingresado Invalido para ser Decimal");
+            return false;
+        }
+    }
+    
+    public boolean isTipoMovimientoValido(String tipoMovimiento) {
         for (int i = 0; i < TIPO_MOVIMIENTOS.length; i++) {
             if (TIPO_MOVIMIENTOS[i].equalsIgnoreCase(tipoMovimiento)) {
                 System.out.println("Tipo de Movimiento Valido");
@@ -79,7 +107,7 @@ public class Bancario {
         return false;        
     }
     
-    public boolean verificarNumeroTarjetaValido(String numeroTarjeta) {
+    public boolean isNumeroTarjetaValido(String numeroTarjeta) {
         String[] contenido = numeroTarjeta.split(" ");
         if (contenido.length == 4) {
             for (int i = 0; i < contenido.length; i++) {
@@ -93,7 +121,7 @@ public class Bancario {
         return true;        
     }
     
-    public boolean verificarEstadoTarjetaValido(String estadoTarjeta) {
+    public boolean isEstadoTarjetaValido(String estadoTarjeta) {
         for (int i = 0; i < ESTADO_TARJETA.length; i++) {
             if (ESTADO_TARJETA[i].equalsIgnoreCase(estadoTarjeta)) {
                 System.out.println("Estado de Tarjeta Valido");
@@ -104,7 +132,7 @@ public class Bancario {
         return false;
     }
     
-    public boolean verificarEstadoSolicitudValido(String estadoSolicitud) {
+    public boolean isEstadoSolicitudValido(String estadoSolicitud) {
         for (int i = 0; i < ESTADO_SOLICITUD.length; i++) {
             if (ESTADO_SOLICITUD[i].equalsIgnoreCase(estadoSolicitud)) {
                 System.out.println("Estado de Solicitud Valido");
@@ -115,57 +143,52 @@ public class Bancario {
         return false;
     }
     
-    public boolean verificarSolicitudLeida(SolicitudTarjeta solicitud) {
-        if (/*!verificarNumeroSolicitudRepetida(solicitud.getNumeroSolicitud()) && */verificarFormatoFechaCorrecto(solicitud.getFechaSolicitud())
-                && verificarTipoTarjetaValido(solicitud.getTipoTarjetaSolicitada())) {
+    public void verificarSolicitudLeida(SolicitudTarjeta solicitud) {
+        if (isFormatoFechaCorrecto(solicitud.getFechaSolicitud())
+                && isTipoTarjetaValido(solicitud.getTipoTarjetaSolicitada())) {
             solicitud.setNombreSolicitante(this.quitarComillas(solicitud.getNombreSolicitante()));
             solicitud.setDireccionSolicitante(this.quitarComillas(solicitud.getDireccionSolicitante()));
             System.out.println("Solicitud de Tarjeta Valida para su Ejecucion\n");
-            return true;
+            return;
         }
         System.out.println("Solicitud de Tarjeta NO Valida para su Ejecucion\n");
-        return false;
     }
     
-    public boolean verificarMovimientoLeido(MovimientoTarjeta movimiento) {
-        if (verificarNumeroTarjetaValido(movimiento.getNumeroTarjeta()) && verificarFormatoFechaCorrecto(movimiento.getFechaOperacion())
-                && verificarTipoMovimientoValido(movimiento.getTipoMovimiento())) {
+    public void verificarMovimientoLeido(MovimientoTarjeta movimiento) {
+        if (isNumeroTarjetaValido(movimiento.getNumeroTarjeta()) && isFormatoFechaCorrecto(movimiento.getFechaOperacion())
+                && isTipoMovimientoValido(movimiento.getTipoMovimiento())) {
             movimiento.setDescripcion(this.quitarComillas(movimiento.getDescripcion()));
             movimiento.setEstablecimiento(this.quitarComillas(movimiento.getEstablecimiento()));
             System.out.println("Movimiento de Tarjeta Valida para su Ejecucion\n");
-            return true;
+            return;
         }
         System.out.println("Movimiento de Tarjeta NO Valido para su Ejecucion\n");
-        return false;
     }
     
-    public boolean verificarFiltroEstadoCuenta(FiltroEstadoCuenta filtro) {
-        if (verificarNumeroTarjetaValido(filtro.getNumeroTarjeta()) && verificarTipoTarjetaValido(filtro.getTipoTarjeta())) {
+    public void verificarFiltroEstadoCuenta(FiltroEstadoCuenta filtro) {
+        if (isNumeroTarjetaValido(filtro.getNumeroTarjeta()) && isTipoTarjetaValido(filtro.getTipoTarjeta())) {
             System.out.println("Filtro para Estado de Cuenta Valido para su Ejecucion\n");
-            return true;
+            return;
         }
         System.out.println("Filtro para Estado de Cuenta NO Valido para su Ejecucion\n");
-        return false;
     }
     
-    public boolean verificarFiltroListadoTarjetas(FiltroListadoTarjetas filtro) {
-        if (verificarTipoTarjetaValido(filtro.getTipoTarjeta()) && verificarFormatoFechaCorrecto(filtro.getFechaInicio())
-                && verificarFormatoFechaCorrecto(filtro.getFechaFinal()) && verificarEstadoTarjetaValido(filtro.getEstadoTarjeta())) {
+    public void verificarFiltroListadoTarjetas(FiltroListadoTarjetas filtro) {
+        if (isTipoTarjetaValido(filtro.getTipoTarjeta()) && isFormatoFechaCorrecto(filtro.getFechaInicio())
+                && isFormatoFechaCorrecto(filtro.getFechaFinal()) && isEstadoTarjetaValido(filtro.getEstadoTarjeta())) {
             System.out.println("Filtro de Listado de Tarjetas Valido para su Ejecucion\n");
-            return true;
+            return;
         }
         System.out.println("Filtro de Listado de Tarjetas NO Valido para su Ejecucion\n");
-        return false;
     }
     
-    public boolean verificarFiltroListadoSolicitudes(FiltroListadoSolicitudes filtro) {
-        if (verificarFormatoFechaCorrecto(filtro.getFechaInicio()) && verificarFormatoFechaCorrecto(filtro.getFechaFin())
-                && verificarTipoTarjetaValido(filtro.getTipoTarjeta()) && verificarEstadoSolicitudValido(filtro.getEstadoSolicitud())) {
+    public void verificarFiltroListadoSolicitudes(FiltroListadoSolicitudes filtro) {
+        if (isFormatoFechaCorrecto(filtro.getFechaInicio()) && isFormatoFechaCorrecto(filtro.getFechaFin())
+                && isTipoTarjetaValido(filtro.getTipoTarjeta()) && isEstadoSolicitudValido(filtro.getEstadoSolicitud())) {
             System.out.println("Filtro de Listado de Solicitudes Valido para su Ejecucion\n");
-            return true;
+            return;
         }
         System.out.println("Filtro de Listado de Solicitudes NO Valido para su Ejecucion\n");
-        return false;
     }
     
 }

@@ -25,24 +25,15 @@ public class LectorArchivo extends Thread {
     private JLabel carga;
     private JLabel descripcionProceso;
     private Bancario bancario;
-    private Tarjeta tarjeta;
-    private ArrayList<Tarjeta> tarjetas = new ArrayList<>();
-    private Cliente cliente;
-    private ArrayList<Cliente> clientes = new ArrayList<>();
     private SolicitudTarjeta solicitud;
-    private ArrayList<SolicitudTarjeta> solicitudes = new ArrayList<>();
     private MovimientoTarjeta movimiento;
-    private ArrayList<MovimientoTarjeta> movimientos = new ArrayList<>();;
     private ArrayList<String> consultas = new ArrayList<>();
     private ArrayList<Integer> autorizaciones = new ArrayList<>();
     private ArrayList<String> cancelaciones = new ArrayList<>();
     private final int velocidadPorcesamiento;
     private FiltroEstadoCuenta filtroEstadoCuenta;
-    private ArrayList<FiltroEstadoCuenta> filtrosEstadosCuenta = new ArrayList<>();
     private FiltroListadoSolicitudes filtroListadoSolicitudes;
-    private ArrayList<FiltroListadoSolicitudes> filtrosListadosSolicitudes = new ArrayList<>();
     private FiltroListadoTarjetas filtroListadoTarjetas;
-    private ArrayList<FiltroListadoTarjetas> filtrosListadosTarjetas = new ArrayList<>();
     
     public LectorArchivo(File archivoEntrada, JIFIngresoArchivo ingresoArchivoFront, JLabel carga, JLabel descripcionProceso, int velocidadProcesamiento) {
         this.archivoEntrada = archivoEntrada;
@@ -68,11 +59,11 @@ public class LectorArchivo extends Thread {
                         case "SOLICITUD":                            
                             this.descripcionProceso.setText("Procesando la Solictud de Tarjeta");
                             if (datosRecolectados.length == 6) {
-                                this.solicitud = new SolicitudTarjeta(Integer.parseInt(datosRecolectados[0]),
-                                        datosRecolectados[1], datosRecolectados[2], datosRecolectados[3], Double.parseDouble(datosRecolectados[4]), datosRecolectados[5]);
-                                if (this.bancario.verificarSolicitudLeida(solicitud)) {
-                                    this.solicitudes.add(solicitud);
-                                }
+                                if (this.bancario.isInteger(datosRecolectados[0]) && this.bancario.isDouble(datosRecolectados[4])) {
+                                    this.solicitud = new SolicitudTarjeta(Integer.parseInt(datosRecolectados[0]),
+                                            datosRecolectados[1], datosRecolectados[2], datosRecolectados[3], Double.parseDouble(datosRecolectados[4]), datosRecolectados[5]);
+                                    this.bancario.verificarSolicitudLeida(solicitud);
+                                }                               
                             } else {
                                 System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Solicitud de Tarjeta!!!\n");
                             }
@@ -80,10 +71,10 @@ public class LectorArchivo extends Thread {
                         case "MOVIMIENTO":
                             this.descripcionProceso.setText("Procesando el Movimiento de Tarjeta");
                             if (datosRecolectados.length == 6) {
-                                this.movimiento = new MovimientoTarjeta(datosRecolectados[0], datosRecolectados[1],
-                                        datosRecolectados[2], datosRecolectados[3], datosRecolectados[4], Double.parseDouble(datosRecolectados[5]));
-                                if (this.bancario.verificarMovimientoLeido(movimiento)) {
-                                    this.movimientos.add(movimiento);
+                                if (this.bancario.isDouble(datosRecolectados[5])) {
+                                    this.movimiento = new MovimientoTarjeta(datosRecolectados[0], datosRecolectados[1],
+                                            datosRecolectados[2], datosRecolectados[3], datosRecolectados[4], Double.parseDouble(datosRecolectados[5]));
+                                    this.bancario.verificarMovimientoLeido(movimiento);                                    
                                 }
                             } else {
                                 System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para el MOvimiento en Tarjeta!!!\n");
@@ -92,7 +83,7 @@ public class LectorArchivo extends Thread {
                         case "CONSULTAR_TARJETA":
                             this.descripcionProceso.setText("Procesando la Consulta de Tarjeta");
                             if (datosRecolectados.length == 1) {
-                                if (this.bancario.verificarNumeroTarjetaValido(datosRecolectados[0])) {
+                                if (this.bancario.isNumeroTarjetaValido(datosRecolectados[0])) {
                                     this.consultas.add(datosRecolectados[0]);                                    
                                 } else {
                                     System.out.println("Numero de Tarjeta Invalido para Hacer la Consulta de Tarjeta");
@@ -104,7 +95,9 @@ public class LectorArchivo extends Thread {
                         case "AUTORIZACION_TARJETA":
                             this.descripcionProceso.setText("Procesando la Autorizacion de Tarjeta");
                             if (datosRecolectados.length == 1) {
-                                this.autorizaciones.add(Integer.valueOf(datosRecolectados[0]));
+                                if (this.bancario.isInteger(datosRecolectados[0])) {
+                                    this.autorizaciones.add(Integer.valueOf(datosRecolectados[0]));                                    
+                                }
                             } else {
                                 System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Autorizacion de Tarjeta!!!\n");
                             }
@@ -112,7 +105,7 @@ public class LectorArchivo extends Thread {
                         case "CANCELACION_TARJETA":
                             this.descripcionProceso.setText("Procesando la Cancelacion de Tarjeta");
                             if (datosRecolectados.length == 1) {
-                                if (this.bancario.verificarNumeroTarjetaValido(datosRecolectados[0])) {
+                                if (this.bancario.isNumeroTarjetaValido(datosRecolectados[0])) {
                                     this.cancelaciones.add(datosRecolectados[0]);                                    
                                 } else {
                                     System.out.println("Numero de Tarjeta Invalido para Hacer la Cancelacion de Tarjeta");
@@ -124,10 +117,10 @@ public class LectorArchivo extends Thread {
                         case "ESTADO_CUENTA":
                             this.descripcionProceso.setText("Procesando el Reporte para el Estado de Cuenta");
                             if (datosRecolectados.length == 4) {
-                                this.filtroEstadoCuenta = new FiltroEstadoCuenta(datosRecolectados[0], datosRecolectados[1],
-                                        Double.parseDouble(datosRecolectados[2]), Double.parseDouble(datosRecolectados[3]));
-                                if (this.bancario.verificarFiltroEstadoCuenta(filtroEstadoCuenta)) {
-                                    this.filtrosEstadosCuenta.add(filtroEstadoCuenta);
+                                if (this.bancario.isDouble(datosRecolectados[2]) && this.bancario.isDouble(datosRecolectados[3])) {
+                                    this.filtroEstadoCuenta = new FiltroEstadoCuenta(datosRecolectados[0], datosRecolectados[1],
+                                            Double.parseDouble(datosRecolectados[2]), Double.parseDouble(datosRecolectados[3]));
+                                    this.bancario.verificarFiltroEstadoCuenta(filtroEstadoCuenta);                                    
                                 }
                             } else {
                                 System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Cancelacion de Tarjeta!!!\n");
@@ -136,10 +129,10 @@ public class LectorArchivo extends Thread {
                         case "LISTADO_TARJETAS":
                             this.descripcionProceso.setText("Procesando el Reporte para el Listado de Tarjetas");
                             if (datosRecolectados.length == 5) {
-                                this.filtroListadoTarjetas = new FiltroListadoTarjetas(datosRecolectados[0], Double.parseDouble(datosRecolectados[1]),
-                                        datosRecolectados[2], datosRecolectados[3], datosRecolectados[4]);
-                                if (this.bancario.verificarFiltroListadoTarjetas(filtroListadoTarjetas)) {
-                                    this.filtrosListadosTarjetas.add(filtroListadoTarjetas);
+                                if (this.bancario.isDouble(datosRecolectados[1])) {
+                                    this.filtroListadoTarjetas = new FiltroListadoTarjetas(datosRecolectados[0], Double.parseDouble(datosRecolectados[1]),
+                                            datosRecolectados[2], datosRecolectados[3], datosRecolectados[4]);
+                                    this.bancario.verificarFiltroListadoTarjetas(filtroListadoTarjetas);                                    
                                 }
                             } else {
                                 System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Cancelacion de Tarjeta!!!\n");
@@ -148,10 +141,10 @@ public class LectorArchivo extends Thread {
                         case "LISTADO_SOLICITUDES":
                             this.descripcionProceso.setText("Procesando el Reporte para el Listado de Solicitudes");
                             if (datosRecolectados.length == 5) {
-                                this.filtroListadoSolicitudes = new FiltroListadoSolicitudes(datosRecolectados[0], datosRecolectados[1],
-                                        datosRecolectados[2], Integer.parseInt(datosRecolectados[3]), datosRecolectados[4]);
-                                if (this.bancario.verificarFiltroListadoSolicitudes(filtroListadoSolicitudes)) {
-                                    this.filtrosListadosSolicitudes.add(filtroListadoSolicitudes);
+                                if (this.bancario.isDouble(datosRecolectados[3])) {
+                                    this.filtroListadoSolicitudes = new FiltroListadoSolicitudes(datosRecolectados[0], datosRecolectados[1],
+                                            datosRecolectados[2], Double.parseDouble(datosRecolectados[3]), datosRecolectados[4]);
+                                    this.bancario.verificarFiltroListadoSolicitudes(filtroListadoSolicitudes);                                    
                                 }
                             } else {
                                 System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Cancelacion de Tarjeta!!!\n");
@@ -168,9 +161,12 @@ public class LectorArchivo extends Thread {
             this.ingresoArchivoFront.mostrarMensaje("Archivo Leido Exitosamente!!!");
             this.ingresoArchivoFront.setClosed(true);            
         } catch (FileNotFoundException e) {
+            System.out.println("Archivo de Texto no Encontrado para Lectura");
         } catch (IOException ex) {            
         } catch (InterruptedException exc) {
+            System.out.println("Error en el Thread para slepear la laectura de instruccion");
         } catch (PropertyVetoException exce) {
+            System.out.println("Error al cerrar automaticamente el Front de Ingreso de Archivo");
         }
         System.out.println("Hilo del Lector Finalizado\n");
     }
