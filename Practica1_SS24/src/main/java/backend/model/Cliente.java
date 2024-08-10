@@ -14,14 +14,12 @@ public class Cliente {
     private String nombre;
     private double salario;
     private String direccion;
-    private String numeroTarjeta;
 
-    public Cliente(int idCliente, String nombre, double salario, String direccion, String numeroTarjeta) {
+    public Cliente(int idCliente, String nombre, double salario, String direccion) {
         this.idCliente = idCliente;
         this.nombre = nombre;
         this.salario = salario;
         this.direccion = direccion;
-        this.numeroTarjeta = numeroTarjeta;
     }
 
     public Cliente(String nombre, double salario, String direccion) {
@@ -60,14 +58,6 @@ public class Cliente {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
-    }
-
-    public String getNumeroTarjeta() {
-        return numeroTarjeta;
-    }
-
-    public void setNumeroTarjeta(String numeroTarjeta) {
-        this.numeroTarjeta = numeroTarjeta;
     }
 
 }

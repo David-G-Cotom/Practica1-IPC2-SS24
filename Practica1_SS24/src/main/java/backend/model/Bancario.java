@@ -4,6 +4,7 @@
  */
 package backend.model;
 
+import backend.data.AutorizacionTarjetaDB;
 import backend.data.SolicitudTarjetaDB;
 import java.util.ArrayList;
 
@@ -21,15 +22,14 @@ public class Bancario {
     public boolean isNumeroSolicitudRepetida(int numeroSolicitud) {
         SolicitudTarjetaDB datosSolicitud = new SolicitudTarjetaDB();
         ArrayList<Integer> solicitudesEnBS = datosSolicitud.getNumeroSolicitud();
-        System.out.println(solicitudesEnBS);
         for (int i = 0; i < solicitudesEnBS.size(); i++) {
             if (solicitudesEnBS.get(i) == numeroSolicitud) {
-                System.out.println("Error!!! Numero de Solicitud Repetida");
+                System.out.println("Numero de Solicitud Repetida!!!");
                 return true;
             }
         }
         return false;
-    }
+    }    
     
     public String quitarComillas(String texto) {
         String textoModificado;
@@ -84,7 +84,7 @@ public class Bancario {
             Integer.valueOf(texto);
             return true;
         } catch (NumberFormatException e) {
-            System.out.println("Error en la Lectura de Archivo: Texto ingresado Invalido para ser Entero");
+            System.out.println("Error en la Lectura de Archivo: Texto ingresado Invalido para ser Numero Entero");
             return false;
         }
     }
@@ -94,7 +94,7 @@ public class Bancario {
             Double.valueOf(texto);
             return true;
         } catch (NumberFormatException e) {
-            System.out.println("Error en la Lectura de Archivo: Texto ingresado Invalido para ser Decimal");
+            System.out.println("Error en la Lectura de Archivo: Texto ingresado Invalido para ser Numero Decimal");
             return false;
         }
     }
@@ -197,6 +197,22 @@ public class Bancario {
             return;
         }
         System.out.println("Filtro de Listado de Solicitudes NO Valido para su Ejecucion\n");
+    }
+    
+    public void verificarAutorizacionLeida(int numeroSolicitud) {
+        if (this.isNumeroSolicitudRepetida(numeroSolicitud)) {
+            AutorizacionTarjetaDB autorizacionDB = new AutorizacionTarjetaDB(numeroSolicitud);
+            Autorizacion autorizacion = new Autorizacion(autorizacionDB.getCliente().getSalario(), autorizacionDB.getLimiteCreditoTipoTarjeta(),
+                    autorizacionDB.getSolicitud().getTipoTarjetaSolicitada());
+            if (autorizacion.autorizarTarjeta()) {
+                autorizacionDB.crearTarjeta(autorizacion.getTarjeta());
+                autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, true);
+            } else {
+                autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, false);
+            }
+            return;
+        }
+        System.out.println("Numero de Solicitu NO encontrada en la DB");
     }
     
 }

@@ -28,7 +28,6 @@ public class LectorArchivo extends Thread {
     private SolicitudTarjeta solicitud;
     private MovimientoTarjeta movimiento;
     private ArrayList<String> consultas = new ArrayList<>();
-    private ArrayList<Integer> autorizaciones = new ArrayList<>();
     private ArrayList<String> cancelaciones = new ArrayList<>();
     private final int velocidadPorcesamiento;
     private FiltroEstadoCuenta filtroEstadoCuenta;
@@ -96,7 +95,8 @@ public class LectorArchivo extends Thread {
                             this.descripcionProceso.setText("Procesando la Autorizacion de Tarjeta");
                             if (datosRecolectados.length == 1) {
                                 if (this.bancario.isInteger(datosRecolectados[0])) {
-                                    this.autorizaciones.add(Integer.valueOf(datosRecolectados[0]));                                    
+                                    System.out.println("Autorizacion de Tarjeta Valida para su Ejecucion");
+                                    this.bancario.verificarAutorizacionLeida(Integer.parseInt(datosRecolectados[0]));                                  
                                 }
                             } else {
                                 System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Autorizacion de Tarjeta!!!\n");
