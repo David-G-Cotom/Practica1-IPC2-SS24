@@ -6,6 +6,7 @@ package backend.model;
 
 import backend.data.AutorizacionTarjetaDB;
 import backend.data.ConsultaTarjetaDB;
+import backend.data.MovimientoTarjetaDB;
 import backend.data.SolicitudTarjetaDB;
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 public class Bancario {
 
     private final String[] TIPO_TARJETAS = {"NACIONAL", "REGIONAL", "INTERNACIONAL"};
-    private final String[] TIPO_MOVIMIENTOS = {"CARGO", "BONO"};
+    private final String[] TIPO_MOVIMIENTOS = {"CARGO", "ABONO"};
     private final String[] ESTADO_TARJETA = {"AUTORIZADA", "ACTIVA", "CANCELADA"};
     private final String[] ESTADO_SOLICITUD = {"APROBADA", "AUTORIZADA", "RECHAZADA"};
     private String pathCarpeta;
@@ -127,7 +128,8 @@ public class Bancario {
             for (int i = 0; i < contenido.length; i++) {
                 if (contenido[i].length() == 4 && this.isInteger(contenido[i])) {
                     isValido = true;
-                } else {                    
+                } else {
+                    System.out.println("Numero de Tarjeta Invalida");
                     return false;
                 }
             }
@@ -192,10 +194,17 @@ public class Bancario {
                 && isTipoMovimientoValido(movimiento.getTipoMovimiento())) {
             movimiento.setDescripcion(this.quitarComillas(movimiento.getDescripcion()));
             movimiento.setEstablecimiento(this.quitarComillas(movimiento.getEstablecimiento()));
-            System.out.println("Movimiento de Tarjeta Valida para su Ejecucion\n");
-            return;
+            movimiento.setFechaOperacion(this.transformarFormatoFecha(this.quitarComillas(movimiento.getFechaOperacion())));
+            MovimientoTarjetaDB movimientoTarjeta = new MovimientoTarjetaDB(movimiento);            
+            if (movimientoTarjeta.isTarjetaActiva()) {
+                movimientoTarjeta.crearRegistro();
+                movimientoTarjeta.actualizarSaldoTarjeta();
+            } else {
+                System.out.println("La Tarjeta esta Inactiva");
+            }
+        } else {
+            System.out.println("Movimiento de Tarjeta NO Valido para su Ejecucion\n");            
         }
-        System.out.println("Movimiento de Tarjeta NO Valido para su Ejecucion\n");
     }
 
     public void verificarFiltroEstadoCuenta(FiltroEstadoCuenta filtro) {

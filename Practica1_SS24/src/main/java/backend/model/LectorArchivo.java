@@ -70,8 +70,9 @@ public class LectorArchivo extends Thread {
                         case "MOVIMIENTO":
                             this.descripcionProceso.setText("Procesando el Movimiento de Tarjeta");
                             if (datosRecolectados.length == 6) {
+                                String numeroTarjeta = this.bancario.transformarNumeroTarjeta(datosRecolectados[0]);
                                 if (this.bancario.isDouble(datosRecolectados[5])) {
-                                    this.movimiento = new MovimientoTarjeta(datosRecolectados[0], datosRecolectados[1],
+                                    this.movimiento = new MovimientoTarjeta(numeroTarjeta, datosRecolectados[1],
                                             datosRecolectados[2], datosRecolectados[3], datosRecolectados[4], Double.parseDouble(datosRecolectados[5]));
                                     this.bancario.verificarMovimientoLeido(movimiento);                                    
                                 }
@@ -215,10 +216,6 @@ public class LectorArchivo extends Thread {
         } catch (Exception e) {
         }
         return numeroLineas;
-    }
-    
-    public void nuevoRegistroLeido(){
-        
     }
     
 }
