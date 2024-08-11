@@ -246,17 +246,18 @@ public class Bancario {
         }        
     }
     
-    public void verificarConsultaTarjeta(String numeroTarjeta) {
+    public Consulta verificarConsultaTarjeta(String numeroTarjeta) {
         ConsultaTarjetaDB consultaDB = new ConsultaTarjetaDB();
         ArrayList<String> numerosRegistrados = consultaDB.getNumeroTarjetas();
+        Consulta consulta = null;
         for (int i = 0; i < numerosRegistrados.size(); i++) {
             if (numerosRegistrados.get(i).equals(numeroTarjeta)) {
-                Consulta consulta = consultaDB.getConsulta(numeroTarjeta);
-                consulta.setPathCarpeta(this.pathCarpeta);
-                consulta.exportarReportes();                
+                consulta = consultaDB.getConsulta(numeroTarjeta);                               
                 break;
             }
         }
+        System.out.println("No se Encontro el Numero de la Tarjeta en la DB");
+        return consulta;
     }
 
 }

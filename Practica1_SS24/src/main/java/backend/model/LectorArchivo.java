@@ -85,7 +85,11 @@ public class LectorArchivo extends Thread {
                                 String numeroTarjeta = this.bancario.transformarNumeroTarjeta(datosRecolectados[0]);
                                 if (this.bancario.isNumeroTarjetaValido(numeroTarjeta)) {                                    
                                     System.out.println("Consulta de Tarjeta Valida para su Ejecucion");
-                                    this.bancario.verificarConsultaTarjeta(numeroTarjeta);                                   
+                                    Consulta consulta = this.bancario.verificarConsultaTarjeta(numeroTarjeta);
+                                    if (consulta != null) {
+                                        consulta.setPathCarpeta(this.ingresoArchivoFront.getPathCarpeta());
+                                        consulta.exportarReportes();                                        
+                                    }
                                 } else {
                                     System.out.println("Numero de Tarjeta Invalido para Hacer la Consulta de Tarjeta");
                                 }

@@ -4,6 +4,10 @@
  */
 package frontend.model;
 
+import backend.model.Bancario;
+import backend.model.Consulta;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Carlos Cotom
@@ -41,6 +45,7 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
         lblNombreCliente = new javax.swing.JLabel();
         lblDireccionCliente = new javax.swing.JLabel();
         lblEstadoTarjeta = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -50,6 +55,11 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
         jLabel1.setText("Numero de Tarjeta:");
 
         btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Numero de Tarjeta:");
 
@@ -75,43 +85,50 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
 
         lblEstadoTarjeta.setText(".");
 
+        jLabel8.setText("Formato Numero: 0000 0000 0000 0000");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(59, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(134, 134, 134)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(27, 27, 27)
-                        .addComponent(txtNumeroTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel2)
                     .addComponent(jLabel3)
                     .addComponent(jLabel4))
-                .addGap(57, 57, 57))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(141, 141, 141)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lblEstadoTarjeta)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(2, 2, 2)
-                            .addComponent(lblDireccionCliente))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(2, 2, 2)
-                            .addComponent(lblNombreCliente))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(3, 3, 3)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblLimite)
-                                .addComponent(lblTipoTarjeta)
-                                .addComponent(lblNumeroTarjeta))))
-                    .addComponent(btnConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblEstadoTarjeta)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(lblDireccionCliente))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(lblNombreCliente))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblLimite)
+                            .addComponent(lblTipoTarjeta)
+                            .addComponent(lblNumeroTarjeta))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(204, 204, 204))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNumeroTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel8)
+                        .addGap(14, 14, 14))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,7 +136,8 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtNumeroTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNumeroTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
                 .addGap(18, 18, 18)
                 .addComponent(btnConsultar)
                 .addGap(18, 18, 18)
@@ -152,6 +170,34 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+        if (this.txtNumeroTarjeta.equals("")) {
+            JOptionPane.showMessageDialog(this, "Debe Completar el Campos del Formulario");
+        } else {
+            Bancario bancario = new Bancario();
+            if (bancario.isNumeroTarjetaValido(this.txtNumeroTarjeta.getText())) {
+                Consulta consulta = bancario.verificarConsultaTarjeta(this.txtNumeroTarjeta.getText());
+                if (consulta != null) {
+                    this.lblNumeroTarjeta.setText(consulta.getNumeroTarjeta());
+                    this.lblTipoTarjeta.setText(consulta.getTipoTarjeta());
+                    this.lblLimite.setText(consulta.getLimiteCredito() + "");
+                    this.lblNombreCliente.setText(consulta.getNombreCliente());
+                    this.lblDireccionCliente.setText(consulta.getDireccionCliente());
+                    if (consulta.isEstadoTarjeta()) {
+                        this.lblEstadoTarjeta.setText("ACTIVA");
+                    } else {
+                        this.lblEstadoTarjeta.setText("CANCELADA");
+                    }                    
+                } else {
+                    JOptionPane.showMessageDialog(this, "Numero de Tarjeta NO Encontrado en la DB");
+                }                
+            } else {
+                JOptionPane.showMessageDialog(this, "Numero de Tarjeta no Valido");
+            }
+            this.txtNumeroTarjeta.setText("");
+        }
+    }//GEN-LAST:event_btnConsultarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultar;
@@ -162,6 +208,7 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel lblDireccionCliente;
     private javax.swing.JLabel lblEstadoTarjeta;
     private javax.swing.JLabel lblLimite;
