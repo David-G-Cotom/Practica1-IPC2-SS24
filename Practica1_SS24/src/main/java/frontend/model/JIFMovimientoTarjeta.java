@@ -4,17 +4,25 @@
  */
 package frontend.model;
 
+import backend.model.Bancario;
+import backend.model.MovimientoTarjeta;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Carlos Cotom
  */
 public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
 
+    Bancario bancario;
+    MovimientoTarjeta movimiento;
+    
     /**
      * Creates new form JIFMovimientoTarjeta
      */
     public JIFMovimientoTarjeta() {
         initComponents();
+        this.bancario = new Bancario();
     }
 
     /**
@@ -61,6 +69,11 @@ public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
         jLabel4.setText("Descripcion:");
 
         btnRegistrar.setText("Registrar");
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Establecimiento:");
 
@@ -143,6 +156,42 @@ public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        if (this.camposValidos()) {
+            this.movimiento = new MovimientoTarjeta(this.txtNumeroTarjeta.getText(), this.txtFecha.getText(),
+                    this.cmbTiposMovimiento.getItemAt(this.cmbTiposMovimiento.getSelectedIndex()), this.txtDescripcion.getText(),
+                    this.txtEstablecimiento.getText(), Double.parseDouble(this.txtMontoEjecutado.getText()));
+            if (this.bancario.verificarMovimientoLeido(movimiento)) {
+                JOptionPane.showMessageDialog(this, "Movimiento Registrado Exitosamente!!!");
+                this.txtNumeroTarjeta.setText("");
+                this.txtFecha.setText("");
+                this.txtDescripcion.setText("");
+                this.txtEstablecimiento.setText("");
+                this.txtMontoEjecutado.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "El Movimiento NO se pudo Registrar por favor Vuelva a Revisar los Datos de cada Campo en el Formulario");
+            }
+        }
+    }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private boolean camposValidos() {
+        if ("".equals(this.txtNumeroTarjeta.getText()) || "".equals(this.txtFecha.getText())
+                || "".equals(this.txtDescripcion.getText()) || "".equals(this.txtEstablecimiento.getText())
+                || "".equals(this.txtMontoEjecutado.getText())) {
+            JOptionPane.showMessageDialog(this, "Debe Completar TODOS los Campos del Formulario");
+            return false;
+        }
+        if (!this.bancario.isDouble(this.txtMontoEjecutado.getText())) {
+            JOptionPane.showMessageDialog(this, "Debe Colocar un Numero en el Campo de Monto Ejecutado");
+            return false;
+        }
+        if (this.cmbTiposMovimiento.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(this, "No se seleccionó un tipode Movimiento valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRegistrar;

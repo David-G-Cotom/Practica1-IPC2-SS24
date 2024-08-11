@@ -25,7 +25,6 @@ public class MovimientoTarjetaDB {
     }        
     
     public void crearRegistro() {
-        System.out.println(movimiento.getFechaOperacion());
         String query = "INSERT INTO movimiento (fecha_movimiento, numero_tarjeta, descripcion, establecimiento, monto, tipo_movimiento) VALUES ('" + movimiento.getFechaOperacion() + "', '" + movimiento.getNumeroTarjeta() + "', '" + movimiento.getDescripcion() + "', '" + movimiento.getEstablecimiento() + "', " + movimiento.getMontoTransferido() + ", '" + movimiento.getTipoMovimiento() + "')";        
         try (Statement statementInsert = this.connection.createStatement()) {            
                 statementInsert.executeUpdate(query);

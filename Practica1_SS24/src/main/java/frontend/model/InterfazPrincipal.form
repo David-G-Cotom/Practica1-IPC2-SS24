@@ -21,6 +21,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Movimiento de Tarjeta"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="itmenuMovimientoTarjetaActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

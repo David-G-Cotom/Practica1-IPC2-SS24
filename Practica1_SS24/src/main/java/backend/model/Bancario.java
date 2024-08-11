@@ -189,7 +189,7 @@ public class Bancario {
         return false;
     }
 
-    public void verificarMovimientoLeido(MovimientoTarjeta movimiento) {
+    public boolean verificarMovimientoLeido(MovimientoTarjeta movimiento) {
         if (isNumeroTarjetaValido(movimiento.getNumeroTarjeta()) && isFormatoFechaCorrecto(movimiento.getFechaOperacion())
                 && isTipoMovimientoValido(movimiento.getTipoMovimiento())) {
             movimiento.setDescripcion(this.quitarComillas(movimiento.getDescripcion()));
@@ -199,11 +199,14 @@ public class Bancario {
             if (movimientoTarjeta.isTarjetaActiva()) {
                 movimientoTarjeta.crearRegistro();
                 movimientoTarjeta.actualizarSaldoTarjeta();
+                return true;
             } else {
                 System.out.println("La Tarjeta esta Inactiva");
+                return false;
             }
         } else {
-            System.out.println("Movimiento de Tarjeta NO Valido para su Ejecucion\n");            
+            System.out.println("Movimiento de Tarjeta NO Valido para su Ejecucion\n");
+            return false;
         }
     }
 
