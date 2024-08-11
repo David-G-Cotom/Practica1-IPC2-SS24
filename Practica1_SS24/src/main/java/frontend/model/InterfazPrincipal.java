@@ -134,7 +134,9 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void itmenuAutorizarTarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmenuAutorizarTarjetaActionPerformed
-        
+        JIFAutorizacionTarjeta autorizacionTarjeta = new JIFAutorizacionTarjeta();
+        this.jDesktopPane1.add(autorizacionTarjeta);
+        autorizacionTarjeta.setVisible(true);
     }//GEN-LAST:event_itmenuAutorizarTarjetaActionPerformed
 
     private void itmenuImportarDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmenuImportarDatosActionPerformed

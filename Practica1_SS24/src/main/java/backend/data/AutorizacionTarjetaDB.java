@@ -83,13 +83,34 @@ public class AutorizacionTarjetaDB {
     
     public void actualizarEstadoSolicitud(int numeroSolicitud, boolean autorizado) {
         String query = "UPDATE solicitud SET estado = " + autorizado + " WHERE numero_solicitud = " + numeroSolicitud;
+        try (Statement statementInsert = this.connection.createStatement()) {
+            statementInsert.execute(query);
+            System.out.println("Cambio de Estado de la Solicitud realizada con Exito");
+        } catch (Exception e) {
+            System.out.println("Error en la Actualizacion de Estado de la Solicitud");
+        }
+    }
+    
+    public boolean isSolicitudAutorizada(int numeroSolicitud) {
+        String query = "SELECT estado FROM solicitud WHERE numero_solicitud = " + numeroSolicitud;
+        boolean estado = false;
+        try (Statement statementConsulta = this.connection.createStatement();
+                ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
+            while (resulConsulta.next()) {
+                estado = resulConsulta.getBoolean("estado");
+            }
+            System.out.println("Obtencion de Estado de la Solicitud realizada con Exito");
+        } catch (Exception e) {
+            System.out.println("Error al Obtener el Estado de la Solicitud");
+        }
+        return estado;
     }
     
     public void crearTarjeta(Tarjeta tarjeta) {
         String query = "INSERT INTO tarjeta (numero_tarjeta, numero_solicitud, estado, saldo, tipo_tarjeta, limite_credito, id_cliente) VALUES ('" + tarjeta.getNumeroTarjeta() + "', " + this.numeroSolicitud + ", " + tarjeta.isEstado() + ", " + tarjeta.getSaldo() + ", " + this.tipo_tarjeta + ", " + tarjeta.getLimiteCredito() + ", " + this.cliente.getIdCliente() + ")";
         try (Statement statementInsert = this.connection.createStatement()) {            
                 statementInsert.executeUpdate(query);
-            System.out.println("Registro de Tarjeta Creada Exxitosamente");
+            System.out.println("Registro de Tarjeta Creada Exitosamente");
         } catch (SQLException e) {
             System.out.println("Error al crear un registro de Tarjeta en la BD " + e);
         }

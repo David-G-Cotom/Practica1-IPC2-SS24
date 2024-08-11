@@ -104,7 +104,6 @@ public class Autorizacion {
         AutorizacionTarjetaDB datos = new AutorizacionTarjetaDB();
         this.numerosRegistrados = datos.getNumeroTarjetas(numero);
         if (this.numerosRegistrados.isEmpty()) {
-            System.out.println("NO HAY TARJETAS EN DB");
             Random random = new Random();
             int cifraAleatoria;
             for (int i = 0; i < 6; i++) {
@@ -115,7 +114,6 @@ public class Autorizacion {
                     numero += cifraAleatoria;                    
                 }
             }
-            System.out.println(numero);
             return numero;
         } else {
             String ultimoNumeroRegistrado = this.numerosRegistrados.getLast();

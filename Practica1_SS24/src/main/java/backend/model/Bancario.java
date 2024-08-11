@@ -13,12 +13,12 @@ import java.util.ArrayList;
  * @author Carlos Cotom
  */
 public class Bancario {
-    
+
     private final String[] TIPO_TARJETAS = {"NACIONAL", "REGIONAL", "INTERNACIONAL"};
     private final String[] TIPO_MOVIMIENTOS = {"CARGO", "BONO"};
     private final String[] ESTADO_TARJETA = {"AUTORIZADA", "ACTIVA", "CANCELADA"};
     private final String[] ESTADO_SOLICITUD = {"APROBADA", "AUTORIZADA", "RECHAZADA"};
-    
+
     public boolean isNumeroSolicitudRepetida(int numeroSolicitud) {
         SolicitudTarjetaDB datosSolicitud = new SolicitudTarjetaDB();
         ArrayList<Integer> solicitudesEnBS = datosSolicitud.getNumeroSolicitud();
@@ -29,19 +29,19 @@ public class Bancario {
             }
         }
         return false;
-    }    
-    
+    }
+
     public String quitarComillas(String texto) {
         String textoModificado;
         if (texto.contains("\"")) {
-            textoModificado = texto.substring(1, texto.length()-1);
+            textoModificado = texto.substring(1, texto.length() - 1);
             return textoModificado;
         }
         return texto;
     }
-    
+
     public boolean isFormatoFechaCorrecto(String fecha) {
-        fecha = this.quitarComillas(fecha);        
+        fecha = this.quitarComillas(fecha);
         if (fecha.contains("/")) {
             String[] datos = fecha.split("/");
             if (datos.length == 3) {
@@ -59,15 +59,15 @@ public class Bancario {
         System.out.println("Formato de Fecha Incorrecta");
         return false;
     }
-    
+
     public String transformarFormatoFecha(String fecha) {
         String[] datos = fecha.split("/");
         String yyyy = datos[2];
         String mm = datos[1];
-        String dd = datos[0];                
+        String dd = datos[0];
         return yyyy + "-" + mm + "-" + dd;
     }
-    
+
     public boolean isTipoTarjetaValido(String tipoTarjeta) {
         for (int i = 0; i < TIPO_TARJETAS.length; i++) {
             if (TIPO_TARJETAS[i].equalsIgnoreCase(tipoTarjeta)) {
@@ -76,9 +76,9 @@ public class Bancario {
             }
         }
         System.out.println("Tipo de Tarjeta Invalida");
-        return false;        
+        return false;
     }
-    
+
     public boolean isInteger(String texto) {
         try {
             Integer.valueOf(texto);
@@ -88,7 +88,7 @@ public class Bancario {
             return false;
         }
     }
-    
+
     public boolean isDouble(String texto) {
         try {
             Double.valueOf(texto);
@@ -98,7 +98,7 @@ public class Bancario {
             return false;
         }
     }
-    
+
     public boolean isTipoMovimientoValido(String tipoMovimiento) {
         for (int i = 0; i < TIPO_MOVIMIENTOS.length; i++) {
             if (TIPO_MOVIMIENTOS[i].equalsIgnoreCase(tipoMovimiento)) {
@@ -107,9 +107,9 @@ public class Bancario {
             }
         }
         System.out.println("Tipode Movimiento Invalido");
-        return false;        
+        return false;
     }
-    
+
     public boolean isNumeroTarjetaValido(String numeroTarjeta) {
         String[] contenido = numeroTarjeta.split(" ");
         if (contenido.length == 4) {
@@ -121,9 +121,9 @@ public class Bancario {
             }
         }
         System.out.println("Numero de Tarjeta Valido");
-        return true;        
+        return true;
     }
-    
+
     public boolean isEstadoTarjetaValido(String estadoTarjeta) {
         for (int i = 0; i < ESTADO_TARJETA.length; i++) {
             if (ESTADO_TARJETA[i].equalsIgnoreCase(estadoTarjeta)) {
@@ -134,7 +134,7 @@ public class Bancario {
         System.out.println("Estado de Tarjeta Invalido");
         return false;
     }
-    
+
     public boolean isEstadoSolicitudValido(String estadoSolicitud) {
         for (int i = 0; i < ESTADO_SOLICITUD.length; i++) {
             if (ESTADO_SOLICITUD[i].equalsIgnoreCase(estadoSolicitud)) {
@@ -145,7 +145,7 @@ public class Bancario {
         System.out.println("Estado de Solicitud Invalido");
         return false;
     }
-    
+
     public boolean verificarSolicitudLeida(SolicitudTarjeta solicitud) {
         if (!isNumeroSolicitudRepetida(solicitud.getNumeroSolicitud()) && isFormatoFechaCorrecto(solicitud.getFechaSolicitud())
                 && isTipoTarjetaValido(solicitud.getTipoTarjetaSolicitada())) {
@@ -153,7 +153,7 @@ public class Bancario {
             solicitud.setDireccionSolicitante(this.quitarComillas(solicitud.getDireccionSolicitante()));
             solicitud.setFechaSolicitud(this.transformarFormatoFecha(this.quitarComillas(solicitud.getFechaSolicitud())));
             System.out.println("Solicitud de Tarjeta Valida para su Ejecucion\n");
-            SolicitudTarjetaDB nuevaSolicitud = new SolicitudTarjetaDB(solicitud);            
+            SolicitudTarjetaDB nuevaSolicitud = new SolicitudTarjetaDB(solicitud);
             nuevaSolicitud.crearCliente();
             nuevaSolicitud.crearSolicitud();
             return true;
@@ -161,7 +161,7 @@ public class Bancario {
         System.out.println("Solicitud de Tarjeta NO Valida para su Ejecucion\n");
         return false;
     }
-    
+
     public void verificarMovimientoLeido(MovimientoTarjeta movimiento) {
         if (isNumeroTarjetaValido(movimiento.getNumeroTarjeta()) && isFormatoFechaCorrecto(movimiento.getFechaOperacion())
                 && isTipoMovimientoValido(movimiento.getTipoMovimiento())) {
@@ -172,7 +172,7 @@ public class Bancario {
         }
         System.out.println("Movimiento de Tarjeta NO Valido para su Ejecucion\n");
     }
-    
+
     public void verificarFiltroEstadoCuenta(FiltroEstadoCuenta filtro) {
         if (isNumeroTarjetaValido(filtro.getNumeroTarjeta()) && isTipoTarjetaValido(filtro.getTipoTarjeta())) {
             System.out.println("Filtro para Estado de Cuenta Valido para su Ejecucion\n");
@@ -180,7 +180,7 @@ public class Bancario {
         }
         System.out.println("Filtro para Estado de Cuenta NO Valido para su Ejecucion\n");
     }
-    
+
     public void verificarFiltroListadoTarjetas(FiltroListadoTarjetas filtro) {
         if (isTipoTarjetaValido(filtro.getTipoTarjeta()) && isFormatoFechaCorrecto(filtro.getFechaInicio())
                 && isFormatoFechaCorrecto(filtro.getFechaFinal()) && isEstadoTarjetaValido(filtro.getEstadoTarjeta())) {
@@ -189,7 +189,7 @@ public class Bancario {
         }
         System.out.println("Filtro de Listado de Tarjetas NO Valido para su Ejecucion\n");
     }
-    
+
     public void verificarFiltroListadoSolicitudes(FiltroListadoSolicitudes filtro) {
         if (isFormatoFechaCorrecto(filtro.getFechaInicio()) && isFormatoFechaCorrecto(filtro.getFechaFin())
                 && isTipoTarjetaValido(filtro.getTipoTarjeta()) && isEstadoSolicitudValido(filtro.getEstadoSolicitud())) {
@@ -198,21 +198,27 @@ public class Bancario {
         }
         System.out.println("Filtro de Listado de Solicitudes NO Valido para su Ejecucion\n");
     }
-    
+
     public void verificarAutorizacionLeida(int numeroSolicitud) {
         if (this.isNumeroSolicitudRepetida(numeroSolicitud)) {
             AutorizacionTarjetaDB autorizacionDB = new AutorizacionTarjetaDB(numeroSolicitud);
-            Autorizacion autorizacion = new Autorizacion(autorizacionDB.getCliente().getSalario(), autorizacionDB.getLimiteCreditoTipoTarjeta(),
-                    autorizacionDB.getSolicitud().getTipoTarjetaSolicitada());
-            if (autorizacion.autorizarTarjeta()) {
-                autorizacionDB.crearTarjeta(autorizacion.getTarjeta());
-                autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, true);
+            if (!autorizacionDB.isSolicitudAutorizada(numeroSolicitud)) {
+                Autorizacion autorizacion = new Autorizacion(autorizacionDB.getCliente().getSalario(), autorizacionDB.getLimiteCreditoTipoTarjeta(),
+                        autorizacionDB.getSolicitud().getTipoTarjetaSolicitada());
+                if (autorizacion.autorizarTarjeta()) {
+                    autorizacionDB.crearTarjeta(autorizacion.getTarjeta());
+                    autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, true);
+                    System.out.println("Autorizacion Aceptada");
+                } else {
+                    autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, false);
+                    System.out.println("Autorizacion Rechazada por Limite de Credito");
+                }
             } else {
-                autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, false);
+                System.out.println("Solicitud ya se encontraba Autorizada");
             }
-            return;
-        }
-        System.out.println("Numero de Solicitu NO encontrada en la DB");
+        } else {
+            System.out.println("Numero de Solicitu NO encontrada en la DB");
+        }        
     }
-    
+
 }

@@ -4,6 +4,9 @@
  */
 package frontend.model;
 
+import backend.model.Bancario;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Carlos Cotom
@@ -38,6 +41,11 @@ public class JIFAutorizacionTarjeta extends javax.swing.JInternalFrame {
         jLabel1.setText("Numero de Solicitud:");
 
         btnAutorizar.setText("Autorizar");
+        btnAutorizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAutorizarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -69,6 +77,20 @@ public class JIFAutorizacionTarjeta extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAutorizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutorizarActionPerformed
+        if (this.txtNumeroSolicitud.equals("")) {
+            JOptionPane.showMessageDialog(this, "Debe Completar el Campos del Formulario");
+        } else {
+            Bancario bancario = new Bancario();
+            if (bancario.isInteger(this.txtNumeroSolicitud.getText())) {
+                bancario.verificarAutorizacionLeida(Integer.parseInt(this.txtNumeroSolicitud.getText()));                         
+            } else {
+                JOptionPane.showMessageDialog(this, "Debe Ingresar un Numero entero");
+            }
+            this.txtNumeroSolicitud.setText("");
+        }
+    }//GEN-LAST:event_btnAutorizarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
