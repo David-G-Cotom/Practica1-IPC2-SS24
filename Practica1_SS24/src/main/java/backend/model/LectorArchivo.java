@@ -27,7 +27,6 @@ public class LectorArchivo extends Thread {
     private Bancario bancario;
     private SolicitudTarjeta solicitud;
     private MovimientoTarjeta movimiento;
-    private ArrayList<String> consultas = new ArrayList<>();
     private ArrayList<String> cancelaciones = new ArrayList<>();
     private final int velocidadPorcesamiento;
     private FiltroEstadoCuenta filtroEstadoCuenta;
@@ -41,6 +40,7 @@ public class LectorArchivo extends Thread {
         this.descripcionProceso = descripcionProceso;
         this.velocidadPorcesamiento = velocidadProcesamiento;
         this.bancario = new Bancario();
+        this.bancario.setPathCarpeta(this.ingresoArchivoFront.getPathCarpeta());
     }        
     
     @Override
@@ -82,8 +82,10 @@ public class LectorArchivo extends Thread {
                         case "CONSULTAR_TARJETA":
                             this.descripcionProceso.setText("Procesando la Consulta de Tarjeta");
                             if (datosRecolectados.length == 1) {
-                                if (this.bancario.isNumeroTarjetaValido(datosRecolectados[0])) {
-                                    this.consultas.add(datosRecolectados[0]);                                    
+                                String numeroTarjeta = this.bancario.transformarNumeroTarjeta(datosRecolectados[0]);
+                                if (this.bancario.isNumeroTarjetaValido(numeroTarjeta)) {                                    
+                                    System.out.println("Consulta de Tarjeta Valida para su Ejecucion");
+                                    this.bancario.verificarConsultaTarjeta(numeroTarjeta);                                   
                                 } else {
                                     System.out.println("Numero de Tarjeta Invalido para Hacer la Consulta de Tarjeta");
                                 }

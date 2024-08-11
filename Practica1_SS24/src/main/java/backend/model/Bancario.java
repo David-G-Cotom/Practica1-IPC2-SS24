@@ -5,6 +5,7 @@
 package backend.model;
 
 import backend.data.AutorizacionTarjetaDB;
+import backend.data.ConsultaTarjetaDB;
 import backend.data.SolicitudTarjetaDB;
 import java.util.ArrayList;
 
@@ -18,6 +19,15 @@ public class Bancario {
     private final String[] TIPO_MOVIMIENTOS = {"CARGO", "BONO"};
     private final String[] ESTADO_TARJETA = {"AUTORIZADA", "ACTIVA", "CANCELADA"};
     private final String[] ESTADO_SOLICITUD = {"APROBADA", "AUTORIZADA", "RECHAZADA"};
+    private String pathCarpeta;
+
+    public String getPathCarpeta() {
+        return pathCarpeta;
+    }
+
+    public void setPathCarpeta(String pathCarpeta) {
+        this.pathCarpeta = pathCarpeta;
+    }        
 
     public boolean isNumeroSolicitudRepetida(int numeroSolicitud) {
         SolicitudTarjetaDB datosSolicitud = new SolicitudTarjetaDB();
@@ -112,16 +122,31 @@ public class Bancario {
 
     public boolean isNumeroTarjetaValido(String numeroTarjeta) {
         String[] contenido = numeroTarjeta.split(" ");
+        boolean isValido = false;
         if (contenido.length == 4) {
             for (int i = 0; i < contenido.length; i++) {
-                if (contenido[i].length() != 4) {
-                    System.out.println("Numero de Tarjeta Invalido");
+                if (contenido[i].length() == 4 && this.isInteger(contenido[i])) {
+                    isValido = true;
+                } else {                    
                     return false;
                 }
             }
         }
-        System.out.println("Numero de Tarjeta Valido");
-        return true;
+        return isValido;
+    }
+    
+    public String transformarNumeroTarjeta(String numeroSinFormato) {
+        String numeroFormateado = "";
+        String[] numero = numeroSinFormato.split("");
+        if (numero.length == 16) {
+            for (int i = 0; i < numero.length; i++) {
+                if ((i%4) == 0 && i != 0) {
+                    numeroFormateado += " ";
+                }
+                numeroFormateado += numero[i];
+            }
+        }
+        return numeroFormateado;
     }
 
     public boolean isEstadoTarjetaValido(String estadoTarjeta) {
@@ -219,6 +244,19 @@ public class Bancario {
         } else {
             System.out.println("Numero de Solicitu NO encontrada en la DB");
         }        
+    }
+    
+    public void verificarConsultaTarjeta(String numeroTarjeta) {
+        ConsultaTarjetaDB consultaDB = new ConsultaTarjetaDB();
+        ArrayList<String> numerosRegistrados = consultaDB.getNumeroTarjetas();
+        for (int i = 0; i < numerosRegistrados.size(); i++) {
+            if (numerosRegistrados.get(i).equals(numeroTarjeta)) {
+                Consulta consulta = consultaDB.getConsulta(numeroTarjeta);
+                consulta.setPathCarpeta(this.pathCarpeta);
+                consulta.exportarReportes();                
+                break;
+            }
+        }
     }
 
 }

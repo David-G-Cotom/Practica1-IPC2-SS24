@@ -18,6 +18,15 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
     private LectorArchivo lector;
     private int respuestaArchivo;
     private int respuestaCarpeta;
+    private String pathCarpeta;
+
+    public String getPathCarpeta() {
+        return pathCarpeta;
+    }
+
+    public void setPathCarpeta(String pathCarpeta) {
+        this.pathCarpeta = pathCarpeta;
+    }        
     
     /**
      * Creates new form JIFIngresoArchivo
@@ -181,6 +190,8 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Debe Seleccionar la Carpeta para Guardar los Posibles Reportes", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        this.pathCarpeta = jFileChooser2.getSelectedFile().getAbsolutePath();
+        System.out.println(this.pathCarpeta);
         if (this.txtTiempo.getText() == "" || this.txtTiempo.getText() == null || this.txtTiempo.getText().isBlank()) {
             JOptionPane.showMessageDialog(this, "Debe Ingresar el Tiempo de Porcesamiento para el Archivo Seleccionado", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
