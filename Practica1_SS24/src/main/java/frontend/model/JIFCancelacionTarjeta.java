@@ -196,13 +196,17 @@ public class JIFCancelacionTarjeta extends javax.swing.JInternalFrame {
                 Cancelacion cancelacion = bancario.verificarCancelacionLeida(this.txtNumeroTarjeta.getText());
                 if (cancelacion != null) {
                     if (cancelacion.getEstadoTarjeta()) {
-                        this.lblNumeroTarjeta.setText(cancelacion.getNumeroTarjeta());
-                        this.lblNombre.setText(cancelacion.getNombrePropietario());
-                        this.lblDireccion.setText(cancelacion.getDireccionPropietario());
-                        this.lblSalario.setText(cancelacion.getSalarioPropietario());
-                        this.confirmacionDialog.setVisible(true);
-                        this.confirmacionDialog.setLocationRelativeTo(this);
-                        this.confirmacionDialog.setResizable(false);
+                        if (cancelacion.getSaldoTarjeta() >= 0) {
+                            this.lblNumeroTarjeta.setText(cancelacion.getNumeroTarjeta());
+                            this.lblNombre.setText(cancelacion.getNombrePropietario());
+                            this.lblDireccion.setText(cancelacion.getDireccionPropietario());
+                            this.lblSalario.setText(cancelacion.getSalarioPropietario());
+                            this.confirmacionDialog.setVisible(true);
+                            this.confirmacionDialog.setLocationRelativeTo(this);
+                            this.confirmacionDialog.setResizable(false);                            
+                        } else {
+                            JOptionPane.showMessageDialog(this, "No se puede Cancelar la Tarjeta porque hay Saldo Pendiente");
+                        }
                     } else {
                         JOptionPane.showMessageDialog(this, "No se puede Cancelar la Tarjeta porque ya se Encontraba Cancelada");
                     }
