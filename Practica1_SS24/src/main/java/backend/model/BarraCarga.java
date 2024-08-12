@@ -15,6 +15,7 @@ public class BarraCarga extends Thread {
     private JLabel lblCarga;
     private boolean execute;
     private int tiempoEjecucion;
+    private boolean suspended;
 
     public BarraCarga(JLabel lblCarga, boolean execute, int tiempoEjecucion) {
         this.lblCarga = lblCarga;
@@ -44,8 +45,9 @@ public class BarraCarga extends Thread {
             String textoCarga = "";
             int contador = 0;
             while (execute) {
+                this.enSuspencion();
                 contador++;
-                textoCarga = textoCarga + (contador + "") + "%";
+                textoCarga = textoCarga + (contador + "%");
                 this.lblCarga.setText(textoCarga);
                 textoCarga = "";
                 Thread.sleep(this.tiempoEjecucion / 100);
@@ -57,6 +59,27 @@ public class BarraCarga extends Thread {
             System.out.println("Error con el Thread de la barra");
         }
         System.out.println("Hilo de la Barra de Carga Finalizado");
+    }
+    
+    public synchronized void suspender() {
+        System.out.println("Hilo de Barra de Carga Pausada");
+        this.suspended = true;
+    }
+    
+    public synchronized void reanudar() {
+        System.out.println("Hilo de Barra de Carga Reanudada");
+        this.suspended = false;
+        notifyAll();
+    }
+    
+    public synchronized void enSuspencion() {
+        while (this.suspended) {
+            try {
+                wait();
+            } catch (InterruptedException ex) {
+                System.out.println("Error al Pausar el Hilo de la Barra de Carga");
+            }
+        }
     }
 
 }

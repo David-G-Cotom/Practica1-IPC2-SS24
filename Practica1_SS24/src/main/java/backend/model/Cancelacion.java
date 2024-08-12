@@ -11,13 +11,13 @@ package backend.model;
 public class Cancelacion {
     
     private String numeroTarjeta;
-    private String estadoTarjeta;
+    private boolean estadoTarjeta;
     private String nombrePropietario;
     private String salarioPropietario;
     private String direccionPropietario;
     private double saldoTarjeta;
 
-    public Cancelacion(String numeroTarjeta, String estadoTarjeta, String nombrePropietario, String salarioPropietario, String direccionPropietario, double saldoTarjeta) {
+    public Cancelacion(String numeroTarjeta, boolean estadoTarjeta, String nombrePropietario, String salarioPropietario, String direccionPropietario, double saldoTarjeta) {
         this.numeroTarjeta = numeroTarjeta;
         this.estadoTarjeta = estadoTarjeta;
         this.nombrePropietario = nombrePropietario;
@@ -34,11 +34,11 @@ public class Cancelacion {
         this.numeroTarjeta = numeroTarjeta;
     }
 
-    public String getEstadoTarjeta() {
+    public boolean getEstadoTarjeta() {
         return estadoTarjeta;
     }
 
-    public void setEstadoTarjeta(String estadoTarjeta) {
+    public void setEstadoTarjeta(boolean estadoTarjeta) {
         this.estadoTarjeta = estadoTarjeta;
     }
 

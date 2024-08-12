@@ -5,6 +5,7 @@
 package backend.model;
 
 import backend.data.AutorizacionTarjetaDB;
+import backend.data.CancelacionTarjetaDB;
 import backend.data.ConsultaTarjetaDB;
 import backend.data.MovimientoTarjetaDB;
 import backend.data.SolicitudTarjetaDB;
@@ -263,13 +264,28 @@ public class Bancario {
         ArrayList<String> numerosRegistrados = consultaDB.getNumeroTarjetas();
         Consulta consulta = null;
         for (int i = 0; i < numerosRegistrados.size(); i++) {
+            System.out.println("EXITO");
             if (numerosRegistrados.get(i).equals(numeroTarjeta)) {
+                System.out.println("ENCONTRADA");
                 consulta = consultaDB.getConsulta(numeroTarjeta);                               
                 break;
             }
         }
         System.out.println("No se Encontro el Numero de la Tarjeta en la DB");
         return consulta;
+    }
+    
+    public Cancelacion verificarCancelacionLeida(String numeroTarjeta) {
+        CancelacionTarjetaDB cancelacionDB = new CancelacionTarjetaDB();
+        ArrayList<String> numerosRegistrados = cancelacionDB.getNumeroTarjetas();
+        Cancelacion cancelacion = null;
+        for (int i = 0; i < numerosRegistrados.size(); i++) {           
+            if (numerosRegistrados.get(i).equals(numeroTarjeta)) {
+                cancelacion = cancelacionDB.getCancelacion(numeroTarjeta);                               
+                break;
+            }
+        }
+        return cancelacion;
     }
 
 }

@@ -4,8 +4,11 @@
  */
 package frontend.model;
 
+import backend.data.CancelacionTarjetaDB;
 import backend.model.LectorArchivo;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -26,7 +29,47 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
 
     public void setPathCarpeta(String pathCarpeta) {
         this.pathCarpeta = pathCarpeta;
-    }        
+    }  
+
+    public JDialog getConfirmacionDialog() {
+        return confirmacionDialog;
+    }
+
+    public void setConfirmacionDialog(JDialog confirmacionDialog) {
+        this.confirmacionDialog = confirmacionDialog;
+    }    
+
+    public JLabel getLblDireccion() {
+        return lblDireccion;
+    }
+
+    public void setLblDireccion(JLabel lblDireccion) {
+        this.lblDireccion = lblDireccion;
+    }
+
+    public JLabel getLblNombre() {
+        return lblNombre;
+    }
+
+    public void setLblNombre(JLabel lblNombre) {
+        this.lblNombre = lblNombre;
+    }
+
+    public JLabel getLblSalario() {
+        return lblSalario;
+    }
+
+    public void setLblSalario(JLabel lblSalario) {
+        this.lblSalario = lblSalario;
+    }   
+
+    public JLabel getLblNumeroTarjeta() {
+        return lblNumeroTarjeta;
+    }
+
+    public void setLblNumeroTarjeta(JLabel lblNumeroTarjeta) {
+        this.lblNumeroTarjeta = lblNumeroTarjeta;
+    }    
     
     /**
      * Creates new form JIFIngresoArchivo
@@ -46,6 +89,18 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
 
         jFileChooser1 = new javax.swing.JFileChooser();
         jFileChooser2 = new javax.swing.JFileChooser();
+        confirmacionDialog = new javax.swing.JDialog();
+        jLabel4 = new javax.swing.JLabel();
+        btnConfirmar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        lblDireccion = new javax.swing.JLabel();
+        lblNombre = new javax.swing.JLabel();
+        lblSalario = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        lblNumeroTarjeta = new javax.swing.JLabel();
         btnSeleccionarArchivo = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         lblCarga = new javax.swing.JLabel();
@@ -55,6 +110,98 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
         btnSeleccionarRuta = new javax.swing.JButton();
         btnProcesar = new javax.swing.JButton();
         lblDescripcionProceso = new javax.swing.JLabel();
+
+        confirmacionDialog.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        confirmacionDialog.setTitle("Confirmacion para Cancelar Tarjeta");
+        confirmacionDialog.setSize(new java.awt.Dimension(450, 280));
+
+        jLabel4.setText("¿Seguro que quiere Cancelar la Tarjeta del Propietario siguiente?");
+
+        btnConfirmar.setText("Confirmar");
+        btnConfirmar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmarActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Nombre del Propietario:");
+
+        jLabel6.setText("Direccion del Propietario:");
+
+        jLabel7.setText("Salario del Propietario:");
+
+        lblDireccion.setText(".");
+
+        lblNombre.setText(".");
+
+        lblSalario.setText(".");
+
+        jLabel8.setText("Numero Tarjeta:");
+
+        lblNumeroTarjeta.setText(".");
+
+        javax.swing.GroupLayout confirmacionDialogLayout = new javax.swing.GroupLayout(confirmacionDialog.getContentPane());
+        confirmacionDialog.getContentPane().setLayout(confirmacionDialogLayout);
+        confirmacionDialogLayout.setHorizontalGroup(
+            confirmacionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(confirmacionDialogLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(btnConfirmar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCancelar)
+                .addGap(54, 54, 54))
+            .addGroup(confirmacionDialogLayout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addGroup(confirmacionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addGroup(confirmacionDialogLayout.createSequentialGroup()
+                        .addGroup(confirmacionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))
+                        .addGap(18, 18, 18)
+                        .addGroup(confirmacionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblNumeroTarjeta)
+                            .addComponent(lblSalario)
+                            .addComponent(lblNombre)
+                            .addComponent(lblDireccion))))
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
+        confirmacionDialogLayout.setVerticalGroup(
+            confirmacionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, confirmacionDialogLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addGroup(confirmacionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(lblNumeroTarjeta))
+                .addGap(18, 18, 18)
+                .addGroup(confirmacionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(lblNombre))
+                .addGap(18, 18, 18)
+                .addGroup(confirmacionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(lblDireccion))
+                .addGap(18, 18, 18)
+                .addGroup(confirmacionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(lblSalario))
+                .addGap(35, 35, 35)
+                .addGroup(confirmacionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnConfirmar)
+                    .addComponent(btnCancelar))
+                .addGap(43, 43, 43))
+        );
 
         setClosable(true);
         setIconifiable(true);
@@ -180,6 +327,22 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
             this.lector.start();            
         }
     }//GEN-LAST:event_btnProcesarActionPerformed
+
+    private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
+        CancelacionTarjetaDB cancelacion = new CancelacionTarjetaDB();
+        cancelacion.actualizarEstadoTarjeta(this.lblNumeroTarjeta.getText());
+        JOptionPane.showMessageDialog(this, "Tarjeta Cancelada Exitosamente");
+        this.confirmacionDialog.dispose();
+        this.lector.getBarraCarga().reanudar();
+        this.lector.reanudar();
+    }//GEN-LAST:event_btnConfirmarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        JOptionPane.showMessageDialog(this, "Accion Cancelada");
+        this.confirmacionDialog.dispose();
+        this.lector.getBarraCarga().reanudar();
+        this.lector.reanudar();
+    }//GEN-LAST:event_btnCancelarActionPerformed
     
     private boolean validarCampos() {                  
         if (respuestaArchivo != jFileChooser1.APPROVE_OPTION || jFileChooser1.getSelectedFile() == null) {
@@ -205,16 +368,28 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnConfirmar;
     private javax.swing.JButton btnProcesar;
     private javax.swing.JButton btnSeleccionarArchivo;
     private javax.swing.JButton btnSeleccionarRuta;
+    private javax.swing.JDialog confirmacionDialog;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JFileChooser jFileChooser2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel lblCarga;
     private javax.swing.JLabel lblDescripcionProceso;
+    private javax.swing.JLabel lblDireccion;
+    private javax.swing.JLabel lblNombre;
+    private javax.swing.JLabel lblNumeroTarjeta;
+    private javax.swing.JLabel lblSalario;
     private javax.swing.JTextField txtTiempo;
     // End of variables declaration//GEN-END:variables
 }

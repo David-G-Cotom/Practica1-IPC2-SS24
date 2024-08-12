@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.swing.JLabel;
 
 /**
@@ -27,11 +26,12 @@ public class LectorArchivo extends Thread {
     private Bancario bancario;
     private SolicitudTarjeta solicitud;
     private MovimientoTarjeta movimiento;
-    private ArrayList<String> cancelaciones = new ArrayList<>();
     private final int velocidadPorcesamiento;
     private FiltroEstadoCuenta filtroEstadoCuenta;
     private FiltroListadoSolicitudes filtroListadoSolicitudes;
     private FiltroListadoTarjetas filtroListadoTarjetas;
+    private BarraCarga barraCarga;
+    private boolean suspended;
     
     public LectorArchivo(File archivoEntrada, JIFIngresoArchivo ingresoArchivoFront, JLabel carga, JLabel descripcionProceso, int velocidadProcesamiento) {
         this.archivoEntrada = archivoEntrada;
@@ -42,15 +42,24 @@ public class LectorArchivo extends Thread {
         this.bancario = new Bancario();
         this.bancario.setPathCarpeta(this.ingresoArchivoFront.getPathCarpeta());
     }        
+
+    public BarraCarga getBarraCarga() {
+        return barraCarga;
+    }
+
+    public void setBarraCarga(BarraCarga barraCarga) {
+        this.barraCarga = barraCarga;
+    }         
     
     @Override
     public void run(){
         int numeroLineas = this.contarLineasArchivo();
-        BarraCarga barraCarga = new BarraCarga(this.carga, true, this.velocidadPorcesamiento * numeroLineas);
+        barraCarga = new BarraCarga(this.carga, true, this.velocidadPorcesamiento * numeroLineas);
         barraCarga.start();
         try (BufferedReader lector = new BufferedReader(new FileReader(this.archivoEntrada))) {
             String lineaLeida = lector.readLine();
             while (lineaLeida != null) {
+                this.enSuspencion();
                 if (!lineaLeida.isBlank()) {
                     String[] cadenaLeida = leerIntruccion(lineaLeida);
                     String[] datosRecolectados = cadenaLeida[1].split(",");
@@ -112,8 +121,21 @@ public class LectorArchivo extends Thread {
                         case "CANCELACION_TARJETA":
                             this.descripcionProceso.setText("Procesando la Cancelacion de Tarjeta");
                             if (datosRecolectados.length == 1) {
-                                if (this.bancario.isNumeroTarjetaValido(datosRecolectados[0])) {
-                                    this.cancelaciones.add(datosRecolectados[0]);                                    
+                                String numeroTarjeta = this.bancario.transformarNumeroTarjeta(datosRecolectados[0]);
+                                if (this.bancario.isNumeroTarjetaValido(numeroTarjeta)) {
+                                    System.out.println("Cancelacion de Tarjeta Valida para Ejecutarse");                                    
+                                    Cancelacion cancelacion = this.bancario.verificarCancelacionLeida(numeroTarjeta);
+                                    if (cancelacion != null) {
+                                        barraCarga.suspender();
+                                        this.suspender();
+                                        this.ingresoArchivoFront.getLblNumeroTarjeta().setText(cancelacion.getNumeroTarjeta());
+                                        this.ingresoArchivoFront.getLblNombre().setText(cancelacion.getNombrePropietario());
+                                        this.ingresoArchivoFront.getLblDireccion().setText(cancelacion.getDireccionPropietario());
+                                        this.ingresoArchivoFront.getLblSalario().setText(cancelacion.getSalarioPropietario());
+                                        this.ingresoArchivoFront.getConfirmacionDialog().setVisible(true);
+                                        this.ingresoArchivoFront.getConfirmacionDialog().setLocationRelativeTo(this.ingresoArchivoFront);
+                                        this.ingresoArchivoFront.getConfirmacionDialog().setResizable(false);
+                                    }
                                 } else {
                                     System.out.println("Numero de Tarjeta Invalido para Hacer la Cancelacion de Tarjeta");
                                 }
@@ -158,6 +180,7 @@ public class LectorArchivo extends Thread {
                             }
                             break;
                         default:
+                            this.descripcionProceso.setText("");
                             System.out.println("Error en la Lectura de Archivo: Intruccion invalida!!!\n");
                     }
                 }
@@ -216,6 +239,27 @@ public class LectorArchivo extends Thread {
         } catch (Exception e) {
         }
         return numeroLineas;
+    }
+    
+    public synchronized void suspender() {
+        System.out.println("Hilo de Lector de Carga Pausada");
+        this.suspended = true;
+    }
+    
+    public synchronized void reanudar() {
+        System.out.println("Hilo de Lector de Carga Reanudada");
+        this.suspended = false;
+        notifyAll();
+    }
+    
+    public synchronized void enSuspencion() {
+        while (this.suspended) {
+            try {
+                wait();
+            } catch (InterruptedException ex) {
+                System.out.println("Error al Pausar el Hilo del Lector");
+            }
+        }
     }
     
 }
