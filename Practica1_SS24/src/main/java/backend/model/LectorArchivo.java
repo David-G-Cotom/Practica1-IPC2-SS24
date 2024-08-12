@@ -29,7 +29,7 @@ public class LectorArchivo extends Thread {
     private final int velocidadPorcesamiento;
     private FiltroEstadoCuenta filtroEstadoCuenta;
     private FiltroListadoSolicitudes filtroListadoSolicitudes;
-    private FiltroListadoTarjetas filtroListadoTarjetas;
+    private ListadoTarjetas filtroListadoTarjetas;
     private BarraCarga barraCarga;
     private boolean suspended;
     
@@ -166,11 +166,20 @@ public class LectorArchivo extends Thread {
                         case "LISTADO_TARJETAS":
                             this.descripcionProceso.setText("Procesando el Reporte para el Listado de Tarjetas");
                             if (datosRecolectados.length == 5) {
+                                double montoLimite;
                                 if (this.bancario.isDouble(datosRecolectados[1])) {
-                                    this.filtroListadoTarjetas = new FiltroListadoTarjetas(datosRecolectados[0], Double.parseDouble(datosRecolectados[1]),
-                                            datosRecolectados[2], datosRecolectados[3], datosRecolectados[4]);
-                                    this.bancario.verificarFiltroListadoTarjetas(filtroListadoTarjetas);                                    
+                                    montoLimite = Double.parseDouble(datosRecolectados[1]);
+                                } else {
+                                    montoLimite = -1;
                                 }
+                                System.out.println(montoLimite);
+                                this.filtroListadoTarjetas = new ListadoTarjetas(datosRecolectados[0], montoLimite,
+                                        datosRecolectados[2], datosRecolectados[3], datosRecolectados[4]);
+                                if (this.bancario.verificarFiltroListadoTarjetas(filtroListadoTarjetas)) {
+                                    
+                                } else {
+                                    System.out.println("Filtro de Listado de Tarjetas NO Valido para su Ejecucion\n");
+                                }                                
                             } else {
                                 System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Cancelacion de Tarjeta!!!\n");
                             }

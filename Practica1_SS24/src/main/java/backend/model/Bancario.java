@@ -7,6 +7,7 @@ package backend.model;
 import backend.data.AutorizacionTarjetaDB;
 import backend.data.CancelacionTarjetaDB;
 import backend.data.ConsultaTarjetaDB;
+import backend.data.ListadoTarjetasDB;
 import backend.data.MovimientoTarjetaDB;
 import backend.data.SolicitudTarjetaDB;
 import java.util.ArrayList;
@@ -219,13 +220,40 @@ public class Bancario {
         System.out.println("Filtro para Estado de Cuenta NO Valido para su Ejecucion\n");
     }
 
-    public void verificarFiltroListadoTarjetas(FiltroListadoTarjetas filtro) {
-        if (isTipoTarjetaValido(filtro.getTipoTarjeta()) && isFormatoFechaCorrecto(filtro.getFechaInicio())
-                && isFormatoFechaCorrecto(filtro.getFechaFinal()) && isEstadoTarjetaValido(filtro.getEstadoTarjeta())) {
-            System.out.println("Filtro de Listado de Tarjetas Valido para su Ejecucion\n");
-            return;
+    public boolean verificarFiltroListadoTarjetas(ListadoTarjetas filtro) {
+        if (!filtro.getTipoTarjeta().equals("")) {
+            if (!isTipoTarjetaValido(filtro.getTipoTarjeta())) {
+                System.out.println("Numero de Tarjeta Invalida");
+                return false;
+            }
         }
-        System.out.println("Filtro de Listado de Tarjetas NO Valido para su Ejecucion\n");
+        if (!filtro.getFechaInicio().equals("")) {
+            if (!isFormatoFechaCorrecto(filtro.getFechaInicio())) {
+                System.out.println("Formato de Fecha Invalido");
+                return false;
+            }
+            filtro.setFechaInicio(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaInicio())));
+        }
+        if (!filtro.getFechaFinal().equals("")) {
+            if (!isFormatoFechaCorrecto(filtro.getFechaFinal())) {
+                System.out.println("Formato de Fecha Invalido");
+                return false;
+            }
+            filtro.setFechaFinal(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaFinal())));
+        }
+        if (!filtro.getEstadoTarjeta().equals("")) {
+            if (!isEstadoTarjetaValido(filtro.getEstadoTarjeta())) {
+                System.out.println("Estado de Tarjeta Invalido");
+                return false;
+            }
+        }
+        System.out.println("Filtro de Listado de Tarjetas Valido para su Ejecucion\n");
+        String restoQuery = filtro.filtrarDatos();
+        ListadoTarjetasDB listadoTarjetas = new ListadoTarjetasDB();
+        ArrayList<ListadoTarjetas> datos = listadoTarjetas.getListadoTarjetas(restoQuery);
+        filtro.setDatosTarjetas(datos);        
+        filtro.exportarReportes(pathCarpeta);
+        return true;        
     }
 
     public void verificarFiltroListadoSolicitudes(FiltroListadoSolicitudes filtro) {
