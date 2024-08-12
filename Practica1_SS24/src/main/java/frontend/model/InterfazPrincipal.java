@@ -109,6 +109,11 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         menuOtros.add(itmenuAutorizarTarjeta);
 
         itmenuCancelarTarjeta.setText("Cancelar Tarjeta");
+        itmenuCancelarTarjeta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itmenuCancelarTarjetaActionPerformed(evt);
+            }
+        });
         menuOtros.add(itmenuCancelarTarjeta);
 
         itmenuImportarDatos.setText("Importar Datos");
@@ -172,6 +177,12 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         this.jDesktopPane1.add(movimientoTarjeta);
         movimientoTarjeta.setVisible(true);
     }//GEN-LAST:event_itmenuMovimientoTarjetaActionPerformed
+
+    private void itmenuCancelarTarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmenuCancelarTarjetaActionPerformed
+        JIFCancelacionTarjeta cancelacionTarjeta = new JIFCancelacionTarjeta();
+        this.jDesktopPane1.add(cancelacionTarjeta);
+        cancelacionTarjeta.setVisible(true);
+    }//GEN-LAST:event_itmenuCancelarTarjetaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem itmenuAutorizarTarjeta;

@@ -126,15 +126,19 @@ public class LectorArchivo extends Thread {
                                     System.out.println("Cancelacion de Tarjeta Valida para Ejecutarse");                                    
                                     Cancelacion cancelacion = this.bancario.verificarCancelacionLeida(numeroTarjeta);
                                     if (cancelacion != null) {
-                                        barraCarga.suspender();
-                                        this.suspender();
-                                        this.ingresoArchivoFront.getLblNumeroTarjeta().setText(cancelacion.getNumeroTarjeta());
-                                        this.ingresoArchivoFront.getLblNombre().setText(cancelacion.getNombrePropietario());
-                                        this.ingresoArchivoFront.getLblDireccion().setText(cancelacion.getDireccionPropietario());
-                                        this.ingresoArchivoFront.getLblSalario().setText(cancelacion.getSalarioPropietario());
-                                        this.ingresoArchivoFront.getConfirmacionDialog().setVisible(true);
-                                        this.ingresoArchivoFront.getConfirmacionDialog().setLocationRelativeTo(this.ingresoArchivoFront);
-                                        this.ingresoArchivoFront.getConfirmacionDialog().setResizable(false);
+                                        if (cancelacion.getEstadoTarjeta()) {
+                                            barraCarga.suspender();
+                                            this.suspender();
+                                            this.ingresoArchivoFront.getLblNumeroTarjeta().setText(cancelacion.getNumeroTarjeta());
+                                            this.ingresoArchivoFront.getLblNombre().setText(cancelacion.getNombrePropietario());
+                                            this.ingresoArchivoFront.getLblDireccion().setText(cancelacion.getDireccionPropietario());
+                                            this.ingresoArchivoFront.getLblSalario().setText(cancelacion.getSalarioPropietario());
+                                            this.ingresoArchivoFront.getConfirmacionDialog().setVisible(true);
+                                            this.ingresoArchivoFront.getConfirmacionDialog().setLocationRelativeTo(this.ingresoArchivoFront);
+                                            this.ingresoArchivoFront.getConfirmacionDialog().setResizable(false);
+                                        } else {
+                                            System.out.println("La Tarjeta ya se encontraba Cancelada");
+                                        }                                        
                                     }
                                 } else {
                                     System.out.println("Numero de Tarjeta Invalido para Hacer la Cancelacion de Tarjeta");
