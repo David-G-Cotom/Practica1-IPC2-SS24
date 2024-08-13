@@ -11,7 +11,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -82,7 +84,10 @@ public class AutorizacionTarjetaDB {
     }
     
     public void actualizarEstadoSolicitud(int numeroSolicitud, boolean autorizado) {
-        String query = "UPDATE solicitud SET estado = " + autorizado + " WHERE numero_solicitud = " + numeroSolicitud;
+        Date fechaSistema = new Date();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
+        String fechaAcctual = formatoFecha.format(fechaSistema);
+        String query = "UPDATE solicitud SET estado = " + autorizado + ", fecha_cambio_estado = '" + fechaAcctual + "' WHERE numero_solicitud = " + numeroSolicitud;
         try (Statement statementInsert = this.connection.createStatement()) {
             statementInsert.execute(query);
             System.out.println("Cambio de Estado de la Solicitud realizada con Exito");
@@ -107,7 +112,10 @@ public class AutorizacionTarjetaDB {
     }
     
     public void crearTarjeta(Tarjeta tarjeta) {
-        String query = "INSERT INTO tarjeta (numero_tarjeta, numero_solicitud, estado, saldo, tipo_tarjeta, limite_credito, id_cliente) VALUES ('" + tarjeta.getNumeroTarjeta() + "', " + this.numeroSolicitud + ", " + tarjeta.isEstado() + ", " + tarjeta.getSaldo() + ", " + this.tipo_tarjeta + ", " + tarjeta.getLimiteCredito() + ", " + this.cliente.getIdCliente() + ")";
+        Date fechaSistema = new Date();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
+        String fechaActual = formatoFecha.format(fechaSistema);
+        String query = "INSERT INTO tarjeta (numero_tarjeta, numero_solicitud, estado, saldo, tipo_tarjeta, fecha_cambio_estado, limite_credito, id_cliente) VALUES ('" + tarjeta.getNumeroTarjeta() + "', " + this.numeroSolicitud + ", " + tarjeta.isEstado() + ", " + tarjeta.getSaldo() + ", " + this.tipo_tarjeta + ", '" + fechaActual + "', " + tarjeta.getLimiteCredito() + ", " + this.cliente.getIdCliente() + ")";
         try (Statement statementInsert = this.connection.createStatement()) {            
                 statementInsert.executeUpdate(query);
             System.out.println("Registro de Tarjeta Creada Exitosamente");
@@ -117,8 +125,7 @@ public class AutorizacionTarjetaDB {
     
     }
     
-    private void contruirCliente() {
-        //SELECT * FROM cliente INNER JOIN solicitud ON cliente.id_cliente = solicitud.id_cliente INNER JOIN tipo_tarjeta ON solicitud.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_solicitud = 6;
+    private void contruirCliente() {        
         String query = "SELECT * FROM cliente INNER JOIN solicitud ON cliente.id_cliente = solicitud.id_cliente INNER JOIN tipo_tarjeta ON solicitud.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_solicitud = " + this.numeroSolicitud;
         try (Statement statementConsulta = this.connection.createStatement();
                 ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
@@ -135,7 +142,6 @@ public class AutorizacionTarjetaDB {
     }
     
     private void contruirSolicitud() {
-        //SELECT * FROM cliente INNER JOIN solicitud ON cliente.id_cliente = solicitud.id_cliente INNER JOIN tipo_tarjeta ON solicitud.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_solicitud = 6;
         String query = "SELECT * FROM cliente INNER JOIN solicitud ON cliente.id_cliente = solicitud.id_cliente INNER JOIN tipo_tarjeta ON solicitud.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_solicitud = " + this.numeroSolicitud;
         try (Statement statementConsulta = this.connection.createStatement();
                 ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
@@ -151,7 +157,6 @@ public class AutorizacionTarjetaDB {
     }
     
     private void getDatosTipoTarjeta() {
-        //SELECT * FROM cliente INNER JOIN solicitud ON cliente.id_cliente = solicitud.id_cliente INNER JOIN tipo_tarjeta ON solicitud.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_solicitud = 6;
         String query = "SELECT * FROM cliente INNER JOIN solicitud ON cliente.id_cliente = solicitud.id_cliente INNER JOIN tipo_tarjeta ON solicitud.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_solicitud = " + this.numeroSolicitud;
         try (Statement statementConsulta = this.connection.createStatement();
                 ResultSet resulConsulta = statementConsulta.executeQuery(query)) {

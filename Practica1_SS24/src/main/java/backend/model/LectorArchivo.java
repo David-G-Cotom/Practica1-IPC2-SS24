@@ -4,6 +4,7 @@
  */
 package backend.model;
 
+import backend.data.ListadoTarjetasDB;
 import frontend.model.JIFIngresoArchivo;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.JLabel;
 
 /**
@@ -176,7 +178,16 @@ public class LectorArchivo extends Thread {
                                 this.filtroListadoTarjetas = new ListadoTarjetas(datosRecolectados[0], montoLimite,
                                         datosRecolectados[2], datosRecolectados[3], datosRecolectados[4]);
                                 if (this.bancario.verificarFiltroListadoTarjetas(filtroListadoTarjetas)) {
-                                    
+                                    System.out.println("Filtro de Listado de Tarjetas Valido para su Ejecucion\n");
+                                    String restoQuery = filtroListadoTarjetas.filtrarDatos();
+                                    ListadoTarjetasDB listadoTarjetas = new ListadoTarjetasDB();
+                                    ArrayList<ListadoTarjetas> datos = listadoTarjetas.getListadoTarjetas(restoQuery);
+                                    if (!datos.isEmpty()) {
+                                        filtroListadoTarjetas.setDatosTarjetas(datos);        
+                                        filtroListadoTarjetas.exportarReportes(this.ingresoArchivoFront.getPathCarpeta());                                        
+                                    } else {
+                                        System.out.println("No se pudo crear Archivo porque No hay Datos por Mostrar");
+                                    }
                                 } else {
                                     System.out.println("Filtro de Listado de Tarjetas NO Valido para su Ejecucion\n");
                                 }                                

@@ -91,6 +91,11 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         menuConsultas.add(itmenuEstadoCuenta);
 
         itmenuListadoTarjetas.setText("Listado de Tarjetas");
+        itmenuListadoTarjetas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itmenuListadoTarjetasActionPerformed(evt);
+            }
+        });
         menuConsultas.add(itmenuListadoTarjetas);
 
         itmenuListadoSolicitudes.setText("Listado de Solicitudes");
@@ -183,6 +188,12 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         this.jDesktopPane1.add(cancelacionTarjeta);
         cancelacionTarjeta.setVisible(true);
     }//GEN-LAST:event_itmenuCancelarTarjetaActionPerformed
+
+    private void itmenuListadoTarjetasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itmenuListadoTarjetasActionPerformed
+        JIFListadoTarjetas listadoTarjetas = new JIFListadoTarjetas();
+        this.jDesktopPane1.add(listadoTarjetas);
+        listadoTarjetas.setVisible(true);
+    }//GEN-LAST:event_itmenuListadoTarjetasActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem itmenuAutorizarTarjeta;

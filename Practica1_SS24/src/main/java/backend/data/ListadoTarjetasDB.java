@@ -37,7 +37,7 @@ public class ListadoTarjetasDB {
                 listadoTarjetas.add(registroTarjeta);            
             }
         } catch (SQLException e) {
-            System.out.println("Error al hacer la consulta para el Listado de Tarjetas en la BD");
+            System.out.println("Error al hacer la consulta para el Listado de Tarjetas en la BD " + e);
         }
         return listadoTarjetas;
     }

@@ -9,7 +9,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -20,7 +22,6 @@ public class CancelacionTarjetaDB {
     private Connection connection = ConexionDB.getConnection();
     
     public Cancelacion getCancelacion(String numeroTarjeta) {
-        //SELECT * FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente WHERE numero_tarjeta = '4256 3102 6546 1055';
         String query = "SELECT * FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente WHERE numero_tarjeta = '" + numeroTarjeta + "'";
         Cancelacion tarjetaCancelada = null;
         try (Statement statementConsulta = this.connection.createStatement();
@@ -41,7 +42,10 @@ public class CancelacionTarjetaDB {
     }
     
     public void actualizarEstadoTarjeta(String numeroTarjeta) {
-        String query = "UPDATE tarjeta SET estado = " + false + " WHERE numero_tarjeta = '" + numeroTarjeta + "'";
+        Date fechaSistema = new Date();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
+        String fechaActual = formatoFecha.format(fechaSistema);
+        String query = "UPDATE tarjeta SET estado = " + false + ", fecha_cambio_estado = '" + fechaActual + "' WHERE numero_tarjeta = '" + numeroTarjeta + "'";
         try (Statement statementInsert = this.connection.createStatement()) {
             statementInsert.execute(query);
             System.out.println("Cambio de Estado de la Tarjeta realizada con Exito");

@@ -152,16 +152,16 @@ public class ListadoTarjetas {
         }
         if (!this.fechaInicio.equals("")) {
             if (!hayPrimerCondicion) {
-                query += " WHERE fecha_cambio_estado > " + this.fechaInicio;
+                query += " WHERE DATEDIFF(day, '" + this.fechaInicio + "', (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + ")) >= 0";
             } else {
-                query += " AND fecha_cambio_estado > " + this.fechaInicio;
+                query += " AND DATEDIFF(day, '" + this.fechaInicio + "', (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + ")) >= 0";
             }
         }
         if (!this.fechaFinal.equals("")) {
             if (!hayPrimerCondicion) {
-                query += " WHERE fecha_cambio_estado < " + this.fechaFinal;
+                query += " WHERE DATEDIFF(day, (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + "), '" + this.fechaFinal + "') >= 0";
             } else {
-                query += " AND fecha_cambio_estado < " + this.fechaFinal;
+                query += " AND DATEDIFF(day, (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + "), '" + this.fechaFinal + "') >= 0";
             }
         }
         if (!this.estadoTarjeta.equals("")) {

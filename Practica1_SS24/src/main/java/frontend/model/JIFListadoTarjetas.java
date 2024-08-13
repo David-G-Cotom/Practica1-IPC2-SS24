@@ -4,17 +4,30 @@
  */
 package frontend.model;
 
+import backend.data.ListadoTarjetasDB;
+import backend.model.Bancario;
+import backend.model.ListadoTarjetas;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Carlos Cotom
  */
 public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
 
+    private final DefaultTableModel modeloTabla;
+    Bancario bancario;
+
     /**
      * Creates new form JIFListadoTarjetas
      */
     public JIFListadoTarjetas() {
+        this.modeloTabla = new DefaultTableModel();
         initComponents();
+        this.bancario = new Bancario();
+        iniciarTablero();
     }
 
     /**
@@ -40,15 +53,23 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
         jLabel8 = new javax.swing.JLabel();
         cmbTiposTarjeta = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblListadoTarjetas = new javax.swing.JTable();
 
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
         setTitle("Listado de Tarjetas dentro del Sistema Bancario");
 
-        cmbEstadoTarjeta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTORIZADA", "CANCELADA" }));
+        cmbEstadoTarjeta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTORIZADA", "CANCELADA", "" }));
 
         jLabel1.setText("Tipo de Tarjeta:");
 
         btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Limite Minimo de la Tarjeta:");
 
@@ -58,16 +79,14 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
 
         jLabel5.setText("Fecha Fin:");
 
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel8.setText("Formato fecha: dd/mm/aaaa");
 
-        cmbTiposTarjeta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NACIONAL", "REGIONAL", "INTERNACIONAL" }));
+        cmbTiposTarjeta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NACIONAL", "REGIONAL", "INTERNACIONAL", "" }));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblListadoTarjetas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Numero de Tarjeta", "Tipo de Tarjeta", "Limite", "Nombre del Cliente", "Direccion del Cliente", "Fecha de Ultimo Estado", "Estado"
@@ -81,7 +100,7 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblListadoTarjetas);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -97,30 +116,30 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
                 .addGap(181, 181, 181)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(39, 39, 39)
+                                .addComponent(cmbTiposTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(89, 89, 89)
+                                .addComponent(jLabel2))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(53, 53, 53)
+                                .addComponent(txtFechaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(41, 41, 41)
+                                .addComponent(jLabel8)
+                                .addGap(35, 35, 35)
+                                .addComponent(jLabel5)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtLimiteTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18)
                         .addComponent(cmbEstadoTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(39, 39, 39)
-                        .addComponent(cmbTiposTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(89, 89, 89)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtLimiteTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnConsultar)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtFechaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel5)
-                                .addGap(27, 27, 27)
-                                .addComponent(txtFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel8)))
+                    .addComponent(btnConsultar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -143,18 +162,88 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(cmbEstadoTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(24, 24, 24)
                 .addComponent(btnConsultar)
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+        if (camposValidos()) {
+            double montoLimite;
+            if (this.bancario.isDouble(this.txtLimiteTarjeta.getText())) {
+                montoLimite = Double.parseDouble(this.txtLimiteTarjeta.getText());
+            } else {
+                montoLimite = -1;
+            }
+            ListadoTarjetas filtro = new ListadoTarjetas(this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()), montoLimite,
+                    this.txtFechaInicio.getText(), this.txtFechaFin.getText(), this.cmbEstadoTarjeta.getItemAt(this.cmbEstadoTarjeta.getSelectedIndex()));
+            if (this.bancario.verificarFiltroListadoTarjetas(filtro)) {
+                String restoQuery = filtro.filtrarDatos();
+                ListadoTarjetasDB listadoTarjetas = new ListadoTarjetasDB();
+                ArrayList<ListadoTarjetas> datos = listadoTarjetas.getListadoTarjetas(restoQuery);                
+                vaciarTabla();
+                llenarTabla(datos);
+            } else {
+                JOptionPane.showMessageDialog(this, "Consulta de Listado de Tarjetas NO Valido para su Ejecucion. Vuelva a revisar los Campos Rellenados");
+            }
+        }
+    }//GEN-LAST:event_btnConsultarActionPerformed
+
+    private boolean camposValidos() {
+        if (this.cmbEstadoTarjeta.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(this, "No se seleccionó un tipode Movimiento valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (this.cmbTiposTarjeta.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(this, "No se seleccionó un tipode Movimiento valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
+    private void llenarTabla(ArrayList<ListadoTarjetas> datos) {                
+        Object[] fila;
+        for (int i = 0; i < datos.size(); i++) {
+            fila = new Object[7];
+            fila[0] = datos.get(i).getNumeroTarjeta();
+            fila[1] = datos.get(i).getTipoTarjeta();
+            fila[2] = datos.get(i).getLimiteCreditoTarjeta();
+            fila[3] = datos.get(i).getNombreCliente();
+            fila[4] = datos.get(i).getDireccionCliente();
+            fila[5] = datos.get(i).getFechaCambioEstado();
+            fila[6] = datos.get(i).getEstadoTarjeta();
+            this.modeloTabla.addRow(fila);
+        }
+        JOptionPane.showMessageDialog(this, "Consulta Exitosa!!!");
+    }
+    
+    private void vaciarTabla() {
+        this.tblListadoTarjetas.removeAll();
+        int filasTabla = this.modeloTabla.getRowCount();
+        if (filasTabla != 0) {
+            for (int i = 0; i < filasTabla; i++) {            
+                this.modeloTabla.removeRow(0);           
+            }            
+        }
+    }
+    
+    private void iniciarTablero() {
+        this.tblListadoTarjetas.setModel(modeloTabla);
+        this.modeloTabla.addColumn("Numero de Tarjeta");
+        this.modeloTabla.addColumn("Tipo Tarjeta");
+        this.modeloTabla.addColumn("Limite");
+        this.modeloTabla.addColumn("Nombre del Clente");
+        this.modeloTabla.addColumn("Direccion del Cliente");
+        this.modeloTabla.addColumn("Fecha de Ultimo Estado");
+        this.modeloTabla.addColumn("Estado");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultar;
@@ -168,7 +257,7 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblListadoTarjetas;
     private javax.swing.JTextField txtFechaFin;
     private javax.swing.JTextField txtFechaInicio;
     private javax.swing.JTextField txtLimiteTarjeta;

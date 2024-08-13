@@ -246,13 +246,7 @@ public class Bancario {
                 System.out.println("Estado de Tarjeta Invalido");
                 return false;
             }
-        }
-        System.out.println("Filtro de Listado de Tarjetas Valido para su Ejecucion\n");
-        String restoQuery = filtro.filtrarDatos();
-        ListadoTarjetasDB listadoTarjetas = new ListadoTarjetasDB();
-        ArrayList<ListadoTarjetas> datos = listadoTarjetas.getListadoTarjetas(restoQuery);
-        filtro.setDatosTarjetas(datos);        
-        filtro.exportarReportes(pathCarpeta);
+        }        
         return true;        
     }
 
