@@ -4,6 +4,7 @@
  */
 package backend.model;
 
+import backend.data.ListadoSolicitudesDB;
 import backend.data.ListadoTarjetasDB;
 import frontend.model.JIFIngresoArchivo;
 import java.beans.PropertyVetoException;
@@ -30,7 +31,7 @@ public class LectorArchivo extends Thread {
     private MovimientoTarjeta movimiento;
     private final int velocidadPorcesamiento;
     private FiltroEstadoCuenta filtroEstadoCuenta;
-    private FiltroListadoSolicitudes filtroListadoSolicitudes;
+    private ListadoSolicitudes filtroListadoSolicitudes;
     private ListadoTarjetas filtroListadoTarjetas;
     private BarraCarga barraCarga;
     private boolean suspended;
@@ -174,7 +175,6 @@ public class LectorArchivo extends Thread {
                                 } else {
                                     montoLimite = -1;
                                 }
-                                System.out.println(montoLimite);
                                 this.filtroListadoTarjetas = new ListadoTarjetas(datosRecolectados[0], montoLimite,
                                         datosRecolectados[2], datosRecolectados[3], datosRecolectados[4]);
                                 if (this.bancario.verificarFiltroListadoTarjetas(filtroListadoTarjetas)) {
@@ -198,11 +198,28 @@ public class LectorArchivo extends Thread {
                         case "LISTADO_SOLICITUDES":
                             this.descripcionProceso.setText("Procesando el Reporte para el Listado de Solicitudes");
                             if (datosRecolectados.length == 5) {
+                                double montoLimite;
                                 if (this.bancario.isDouble(datosRecolectados[3])) {
-                                    this.filtroListadoSolicitudes = new FiltroListadoSolicitudes(datosRecolectados[0], datosRecolectados[1],
-                                            datosRecolectados[2], Double.parseDouble(datosRecolectados[3]), datosRecolectados[4]);
-                                    this.bancario.verificarFiltroListadoSolicitudes(filtroListadoSolicitudes);                                    
+                                    montoLimite = Double.parseDouble(datosRecolectados[3]);
+                                } else {
+                                    montoLimite = -1;
                                 }
+                                this.filtroListadoSolicitudes = new ListadoSolicitudes(datosRecolectados[0], datosRecolectados[1],
+                                        datosRecolectados[2], montoLimite, datosRecolectados[4]);
+                                if (this.bancario.verificarFiltroListadoSolicitudes(filtroListadoSolicitudes)) {
+                                    System.out.println("Filtro de Listado de Solicitudes Valido para su Ejecucion\n");
+                                    String restoQuery = filtroListadoSolicitudes.filtrarDatos();
+                                    ListadoSolicitudesDB listadoSolicitudes = new ListadoSolicitudesDB();
+                                    ArrayList<ListadoSolicitudes> datos = listadoSolicitudes.getListadoSolicitudes(restoQuery);
+                                    if (!datos.isEmpty()) {
+                                        filtroListadoSolicitudes.setDatosSolicitudes(datos);
+                                        filtroListadoSolicitudes.exportarReportes(this.ingresoArchivoFront.getPathCarpeta());
+                                    } else {
+                                        System.out.println("No se pudo crear Archivo porque No hay Datos por Mostrar");
+                                    }
+                                } else {
+                                    System.out.println("Filtro de Listado de Solicitudes NO Valido para su Ejecucion\n");
+                                }                                
                             } else {
                                 System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Cancelacion de Tarjeta!!!\n");
                             }

@@ -7,7 +7,6 @@ package backend.model;
 import backend.data.AutorizacionTarjetaDB;
 import backend.data.CancelacionTarjetaDB;
 import backend.data.ConsultaTarjetaDB;
-import backend.data.ListadoTarjetasDB;
 import backend.data.MovimientoTarjetaDB;
 import backend.data.SolicitudTarjetaDB;
 import java.util.ArrayList;
@@ -250,13 +249,34 @@ public class Bancario {
         return true;        
     }
 
-    public void verificarFiltroListadoSolicitudes(FiltroListadoSolicitudes filtro) {
-        if (isFormatoFechaCorrecto(filtro.getFechaInicio()) && isFormatoFechaCorrecto(filtro.getFechaFin())
-                && isTipoTarjetaValido(filtro.getTipoTarjeta()) && isEstadoSolicitudValido(filtro.getEstadoSolicitud())) {
-            System.out.println("Filtro de Listado de Solicitudes Valido para su Ejecucion\n");
-            return;
+    public boolean verificarFiltroListadoSolicitudes(ListadoSolicitudes filtro) {
+        if (!filtro.getFechaInicio().equals("")) {
+            if (!isFormatoFechaCorrecto(filtro.getFechaInicio())) {
+                System.out.println("Formato de Fecha Invalido");
+                return false;
+            }
+            filtro.setFechaInicio(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaInicio())));
         }
-        System.out.println("Filtro de Listado de Solicitudes NO Valido para su Ejecucion\n");
+        if (!filtro.getFechaFin().equals("")) {
+            if (!isFormatoFechaCorrecto(filtro.getFechaFin())) {
+                System.out.println("Formato de Fecha Invalido");
+                return false;
+            }
+            filtro.setFechaFin(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaFin())));
+        }
+        if (!filtro.getTipoTarjeta().equals("")) {
+            if (!isTipoTarjetaValido(filtro.getTipoTarjeta())) {
+                System.out.println("Numero de Tarjeta Invalida");
+                return false;
+            }
+        }
+        if (!filtro.getEstadoSolicitud().equals("")) {
+            if (!isEstadoSolicitudValido(filtro.getEstadoSolicitud())) {
+                System.out.println("Estado de Tarjeta Invalido");
+                return false;
+            }
+        }        
+        return true;
     }
 
     public void verificarAutorizacionLeida(int numeroSolicitud) {
