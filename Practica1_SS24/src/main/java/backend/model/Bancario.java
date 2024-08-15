@@ -211,12 +211,20 @@ public class Bancario {
         }
     }
 
-    public void verificarFiltroEstadoCuenta(FiltroEstadoCuenta filtro) {
-        if (isNumeroTarjetaValido(filtro.getNumeroTarjeta()) && isTipoTarjetaValido(filtro.getTipoTarjeta())) {
-            System.out.println("Filtro para Estado de Cuenta Valido para su Ejecucion\n");
-            return;
+    public boolean verificarFiltroEstadoCuenta(FiltroEstadoCuenta filtro) {
+        if (!filtro.getNumeroTarjeta().equals("")) {
+            if (!isNumeroTarjetaValido(filtro.getNumeroTarjeta())) {
+                System.out.println("Numero de Tarjeta Invalida");
+                return false;
+            }
         }
-        System.out.println("Filtro para Estado de Cuenta NO Valido para su Ejecucion\n");
+        if (!filtro.getTipoTarjeta().equals("")) {
+            if (!isTipoTarjetaValido(filtro.getTipoTarjeta())) {
+                System.out.println("Tipo de Tarjeta Invalida");
+                return false;
+            }
+        }        
+        return true;        
     }
 
     public boolean verificarFiltroListadoTarjetas(ListadoTarjetas filtro) {

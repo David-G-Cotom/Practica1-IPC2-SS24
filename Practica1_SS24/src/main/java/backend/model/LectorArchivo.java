@@ -4,6 +4,7 @@
  */
 package backend.model;
 
+import backend.data.EstadoCuentaDB;
 import backend.data.ListadoSolicitudesDB;
 import backend.data.ListadoTarjetasDB;
 import frontend.model.JIFIngresoArchivo;
@@ -65,7 +66,7 @@ public class LectorArchivo extends Thread {
                 this.enSuspencion();
                 if (!lineaLeida.isBlank()) {
                     String[] cadenaLeida = leerIntruccion(lineaLeida);
-                    String[] datosRecolectados = cadenaLeida[1].split(",");
+                    String[] datosRecolectados = obtenerDatos(cadenaLeida[1]);
                     switch (cadenaLeida[0]) {
                         case "SOLICITUD":                            
                             this.descripcionProceso.setText("Procesando la Solictud de Tarjeta");
@@ -157,13 +158,36 @@ public class LectorArchivo extends Thread {
                         case "ESTADO_CUENTA":
                             this.descripcionProceso.setText("Procesando el Reporte para el Estado de Cuenta");
                             if (datosRecolectados.length == 4) {
-                                if (this.bancario.isDouble(datosRecolectados[2]) && this.bancario.isDouble(datosRecolectados[3])) {
-                                    this.filtroEstadoCuenta = new FiltroEstadoCuenta(datosRecolectados[0], datosRecolectados[1],
-                                            Double.parseDouble(datosRecolectados[2]), Double.parseDouble(datosRecolectados[3]));
-                                    this.bancario.verificarFiltroEstadoCuenta(filtroEstadoCuenta);                                    
+                                double saldoMinimo;
+                                double interesMinimo;
+                                if (this.bancario.isDouble(datosRecolectados[2])) {
+                                    saldoMinimo = Double.parseDouble(datosRecolectados[2]);
+                                } else {
+                                    saldoMinimo = -1;
                                 }
-                            } else {
-                                System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Cancelacion de Tarjeta!!!\n");
+                                if (this.bancario.isDouble(datosRecolectados[3])) {
+                                    interesMinimo = Double.parseDouble(datosRecolectados[3]);
+                                } else {
+                                    interesMinimo = -1;
+                                }
+                                this.filtroEstadoCuenta = new FiltroEstadoCuenta(datosRecolectados[0], datosRecolectados[1], saldoMinimo, interesMinimo);
+                                if (this.bancario.verificarFiltroEstadoCuenta(filtroEstadoCuenta)) {
+                                    System.out.println("Filtro para Estado de Cuenta Valido para su Ejecucion\n");
+                                    String restoQuery = filtroEstadoCuenta.filtrarDatos();
+                                    EstadoCuentaDB estadoCuenta = new EstadoCuentaDB();
+                                    ArrayList<EstadoCuenta> datos = estadoCuenta.getEstadosCuenta(restoQuery);
+                                    if (!datos.isEmpty()) {
+                                        filtroEstadoCuenta.setDatosEstadosCuenta(datos);
+                                        filtroEstadoCuenta.exportarReportes(this.ingresoArchivoFront.getPathCarpeta());
+                                    } else {
+                                        System.out.println("No se pudo crear Archivo porque No hay Datos por Mostrar");
+                                    }
+                                } else {
+                                    System.out.println("Filtro para Estado de Cuenta NO Valido para su Ejecucion\n");
+                                }
+                                
+                            } else {                                
+                                System.out.println("Error en la Lectura de Archivo: Cantidad de datos invalidos para Consultar el Estado de Cuenta!!!\n");
                             }
                             break;
                         case "LISTADO_TARJETAS":
@@ -271,6 +295,28 @@ public class LectorArchivo extends Thread {
         resultadoLectura[0] = accion;
         resultadoLectura[1] = datos;
         return resultadoLectura;
+    }
+    
+    private String[] obtenerDatos(String datosAgrupados) {
+        String[] datos = datosAgrupados.split("");
+        ArrayList<String> datosArray = new ArrayList<>();
+        String dato = "";
+        for (int i = 0; i < datos.length; i++) {
+            if (!datos[i].equals(",")) {
+                dato+=datos[i];
+            } else {
+                datosArray.add(dato);
+                dato = "";
+            }
+            if (i == datos.length-1) {
+                datosArray.add(dato);
+            }
+        }
+        String[] datosIndividuales = new String[datosArray.size()];
+        for (int i = 0; i < datosArray.size(); i++) {
+            datosIndividuales[i] = datosArray.get(i);
+        }
+        return datosIndividuales;
     }
     
     private int contarLineasArchivo() {

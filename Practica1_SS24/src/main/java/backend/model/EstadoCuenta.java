@@ -4,6 +4,8 @@
  */
 package backend.model;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Carlos Cotom
@@ -11,29 +13,22 @@ package backend.model;
 public class EstadoCuenta {
     
     private String numeroTarjeta;
+    private String tipoTarjeta;
     private String nombreCliente;
     private String direccionCliente;
-    private String fechaMovimiento;
-    private String tipoMovimiento;
-    private String descripcionMovimiento;
-    private String establecimiento;
-    private double montoEjecutado;
+    private double interesTipoTarjeta;
+    private ArrayList<MovimientoTarjeta> movimientos;
     private double montoTotalEjecutado;
     private double intereses;
     private double saldoTotal;
 
-    public EstadoCuenta(String numeroTarjeta, String nombreClietne, String direccionCliente, String fechaMovimiento, String tipoMovimiento, String desscripcionMovimiento, String establecimiento, double montoEjecutado, double montoTotalEjecutado, double intereses, double saldoTotal) {
+    public EstadoCuenta(String numeroTarjeta, String tipoTarjeta, String nombreClietne, String direccionCliente, ArrayList<MovimientoTarjeta> movimientos, double interesTipoTarjeta) {
         this.numeroTarjeta = numeroTarjeta;
+        this.tipoTarjeta = tipoTarjeta;
         this.nombreCliente = nombreClietne;
         this.direccionCliente = direccionCliente;
-        this.fechaMovimiento = fechaMovimiento;
-        this.tipoMovimiento = tipoMovimiento;
-        this.descripcionMovimiento = desscripcionMovimiento;
-        this.establecimiento = establecimiento;
-        this.montoEjecutado = montoEjecutado;
-        this.montoTotalEjecutado = montoTotalEjecutado;
-        this.intereses = intereses;
-        this.saldoTotal = saldoTotal;
+        this.movimientos = movimientos;
+        this.interesTipoTarjeta = interesTipoTarjeta;
     }
 
     public String getNumeroTarjeta() {
@@ -44,6 +39,14 @@ public class EstadoCuenta {
         this.numeroTarjeta = numeroTarjeta;
     }
 
+    public String getTipoTarjeta() {
+        return tipoTarjeta;
+    }
+
+    public void setTipoTarjeta(String tipoTarjeta) {
+        this.tipoTarjeta = tipoTarjeta;
+    }    
+    
     public String getNombreCliente() {
         return nombreCliente;
     }
@@ -60,46 +63,22 @@ public class EstadoCuenta {
         this.direccionCliente = direccionCliente;
     }
 
-    public String getFechaMovimiento() {
-        return fechaMovimiento;
+    public double getInteresTipoTarjeta() {
+        return interesTipoTarjeta;
     }
 
-    public void setFechaMovimiento(String fechaMovimiento) {
-        this.fechaMovimiento = fechaMovimiento;
+    public void setInteresTipoTarjeta(double interesTipoTarjeta) {
+        this.interesTipoTarjeta = interesTipoTarjeta;
     }
 
-    public String getTipoMovimiento() {
-        return tipoMovimiento;
+    public ArrayList<MovimientoTarjeta> getMovimientos() {
+        return movimientos;
     }
 
-    public void setTipoMovimiento(String tipoMovimiento) {
-        this.tipoMovimiento = tipoMovimiento;
-    }
-
-    public String getDescripcionMovimiento() {
-        return descripcionMovimiento;
-    }
-
-    public void setDescripcionMovimiento(String descripcionMovimiento) {
-        this.descripcionMovimiento = descripcionMovimiento;
-    }
-
-    public String getEstablecimiento() {
-        return establecimiento;
-    }
-
-    public void setEstablecimiento(String establecimiento) {
-        this.establecimiento = establecimiento;
-    }
-
-    public double getMontoEjecutado() {
-        return montoEjecutado;
-    }
-
-    public void setMontoEjecutado(double montoEjecutado) {
-        this.montoEjecutado = montoEjecutado;
-    }
-
+    public void setMovimientos(ArrayList<MovimientoTarjeta> movimientos) {
+        this.movimientos = movimientos;
+    }    
+    
     public double getMontoTotalEjecutado() {
         return montoTotalEjecutado;
     }
@@ -123,7 +102,5 @@ public class EstadoCuenta {
     public void setSaldoTotal(double saldoTotal) {
         this.saldoTotal = saldoTotal;
     }
-    
-    
     
 }

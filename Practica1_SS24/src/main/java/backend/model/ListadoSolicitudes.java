@@ -139,22 +139,24 @@ public class ListadoSolicitudes {
         String query = "";
         boolean hayPrimerCondicion = false;
         if (!this.fechaInicio.equals("")) {
-            if (!hayPrimerCondicion) {
-                query += " WHERE DATEDIFF(day, '" + this.fechaInicio + "', (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + ")) >= 0";
-            } else {
-                query += " AND DATEDIFF(day, '" + this.fechaInicio + "', (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + ")) >= 0";
-            }
+            query += " WHERE DATEDIFF(day, '" + this.fechaInicio + "', (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + ")) >= 0";
+            hayPrimerCondicion = true;
         }
         if (!this.fechaFin.equals("")) {
             if (!hayPrimerCondicion) {
                 query += " WHERE DATEDIFF(day, (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + "), '" + this.fechaFin + "') >= 0";
+                hayPrimerCondicion = true;
             } else {
                 query += " AND DATEDIFF(day, (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + "), '" + this.fechaFin + "') >= 0";
             }
         }        
         if (!this.tipoTarjeta.equals("")) {
-            query += " WHERE tipo = '" + this.tipoTarjeta + "'";
-            hayPrimerCondicion = true;
+            if (!hayPrimerCondicion) {
+                query += " WHERE tipo = '" + this.tipoTarjeta + "'";
+                hayPrimerCondicion = true;
+            } else {
+                query += " AND tipo = '" + this.tipoTarjeta + "'";
+            }            
         }        
         if (!(this.salarioMinimo < 0)) {
             if (!hayPrimerCondicion) {
@@ -211,7 +213,6 @@ public class ListadoSolicitudes {
                     i = 0;
                 }
             }
-            //int numeroUltimoReporte = Integer.parseInt(contenidoCarpeta[contenidoCarpeta.length-1].getName().substring(contenidoCarpeta.length-6, contenidoCarpeta.length-5));
             this.file = new File(pathCarpeta + "\\" + nombreArchivo);
         } else {
             this.file = new File(pathCarpeta + "\\Reporte de Listado de Solicitudes 0.html");
@@ -224,7 +225,7 @@ public class ListadoSolicitudes {
             return """
                    <html>                   
                    <head>
-                   	<title>Reporte de el Listado de Tarjetas en el Sistema</title>
+                   	<title>Reporte de el Listado de Solicitudes en el Sistema</title>
                    </head>
                    <style>
                         table, th, td {
@@ -243,7 +244,7 @@ public class ListadoSolicitudes {
 
     private String generarContenido(String data) {
         data += """                
-                <h3>Listado de Tarjetas Registradas en el Sistema</h3>
+                <h3>Listado de Solicitudes Registradas en el Sistema</h3>
                 <table>
                     <tr>
                         <th>Numero Solicitud</th>
