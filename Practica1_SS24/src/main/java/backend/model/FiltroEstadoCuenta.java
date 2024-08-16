@@ -201,7 +201,7 @@ public class FiltroEstadoCuenta {
         }
     }
     
-    private void filtrarEstadosCuenta() {
+    public void filtrarEstadosCuenta() {
         ArrayList<EstadoCuenta> estadosFiltrados = new ArrayList<>();
         for (int i = 0; i < this.datosEstadosCuenta.size(); i++) {
             double montoTotal = 0;

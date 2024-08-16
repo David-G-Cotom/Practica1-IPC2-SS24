@@ -4,17 +4,37 @@
  */
 package frontend.model;
 
+import backend.data.EstadoCuentaDB;
+import backend.model.Bancario;
+import backend.model.EstadoCuenta;
+import backend.model.FiltroEstadoCuenta;
+import backend.model.MovimientoTarjeta;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Carlos Cotom
  */
 public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
 
+    private final DefaultTableModel modeloTabla;
+    Bancario bancario;
+    private int indiceDatos;
+    private ArrayList<EstadoCuenta> datos;
+    
     /**
      * Creates new form JIFEstadoCuenta
      */
     public JIFEstadoCuenta() {
+        this.modeloTabla = new DefaultTableModel();
         initComponents();
+        this.bancario = new Bancario();
+        iniciarTablero();
+        this.btnSiguiente.setEnabled(false);
+        this.btnAnterior.setEnabled(false);
+        this.indiceDatos = 0;
     }
 
     /**
@@ -27,7 +47,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         cmbTiposTarjeta = new javax.swing.JComboBox<>();
-        txtSaldoTarjeta = new javax.swing.JTextField();
+        txtSaldoMinimo = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         txtNumeroTarjeta = new javax.swing.JTextField();
@@ -35,7 +55,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         txtNombreSolicitante = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtInteresTarjeta = new javax.swing.JTextField();
+        txtInteresMinimo = new javax.swing.JTextField();
         btnConsultar = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -47,18 +67,23 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         lblNombreCLiente = new javax.swing.JLabel();
         lblDireccionCliente = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblListadoMovimientos = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         lblMontoTotal = new javax.swing.JLabel();
         lblIntereses = new javax.swing.JLabel();
         lblSaldoTotal = new javax.swing.JLabel();
+        btnSiguiente = new javax.swing.JButton();
+        btnAnterior = new javax.swing.JButton();
 
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
         setTitle("Estado de Cuenta para Tarjetas Activas");
-        setPreferredSize(new java.awt.Dimension(750, 575));
+        setPreferredSize(new java.awt.Dimension(750, 585));
 
-        cmbTiposTarjeta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NACIONAL", "REGIONAL", "INTERNACIONAL" }));
+        cmbTiposTarjeta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NACIONAL", "REGIONAL", "INTERNACIONAL", "" }));
 
         jLabel7.setText("Interes Minimo de la Tarjeta:");
 
@@ -71,6 +96,11 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         jLabel4.setText("Nombre del Cliente:");
 
         btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Numero de Tarjeta:");
 
@@ -88,7 +118,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
 
         lblDireccionCliente.setText(".");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblListadoMovimientos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -107,7 +137,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblListadoMovimientos);
 
         jLabel10.setText("Monto Total:");
 
@@ -120,6 +150,20 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         lblIntereses.setText(".");
 
         lblSaldoTotal.setText(".");
+
+        btnSiguiente.setText("Siguiente");
+        btnSiguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSiguienteActionPerformed(evt);
+            }
+        });
+
+        btnAnterior.setText("Anterior");
+        btnAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAnteriorActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -150,13 +194,13 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtNumeroTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtSaldoTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtSaldoMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(27, 27, 27)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel7)
                                         .addGap(18, 18, 18)
-                                        .addComponent(txtInteresTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txtInteresMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel3)
                                         .addGap(90, 90, 90)
@@ -193,12 +237,17 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
                                         .addComponent(jLabel11)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(lblIntereses))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel12)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(lblSaldoTotal))
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 49, Short.MAX_VALUE)))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jLabel12)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(lblSaldoTotal)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnAnterior)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(btnSiguiente))
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -213,9 +262,9 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtSaldoTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSaldoMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addComponent(txtInteresTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtInteresMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -244,19 +293,141 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
                     .addComponent(jLabel11)
                     .addComponent(lblMontoTotal)
                     .addComponent(lblIntereses))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(lblSaldoTotal))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(lblSaldoTotal))
+                        .addContainerGap(18, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnSiguiente)
+                            .addComponent(btnAnterior))
+                        .addGap(15, 15, 15))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
+        this.indiceDatos++;
+        this.mostrarDatos();
+        this.btnAnterior.setEnabled(true);
+        if (this.datos.size() == (this.indiceDatos + 1)) {
+            this.btnSiguiente.setEnabled(false);
+        }
+    }//GEN-LAST:event_btnSiguienteActionPerformed
+
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+        if (camposValidos()) {
+            double saldoMinimo;
+            double intereseMinimo;
+            if (this.bancario.isDouble(this.txtSaldoMinimo.getText())) {
+                saldoMinimo = Double.parseDouble(this.txtSaldoMinimo.getText());
+            } else {
+                saldoMinimo = -1;
+            }
+            if (this.bancario.isDouble(this.txtInteresMinimo.getText())) {
+                intereseMinimo = Double.parseDouble(this.txtInteresMinimo.getText());
+            } else {
+                intereseMinimo = -1;
+            }
+            FiltroEstadoCuenta filtro = new FiltroEstadoCuenta(this.txtNumeroTarjeta.getText(), this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()),
+                    saldoMinimo, intereseMinimo);
+            if (this.bancario.verificarFiltroEstadoCuenta(filtro)) {
+                String restoQuery = filtro.filtrarDatos();
+                EstadoCuentaDB listadoSolicitudes = new EstadoCuentaDB();
+                ArrayList<EstadoCuenta> datosEstadoCuenta = listadoSolicitudes.getEstadosCuenta(restoQuery);                
+                if (!datosEstadoCuenta.isEmpty()) {
+                    filtro.setDatosEstadosCuenta(datosEstadoCuenta);
+                    filtro.filtrarEstadosCuenta();
+                    this.datos = filtro.getDatosEstadosCuenta();
+                    if (!this.datos.isEmpty()) {
+                        if (this.datos.size() == (this.indiceDatos + 1)) {
+                            this.btnSiguiente.setEnabled(false);
+                        } else {
+                            this.btnSiguiente.setEnabled(true);                            
+                        }
+                        mostrarDatos();                        
+                    } else {
+                        JOptionPane.showMessageDialog(this, "No hay Datos por Mostrar");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "No hay Datos por Mostrar");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Consulta para los Estados de Cuenta NO Valido para su Ejecucion. Vuelva a revisar los Campos Rellenados");
+            }
+        }
+    }//GEN-LAST:event_btnConsultarActionPerformed
+
+    private void btnAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnteriorActionPerformed
+        this.indiceDatos--;
+        this.mostrarDatos();
+        this.btnSiguiente.setEnabled(true);
+        if (this.indiceDatos == 0) {
+            this.btnAnterior.setEnabled(false);
+        }
+    }//GEN-LAST:event_btnAnteriorActionPerformed
+
+    private boolean camposValidos() {
+        if (this.cmbTiposTarjeta.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(this, "No se seleccionó un Tipo de Tarjeta valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
+    private void mostrarDatos() {
+        this.lblNumeroTarjeta.setText(this.datos.get(this.indiceDatos).getNumeroTarjeta());
+        this.lblTipoTarjeta.setText(this.datos.get(this.indiceDatos).getTipoTarjeta());
+        this.lblNombreCLiente.setText(this.datos.get(this.indiceDatos).getNombreCliente());
+        this.lblDireccionCliente.setText(this.datos.get(this.indiceDatos).getDireccionCliente());
+        vaciarTabla();        
+        llenarTabla(this.datos.get(this.indiceDatos).getMovimientos());
+        this.lblMontoTotal.setText(this.datos.get(this.indiceDatos).getMontoTotalEjecutado() + "");
+        this.lblIntereses.setText(this.datos.get(this.indiceDatos).getIntereses()+ "");
+        this.lblSaldoTotal.setText(this.datos.get(this.indiceDatos).getSaldoTotal()+ "");
+    }
+    
+    private void llenarTabla(ArrayList<MovimientoTarjeta> datosMovimiento) {                
+        Object[] fila;
+        for (int i = 0; i < datosMovimiento.size(); i++) {
+            fila = new Object[5];
+            fila[0] = datosMovimiento.get(i).getFechaOperacion();
+            fila[1] = datosMovimiento.get(i).getTipoMovimiento();
+            fila[2] = datosMovimiento.get(i).getDescripcion();
+            fila[3] = datosMovimiento.get(i).getEstablecimiento();
+            fila[4] = datosMovimiento.get(i).getMontoTransferido();
+            this.modeloTabla.addRow(fila);
+        }
+    }
+    
+    private void vaciarTabla() {
+        this.tblListadoMovimientos.removeAll();
+        int filasTabla = this.modeloTabla.getRowCount();
+        if (filasTabla != 0) {
+            for (int i = 0; i < filasTabla; i++) {            
+                this.modeloTabla.removeRow(0);           
+            }            
+        }
+    }
+    
+    private void iniciarTablero() {
+        this.tblListadoMovimientos.setModel(modeloTabla);
+        this.modeloTabla.addColumn("Fecha");
+        this.modeloTabla.addColumn("Tipo de Movimiento");
+        this.modeloTabla.addColumn("Descripcion");
+        this.modeloTabla.addColumn("Establecimiento");
+        this.modeloTabla.addColumn("Monto");
+    }    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAnterior;
     private javax.swing.JButton btnConsultar;
+    private javax.swing.JButton btnSiguiente;
     private javax.swing.JComboBox<String> cmbTiposTarjeta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -272,7 +443,6 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblDireccionCliente;
     private javax.swing.JLabel lblIntereses;
     private javax.swing.JLabel lblMontoTotal;
@@ -280,9 +450,10 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lblNumeroTarjeta;
     private javax.swing.JLabel lblSaldoTotal;
     private javax.swing.JLabel lblTipoTarjeta;
-    private javax.swing.JTextField txtInteresTarjeta;
+    private javax.swing.JTable tblListadoMovimientos;
+    private javax.swing.JTextField txtInteresMinimo;
     private javax.swing.JTextField txtNombreSolicitante;
     private javax.swing.JTextField txtNumeroTarjeta;
-    private javax.swing.JTextField txtSaldoTarjeta;
+    private javax.swing.JTextField txtSaldoMinimo;
     // End of variables declaration//GEN-END:variables
 }
