@@ -20,7 +20,7 @@ import javax.swing.table.DefaultTableModel;
 public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
 
     private final DefaultTableModel modeloTabla;
-    Bancario bancario;
+    private Bancario bancario;
     private int indiceDatos;
     private ArrayList<EstadoCuenta> datos;
     
@@ -334,29 +334,23 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
             } else {
                 intereseMinimo = -1;
             }
-            FiltroEstadoCuenta filtro = new FiltroEstadoCuenta(this.txtNumeroTarjeta.getText(), this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()),
-                    saldoMinimo, intereseMinimo);
+            FiltroEstadoCuenta filtro = new FiltroEstadoCuenta(this.txtNumeroTarjeta.getText(),
+                    this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()), saldoMinimo, intereseMinimo);
             if (this.bancario.verificarFiltroEstadoCuenta(filtro)) {
                 String restoQuery = filtro.filtrarDatos();
                 EstadoCuentaDB listadoSolicitudes = new EstadoCuentaDB();
-                ArrayList<EstadoCuenta> datosEstadoCuenta = listadoSolicitudes.getEstadosCuenta(restoQuery);                
-                if (!datosEstadoCuenta.isEmpty()) {
-                    filtro.setDatosEstadosCuenta(datosEstadoCuenta);
-                    filtro.filtrarEstadosCuenta();
-                    this.datos = filtro.getDatosEstadosCuenta();
-                    if (!this.datos.isEmpty()) {
-                        if (this.datos.size() == (this.indiceDatos + 1)) {
-                            this.btnSiguiente.setEnabled(false);
-                        } else {
-                            this.btnSiguiente.setEnabled(true);                            
-                        }
-                        mostrarDatos();                        
-                    } else {
-                        JOptionPane.showMessageDialog(this, "No hay Datos por Mostrar");
-                    }
-                } else {
+                ArrayList<EstadoCuenta> datosEstadoCuenta = listadoSolicitudes.getEstadosCuenta(restoQuery);
+                filtro.setDatosEstadosCuenta(datosEstadoCuenta);
+                filtro.filtrarEstadosCuenta();
+                this.datos = filtro.getDatosEstadosCuenta();
+                if (this.datos.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "No hay Datos por Mostrar");
+                    vaciarTabla();
+                    vaciarCampos();
+                    return;
                 }
+                habilitarBotones();
+                mostrarDatos();  
             } else {
                 JOptionPane.showMessageDialog(this, "Consulta para los Estados de Cuenta NO Valido para su Ejecucion. Vuelva a revisar los Campos Rellenados");
             }
@@ -378,6 +372,14 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
             return false;
         }
         return true;
+    }
+    
+    private void habilitarBotones() {
+        if (this.datos.size() == (this.indiceDatos + 1)) {
+            this.btnSiguiente.setEnabled(false);
+        } else {
+            this.btnSiguiente.setEnabled(true);                            
+        }
     }
     
     private void mostrarDatos() {
@@ -413,6 +415,16 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
                 this.modeloTabla.removeRow(0);           
             }            
         }
+    }
+    
+    private void vaciarCampos() {
+        this.lblDireccionCliente.setText("");
+        this.lblIntereses.setText("");
+        this.lblMontoTotal.setText("");
+        this.lblNombreCLiente.setText("");
+        this.lblNumeroTarjeta.setText("");
+        this.lblSaldoTotal.setText("");
+        this.lblTipoTarjeta.setText("");
     }
     
     private void iniciarTablero() {

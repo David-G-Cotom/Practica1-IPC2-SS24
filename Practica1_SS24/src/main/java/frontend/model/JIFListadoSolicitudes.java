@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
 
     private final DefaultTableModel modeloTabla;
-    Bancario bancario;
+    private Bancario bancario;
     
     /**
      * Creates new form JIFListadoSolicitudes
@@ -197,8 +197,14 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
                 String restoQuery = filtro.filtrarDatos();
                 ListadoSolicitudesDB listadoSolicitudes = new ListadoSolicitudesDB();
                 ArrayList<ListadoSolicitudes> datos = listadoSolicitudes.getListadoSolicitudes(restoQuery);                
-                vaciarTabla();
+                if (datos.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No hay Datos por Mostrar");
+                    vaciarTabla();
+                    vaciarCampos();
+                    return;
+                }
                 llenarTabla(datos);
+                vaciarCampos();
             } else {
                 JOptionPane.showMessageDialog(this, "Consulta de Listado de Solicitudes NO Valido para su Ejecucion. Vuelva a revisar los Campos Rellenados");
             }
@@ -217,7 +223,8 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
         return true;
     }
     
-    private void llenarTabla(ArrayList<ListadoSolicitudes> datos) {                
+    private void llenarTabla(ArrayList<ListadoSolicitudes> datos) {
+        vaciarTabla();
         Object[] fila;
         for (int i = 0; i < datos.size(); i++) {
             fila = new Object[7];
@@ -241,6 +248,12 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
                 this.modeloTabla.removeRow(0);           
             }            
         }
+    }
+    
+    private void vaciarCampos() {
+        this.txtFechaFin.setText("");
+        this.txtFechaInicio.setText("");
+        this.txtSalarioMinimo.setText("");
     }
     
     private void iniciarTablero() {

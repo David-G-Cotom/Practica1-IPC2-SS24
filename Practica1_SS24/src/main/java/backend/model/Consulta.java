@@ -98,11 +98,9 @@ public class Consulta {
     }    
     
     /**
-     * Metodo para exportar todos los reportes de la aplicacion a un formato
+     * Metodo para exportar el reportes de la consulta de tarjeta a un formato
      * HTML para su posterior visualizacion en la WEB
      *
-     * @param partidasJugadas es la cantidad de partidas jugadas dentro de la
-     * aplicacion
      */
     public void exportarReportes() {
         String data = obtenerDataActual();
@@ -112,9 +110,9 @@ public class Consulta {
     
     /**
      * Metodo que verifica si existe el archivo HTML para poder establecer la
-     * cabecer que tendra el mismo
+     * cabecer de etiquetas que tendra el mismo
      *
-     * @return la cabecera que tendra el archivo HTML
+     * @return la cabecera de etiquetas que tendra el archivo HTML
      */
     private String obtenerDataActual() {
         this.file = new File(pathCarpeta + "\\Consulta de Tarjeta " + this.numeroTarjeta + ".html");
@@ -152,11 +150,11 @@ public class Consulta {
     }
     
     /**
-     * Metodo que escribe el contenido recibido como parametro en un archivo
-     * HTML
+     * Metodo que escribe el contenido recibido como parametro ademas de agregar
+     * las etiquetas de cierre en un archivo HTML
      *
-     * @param contenido es el contenido final que se escribira en el archivo
-     * HTML
+     * @param contenido es el contenido que tendra todo el cuerpo que se
+     * escribira en el archivo HTML
      */
     private void generarHTML(String contenido) {
         try (FileWriter fileWriter = new FileWriter(file); BufferedWriter writer = new BufferedWriter(fileWriter);) {

@@ -36,10 +36,24 @@ public class Bancario {
         ArrayList<Integer> solicitudesEnBS = datosSolicitud.getNumeroSolicitud();
         for (int i = 0; i < solicitudesEnBS.size(); i++) {
             if (solicitudesEnBS.get(i) == numeroSolicitud) {
-                System.out.println("Numero de Solicitud Repetida!!!");
+                System.out.println("Numero de Solicitud Repetida");
                 return true;
             }
         }
+        System.out.println("No se encontro el Numero de Solicitud Ingresado");
+        return false;
+    }
+    
+    public boolean isNumeroTarjetaRepetida(String numeroSolicitud) {
+        MovimientoTarjetaDB datosSolicitud = new MovimientoTarjetaDB();
+        ArrayList<String> tarjetasEnBS = datosSolicitud.getNumerosTarjeta();
+        for (int i = 0; i < tarjetasEnBS.size(); i++) {
+            if (tarjetasEnBS.get(i).equals(numeroSolicitud)) {
+                System.out.println("Numero de Tarjeta Repetida");
+                return true;
+            }
+        }
+        System.out.println("No se encontro el Numero de Tarjeta Ingresado");
         return false;
     }
 
@@ -61,9 +75,11 @@ public class Bancario {
                 String mm = datos[1];
                 String dd = datos[0];
                 if (yyyy.length() == 4 && mm.length() == 2 && dd.length() == 2) {
-                    if (Integer.parseInt(mm) < 13 && Integer.parseInt(dd) < 32) {
-                        System.out.println("Formato de Fecha Correcta");
-                        return true;
+                    if (this.isInteger(yyyy) && this.isInteger(mm) && this.isInteger(dd)) {
+                        if (Integer.parseInt(mm) < 13 && Integer.parseInt(mm) > 0 && Integer.parseInt(dd) < 32 && Integer.parseInt(dd) > 0) {
+                            System.out.println("Formato de Fecha Correcta");
+                            return true;
+                        }                        
                     }
                 }
             }
@@ -93,20 +109,20 @@ public class Bancario {
 
     public boolean isInteger(String texto) {
         try {
-            Integer.valueOf(texto);
-            return true;
+            int numero = Integer.parseInt(texto);
+            return numero >= 0;
         } catch (NumberFormatException e) {
-            System.out.println("Error en la Lectura de Archivo: Texto ingresado Invalido para ser Numero Entero");
+            System.out.println("Texto ingresado NO puede ser Numero Entero");
             return false;
         }
     }
 
     public boolean isDouble(String texto) {
         try {
-            Double.valueOf(texto);
-            return true;
+            double numero = Double.parseDouble(texto);
+            return numero >= 0;
         } catch (NumberFormatException e) {
-            System.out.println("Error en la Lectura de Archivo: Texto ingresado Invalido para ser Numero Decimal");
+            System.out.println("Texto ingresado NO puede ser Numero Decimal");
             return false;
         }
     }
@@ -123,6 +139,9 @@ public class Bancario {
     }
 
     public boolean isNumeroTarjetaValido(String numeroTarjeta) {
+        if (numeroTarjeta.equals("")) {
+            return false;
+        }
         String[] contenido = numeroTarjeta.split(" ");
         boolean isValido = false;
         if (contenido.length == 4) {
@@ -173,6 +192,15 @@ public class Bancario {
         System.out.println("Estado de Solicitud Invalido");
         return false;
     }
+    
+    public boolean isLongitudCadenaValida(String cadena, int longitud) {
+        if (cadena.length() < longitud) {
+            System.out.println("Longitud de Cadena Valida");
+            return true;
+        }
+        System.out.println("Longitud de Cadena Muy Larga");
+        return false;
+    }
 
     public boolean verificarSolicitudLeida(SolicitudTarjeta solicitud) {
         if (!isNumeroSolicitudRepetida(solicitud.getNumeroSolicitud()) && isFormatoFechaCorrecto(solicitud.getFechaSolicitud())
@@ -180,11 +208,13 @@ public class Bancario {
             solicitud.setNombreSolicitante(this.quitarComillas(solicitud.getNombreSolicitante()));
             solicitud.setDireccionSolicitante(this.quitarComillas(solicitud.getDireccionSolicitante()));
             solicitud.setFechaSolicitud(this.transformarFormatoFecha(this.quitarComillas(solicitud.getFechaSolicitud())));
-            System.out.println("Solicitud de Tarjeta Valida para su Ejecucion\n");
-            SolicitudTarjetaDB nuevaSolicitud = new SolicitudTarjetaDB(solicitud);
-            nuevaSolicitud.crearCliente();
-            nuevaSolicitud.crearSolicitud();
-            return true;
+            if (isLongitudCadenaValida(solicitud.getNombreSolicitante(), 100) && isLongitudCadenaValida(solicitud.getDireccionSolicitante(), 150)) {
+                System.out.println("Solicitud de Tarjeta Valida para su Ejecucion\n");
+                SolicitudTarjetaDB nuevaSolicitud = new SolicitudTarjetaDB(solicitud);
+                nuevaSolicitud.crearCliente();
+                nuevaSolicitud.crearSolicitud();
+                return true;                
+            }
         }
         System.out.println("Solicitud de Tarjeta NO Valida para su Ejecucion\n");
         return false;
@@ -196,25 +226,33 @@ public class Bancario {
             movimiento.setDescripcion(this.quitarComillas(movimiento.getDescripcion()));
             movimiento.setEstablecimiento(this.quitarComillas(movimiento.getEstablecimiento()));
             movimiento.setFechaOperacion(this.transformarFormatoFecha(this.quitarComillas(movimiento.getFechaOperacion())));
-            MovimientoTarjetaDB movimientoTarjeta = new MovimientoTarjetaDB(movimiento);            
+            MovimientoTarjetaDB movimientoTarjeta = new MovimientoTarjetaDB(movimiento);
+            if (!isNumeroTarjetaRepetida(movimiento.getNumeroTarjeta())) {
+                return false;
+            }
+            if (!isLongitudCadenaValida(movimiento.getDescripcion(), 200)) {
+                return false;
+            }
             if (movimientoTarjeta.isTarjetaActiva()) {
                 movimientoTarjeta.crearRegistro();
                 movimientoTarjeta.actualizarSaldoTarjeta();
                 return true;
             } else {
-                System.out.println("La Tarjeta esta Inactiva");
+                System.out.println("Tarjeta Inactiva");
                 return false;
             }
-        } else {
-            System.out.println("Movimiento de Tarjeta NO Valido para su Ejecucion\n");
-            return false;
         }
+        System.out.println("Movimiento de Tarjeta NO Valido para su Ejecucion\n");
+        return false;
     }
 
     public boolean verificarFiltroEstadoCuenta(FiltroEstadoCuenta filtro) {
         if (!filtro.getNumeroTarjeta().equals("")) {
             if (!isNumeroTarjetaValido(filtro.getNumeroTarjeta())) {
                 System.out.println("Numero de Tarjeta Invalida");
+                return false;
+            }
+            if (!isNumeroTarjetaRepetida(filtro.getNumeroTarjeta())) {
                 return false;
             }
         }
@@ -230,23 +268,25 @@ public class Bancario {
     public boolean verificarFiltroListadoTarjetas(ListadoTarjetas filtro) {
         if (!filtro.getTipoTarjeta().equals("")) {
             if (!isTipoTarjetaValido(filtro.getTipoTarjeta())) {
-                System.out.println("Numero de Tarjeta Invalida");
+                System.out.println("Tipo de Tarjeta Invalida");
                 return false;
             }
         }
         if (!filtro.getFechaInicio().equals("")) {
-            if (!isFormatoFechaCorrecto(filtro.getFechaInicio())) {
+            /*if (!isFormatoFechaCorrecto(filtro.getFechaInicio())) {
                 System.out.println("Formato de Fecha Invalido");
                 return false;
             }
-            filtro.setFechaInicio(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaInicio())));
+            filtro.setFechaInicio(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaInicio())));*/
+            filtro.setFechaInicio("");
         }
         if (!filtro.getFechaFinal().equals("")) {
-            if (!isFormatoFechaCorrecto(filtro.getFechaFinal())) {
+            /*if (!isFormatoFechaCorrecto(filtro.getFechaFinal())) {
                 System.out.println("Formato de Fecha Invalido");
                 return false;
             }
-            filtro.setFechaFinal(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaFinal())));
+            filtro.setFechaFinal(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaFinal())));*/
+            filtro.setFechaFinal("");
         }
         if (!filtro.getEstadoTarjeta().equals("")) {
             if (!isEstadoTarjetaValido(filtro.getEstadoTarjeta())) {
@@ -259,82 +299,73 @@ public class Bancario {
 
     public boolean verificarFiltroListadoSolicitudes(ListadoSolicitudes filtro) {
         if (!filtro.getFechaInicio().equals("")) {
-            if (!isFormatoFechaCorrecto(filtro.getFechaInicio())) {
+            /*if (!isFormatoFechaCorrecto(filtro.getFechaInicio())) {
                 System.out.println("Formato de Fecha Invalido");
                 return false;
             }
-            filtro.setFechaInicio(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaInicio())));
+            filtro.setFechaInicio(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaInicio())));*/
+            filtro.setFechaInicio("");
         }
         if (!filtro.getFechaFin().equals("")) {
-            if (!isFormatoFechaCorrecto(filtro.getFechaFin())) {
+            /*if (!isFormatoFechaCorrecto(filtro.getFechaFin())) {
                 System.out.println("Formato de Fecha Invalido");
                 return false;
             }
-            filtro.setFechaFin(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaFin())));
+            filtro.setFechaFin(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaFin())));*/
+            filtro.setFechaFin("");
         }
         if (!filtro.getTipoTarjeta().equals("")) {
             if (!isTipoTarjetaValido(filtro.getTipoTarjeta())) {
-                System.out.println("Numero de Tarjeta Invalida");
+                System.out.println("Tipo de Tarjeta Invalida");
                 return false;
             }
         }
         if (!filtro.getEstadoSolicitud().equals("")) {
             if (!isEstadoSolicitudValido(filtro.getEstadoSolicitud())) {
-                System.out.println("Estado de Tarjeta Invalido");
+                System.out.println("Estado de Solicitud Invalido");
                 return false;
             }
         }        
         return true;
     }
 
-    public void verificarAutorizacionLeida(int numeroSolicitud) {
+    public boolean verificarAutorizacionLeida(int numeroSolicitud) {
         if (this.isNumeroSolicitudRepetida(numeroSolicitud)) {
             AutorizacionTarjetaDB autorizacionDB = new AutorizacionTarjetaDB(numeroSolicitud);
             if (!autorizacionDB.isSolicitudAutorizada(numeroSolicitud)) {
                 Autorizacion autorizacion = new Autorizacion(autorizacionDB.getCliente().getSalario(), autorizacionDB.getLimiteCreditoTipoTarjeta(),
                         autorizacionDB.getSolicitud().getTipoTarjetaSolicitada());
-                if (autorizacion.autorizarTarjeta()) {
+                if (autorizacion.exitoEnAutorizarTarjeta()) {
                     autorizacionDB.crearTarjeta(autorizacion.getTarjeta());
                     autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, true);
-                    System.out.println("Autorizacion Aceptada");
+                    return true;
                 } else {
-                    autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, false);
-                    System.out.println("Autorizacion Rechazada por Limite de Credito");
+                    autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, false);                    
                 }
             } else {
                 System.out.println("Solicitud ya se encontraba Autorizada");
             }
-        } else {
-            System.out.println("Numero de Solicitu NO encontrada en la DB");
-        }        
+        }
+        return false;
     }
     
     public Consulta verificarConsultaTarjeta(String numeroTarjeta) {
         ConsultaTarjetaDB consultaDB = new ConsultaTarjetaDB();
-        ArrayList<String> numerosRegistrados = consultaDB.getNumeroTarjetas();
-        Consulta consulta = null;
-        for (int i = 0; i < numerosRegistrados.size(); i++) {
-            System.out.println("EXITO");
-            if (numerosRegistrados.get(i).equals(numeroTarjeta)) {
-                System.out.println("ENCONTRADA");
-                consulta = consultaDB.getConsulta(numeroTarjeta);                               
-                break;
-            }
+        Consulta consulta;
+        if (!isNumeroTarjetaRepetida(numeroTarjeta)) {
+            return null;
         }
-        System.out.println("No se Encontro el Numero de la Tarjeta en la DB");
+        consulta = consultaDB.getConsulta(numeroTarjeta);
         return consulta;
     }
     
     public Cancelacion verificarCancelacionLeida(String numeroTarjeta) {
         CancelacionTarjetaDB cancelacionDB = new CancelacionTarjetaDB();
-        ArrayList<String> numerosRegistrados = cancelacionDB.getNumeroTarjetas();
-        Cancelacion cancelacion = null;
-        for (int i = 0; i < numerosRegistrados.size(); i++) {           
-            if (numerosRegistrados.get(i).equals(numeroTarjeta)) {
-                cancelacion = cancelacionDB.getCancelacion(numeroTarjeta);                               
-                break;
-            }
+        Cancelacion cancelacion;
+        if (!isNumeroTarjetaRepetida(numeroTarjeta)) {
+            return null;
         }
+        cancelacion = cancelacionDB.getCancelacion(numeroTarjeta);
         return cancelacion;
     }
 

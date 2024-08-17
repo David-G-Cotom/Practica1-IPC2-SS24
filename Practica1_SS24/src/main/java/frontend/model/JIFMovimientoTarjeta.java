@@ -14,8 +14,7 @@ import javax.swing.JOptionPane;
  */
 public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
 
-    Bancario bancario;
-    MovimientoTarjeta movimiento;
+    private Bancario bancario;
     
     /**
      * Creates new form JIFMovimientoTarjeta
@@ -158,7 +157,7 @@ public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (this.camposValidos()) {
-            this.movimiento = new MovimientoTarjeta(this.txtNumeroTarjeta.getText(), this.txtFecha.getText(),
+            MovimientoTarjeta movimiento = new MovimientoTarjeta(this.txtNumeroTarjeta.getText(), this.txtFecha.getText(),
                     this.cmbTiposMovimiento.getItemAt(this.cmbTiposMovimiento.getSelectedIndex()), this.txtDescripcion.getText(),
                     this.txtEstablecimiento.getText(), Double.parseDouble(this.txtMontoEjecutado.getText()));
             if (this.bancario.verificarMovimientoLeido(movimiento)) {
@@ -175,20 +174,35 @@ public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private boolean camposValidos() {
-        if ("".equals(this.txtNumeroTarjeta.getText()) || "".equals(this.txtFecha.getText())
-                || "".equals(this.txtDescripcion.getText()) || "".equals(this.txtEstablecimiento.getText())
-                || "".equals(this.txtMontoEjecutado.getText())) {
-            JOptionPane.showMessageDialog(this, "Debe Completar TODOS los Campos del Formulario");
+        if ("".equals(this.txtNumeroTarjeta.getText()) || "".equals(this.txtFecha.getText()) || "".equals(this.txtDescripcion.getText())
+                || "".equals(this.txtEstablecimiento.getText()) || "".equals(this.txtMontoEjecutado.getText())) {
+            JOptionPane.showMessageDialog(this, "Debe Completar TODOS los Campos del Formulario", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (!this.bancario.isDouble(this.txtMontoEjecutado.getText())) {
-            JOptionPane.showMessageDialog(this, "Debe Colocar un Numero en el Campo de Monto Ejecutado");
+            JOptionPane.showMessageDialog(this, "Debe Colocar un Numero Descimal Positivo en el Campo de Monto Ejecutado", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isNumeroTarjetaValido(this.txtNumeroTarjeta.getText())) {
+            JOptionPane.showMessageDialog(this, "El Numero de Tarjeta NO es valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isNumeroTarjetaRepetida(this.txtNumeroTarjeta.getText())) {
+            JOptionPane.showMessageDialog(this, "El Numero de Tarjeta NO esta Registrada", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isFormatoFechaCorrecto(this.txtFecha.getText())) {
+            JOptionPane.showMessageDialog(this, "El Formato de Fecha NO es Correcto", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (this.cmbTiposMovimiento.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(this, "No se seleccionó un tipode Movimiento valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No se seleccionó un tipo de Movimiento valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        if (!this.bancario.isLongitudCadenaValida(this.txtDescripcion.getText(), 200)) {
+            JOptionPane.showMessageDialog(this, "La descripcion es MUY Larga", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }        
         return true;
     }
     

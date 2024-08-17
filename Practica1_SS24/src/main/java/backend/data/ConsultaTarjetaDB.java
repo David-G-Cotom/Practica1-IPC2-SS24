@@ -19,8 +19,7 @@ public class ConsultaTarjetaDB {
     
     private Connection connection = ConexionDB.getConnection();
     
-    public Consulta getConsulta(String numeroTarjeta) {
-        //SELECT * FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON tarjeta.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_tarjeta = '4256 3102 6546 1055';
+    public Consulta getConsulta(String numeroTarjeta) {        
         String query = "SELECT * FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON tarjeta.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_tarjeta = '" + numeroTarjeta + "'";
         Consulta tarjetaConsultada = null;
         try (Statement statementConsulta = this.connection.createStatement();

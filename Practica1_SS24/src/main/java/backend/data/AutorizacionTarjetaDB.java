@@ -91,7 +91,7 @@ public class AutorizacionTarjetaDB {
         try (Statement statementInsert = this.connection.createStatement()) {
             statementInsert.execute(query);
             System.out.println("Cambio de Estado de la Solicitud realizada con Exito");
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error en la Actualizacion de Estado de la Solicitud");
         }
     }
@@ -105,7 +105,7 @@ public class AutorizacionTarjetaDB {
                 estado = resulConsulta.getBoolean("estado");
             }
             System.out.println("Obtencion de Estado de la Solicitud realizada con Exito");
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Error al Obtener el Estado de la Solicitud");
         }
         return estado;

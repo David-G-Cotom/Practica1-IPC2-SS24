@@ -15,11 +15,14 @@ import javax.swing.JOptionPane;
  */
 public class JIFCancelacionTarjeta extends javax.swing.JInternalFrame {
 
+    private Bancario bancario;
+    
     /**
      * Creates new form JIFCancelacionTarjeta
      */
     public JIFCancelacionTarjeta() {
         initComponents();
+        this.bancario = new Bancario();
     }
 
     /**
@@ -188,34 +191,27 @@ public class JIFCancelacionTarjeta extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelacionActionPerformed
-        if (this.txtNumeroTarjeta.equals("")) {
-            JOptionPane.showMessageDialog(this, "Debe Completar el Campos del Formulario");
-        } else {
-            Bancario bancario = new Bancario();
-            if (bancario.isNumeroTarjetaValido(this.txtNumeroTarjeta.getText())) {
-                Cancelacion cancelacion = bancario.verificarCancelacionLeida(this.txtNumeroTarjeta.getText());
-                if (cancelacion != null) {
-                    if (cancelacion.getEstadoTarjeta()) {
-                        if (cancelacion.getSaldoTarjeta() >= 0) {
-                            this.lblNumeroTarjeta.setText(cancelacion.getNumeroTarjeta());
-                            this.lblNombre.setText(cancelacion.getNombrePropietario());
-                            this.lblDireccion.setText(cancelacion.getDireccionPropietario());
-                            this.lblSalario.setText(cancelacion.getSalarioPropietario());
-                            this.confirmacionDialog.setVisible(true);
-                            this.confirmacionDialog.setLocationRelativeTo(this);
-                            this.confirmacionDialog.setResizable(false);                            
-                        } else {
-                            JOptionPane.showMessageDialog(this, "No se puede Cancelar la Tarjeta porque hay Saldo Pendiente");
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "No se puede Cancelar la Tarjeta porque ya se Encontraba Cancelada");
-                    }
+        if (this.isCamposValidos()) {
+            Cancelacion cancelacion = bancario.verificarCancelacionLeida(this.txtNumeroTarjeta.getText());
+            if (cancelacion != null) {
+                if (!cancelacion.getEstadoTarjeta()) {
+                    JOptionPane.showMessageDialog(this, "No se puede Cancelar la Tarjeta porque ya esta Cancelada");
+                    return;
                 }
-            } else {
-                JOptionPane.showMessageDialog(this, "Debe Ingresar un Numero de Tarjeta Valido");
+                if (!(cancelacion.getSaldoTarjeta() >= 0)) {
+                    JOptionPane.showMessageDialog(this, "No se puede Cancelar la Tarjeta porque hay Saldo Pendiente");
+                    return;
+                }
+                this.lblNumeroTarjeta.setText(cancelacion.getNumeroTarjeta());
+                this.lblNombre.setText(cancelacion.getNombrePropietario());
+                this.lblDireccion.setText(cancelacion.getDireccionPropietario());
+                this.lblSalario.setText(cancelacion.getSalarioPropietario());
+                this.confirmacionDialog.setVisible(true);
+                this.confirmacionDialog.setLocationRelativeTo(this);
+                this.confirmacionDialog.setResizable(false);
             }
             this.txtNumeroTarjeta.setText("");
-        }
+        }            
     }//GEN-LAST:event_btnCancelacionActionPerformed
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
@@ -230,7 +226,22 @@ public class JIFCancelacionTarjeta extends javax.swing.JInternalFrame {
         this.confirmacionDialog.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-
+    private boolean isCamposValidos() {
+        if (this.txtNumeroTarjeta.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Debe Completar el Campo del Formulario", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isNumeroTarjetaValido(this.txtNumeroTarjeta.getText())) {
+            JOptionPane.showMessageDialog(this, "El Numero de Tarjeta ingresado NO es Valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isNumeroTarjetaRepetida(this.txtNumeroTarjeta.getText())) {
+            JOptionPane.showMessageDialog(this, "El Numero de Tarjeta NO esta Registrada en el Sistema", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelacion;
     private javax.swing.JButton btnCancelar;

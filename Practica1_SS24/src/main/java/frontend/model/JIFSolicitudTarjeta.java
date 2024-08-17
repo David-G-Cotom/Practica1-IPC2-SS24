@@ -14,8 +14,7 @@ import javax.swing.JOptionPane;
  */
 public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
 
-    Bancario bancario;
-    SolicitudTarjeta solicitud;
+    private Bancario bancario;
     
     /**
      * Creates new form JIFSolicitudTarjeta
@@ -156,7 +155,7 @@ public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (this.camposValidos()) {
-            this.solicitud = new SolicitudTarjeta(Integer.parseInt(this.txtNumeroSolicitud.getText()), this.txtFecha.getText(),
+            SolicitudTarjeta solicitud = new SolicitudTarjeta(Integer.parseInt(this.txtNumeroSolicitud.getText()), this.txtFecha.getText(),
                     this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()), this.txtNombreSolicitante.getText(),
                     Double.parseDouble(this.txtSalarioSolicitante.getText()), this.txtDireccionSolicitante.getText());
             if (this.bancario.verificarSolicitudLeida(solicitud)) {
@@ -176,19 +175,35 @@ public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
         if ("".equals(this.txtNumeroSolicitud.getText()) || "".equals(this.txtFecha.getText())
                 || "".equals(this.txtNombreSolicitante.getText()) || "".equals(this.txtSalarioSolicitante.getText())
                 || "".equals(this.txtDireccionSolicitante.getText())) {
-            JOptionPane.showMessageDialog(this, "Debe Completar TODOS los Campos del Formulario");
+            JOptionPane.showMessageDialog(this, "Debe Completar TODOS los Campos del Formulario", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (!this.bancario.isDouble(this.txtSalarioSolicitante.getText())) {
-            JOptionPane.showMessageDialog(this, "Debe Colocar un Numero DECIMAL en el Campo de Salario del Solicitante");
+            JOptionPane.showMessageDialog(this, "Debe Colocar un Numero Decimal Positivo en el Campo de Salario del Solicitante", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (!this.bancario.isInteger(this.txtNumeroSolicitud.getText())) {
-            JOptionPane.showMessageDialog(this, "Debe Colocar un Numero Entero en el Campo de Numero de Solicitud");
+            JOptionPane.showMessageDialog(this, "Debe Colocar un Numero Entero Positivo en el Campo de Numero de Solicitud", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (this.bancario.isNumeroSolicitudRepetida(Integer.parseInt(this.txtNumeroSolicitud.getText()))) {
+            JOptionPane.showMessageDialog(this, "NO puede Ingresar un Numero de Solicitud Repetida", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isFormatoFechaCorrecto(this.txtFecha.getText())) {
+            JOptionPane.showMessageDialog(this, "El Formato de Fecha NO es Correcto", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (this.cmbTiposTarjeta.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(this, "No se seleccionó un Laberinto valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No se seleccionó un Tipo de Tarjeta Valida", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isLongitudCadenaValida(this.txtNombreSolicitante.getText(), 100)) {
+            JOptionPane.showMessageDialog(this, "El Nombre de Solicitante es MUY Largo", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isLongitudCadenaValida(this.txtDireccionSolicitante.getText(), 150)) {
+            JOptionPane.showMessageDialog(this, "La Direccion del Solicitante es MUY Largo", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;

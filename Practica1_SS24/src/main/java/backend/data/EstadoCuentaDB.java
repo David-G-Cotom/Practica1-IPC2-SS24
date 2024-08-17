@@ -21,7 +21,7 @@ public class EstadoCuentaDB {
     private Connection connection = ConexionDB.getConnection();
     
     public ArrayList<EstadoCuenta> getEstadosCuenta(String restoQuery) {
-        String query = "SELECT * FROM tarjeta INNER JOIN tipo_tarjeta ON tipo_tarjeta = id_tipo INNER JOIN cliente ON tarjeta.id_cliente = cliente.id_cliente INNER JOIN movimiento ON tarjeta.numero_tarjeta = movimiento.numero_tarjeta  WHERE estado = true";
+        String query = "SELECT * FROM tarjeta INNER JOIN tipo_tarjeta ON tipo_tarjeta = id_tipo INNER JOIN cliente ON tarjeta.id_cliente = cliente.id_cliente INNER JOIN movimiento ON tarjeta.numero_tarjeta = movimiento.numero_tarjeta  WHERE estado = true" + restoQuery;
         System.out.println(query);
         String numeroTarjetaAnterior = "";
         ArrayList<EstadoCuenta> estadosCuenta = new ArrayList<>();

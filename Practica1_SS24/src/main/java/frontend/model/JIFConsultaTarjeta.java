@@ -14,11 +14,14 @@ import javax.swing.JOptionPane;
  */
 public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
 
+    private Bancario bancario;
+    
     /**
      * Creates new form JIFConsultaTarjeta
      */
     public JIFConsultaTarjeta() {
         initComponents();
+        this.bancario = new Bancario();
     }
 
     /**
@@ -171,33 +174,39 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        if (this.txtNumeroTarjeta.equals("")) {
-            JOptionPane.showMessageDialog(this, "Debe Completar el Campos del Formulario");
-        } else {
-            Bancario bancario = new Bancario();
-            if (bancario.isNumeroTarjetaValido(this.txtNumeroTarjeta.getText())) {
-                Consulta consulta = bancario.verificarConsultaTarjeta(this.txtNumeroTarjeta.getText());
-                if (consulta != null) {
-                    this.lblNumeroTarjeta.setText(consulta.getNumeroTarjeta());
-                    this.lblTipoTarjeta.setText(consulta.getTipoTarjeta());
-                    this.lblLimite.setText(consulta.getLimiteCredito() + "");
-                    this.lblNombreCliente.setText(consulta.getNombreCliente());
-                    this.lblDireccionCliente.setText(consulta.getDireccionCliente());
-                    if (consulta.isEstadoTarjeta()) {
-                        this.lblEstadoTarjeta.setText("ACTIVA");
-                    } else {
-                        this.lblEstadoTarjeta.setText("CANCELADA");
-                    }                    
+        if (this.isCamposValidos()) {
+            Consulta consulta = bancario.verificarConsultaTarjeta(this.txtNumeroTarjeta.getText());
+            if (consulta != null) {
+                this.lblNumeroTarjeta.setText(consulta.getNumeroTarjeta());
+                this.lblTipoTarjeta.setText(consulta.getTipoTarjeta());
+                this.lblLimite.setText(consulta.getLimiteCredito() + "");
+                this.lblNombreCliente.setText(consulta.getNombreCliente());
+                this.lblDireccionCliente.setText(consulta.getDireccionCliente());
+                if (consulta.isEstadoTarjeta()) {
+                    this.lblEstadoTarjeta.setText("ACTIVA");
                 } else {
-                    JOptionPane.showMessageDialog(this, "Numero de Tarjeta NO Encontrado en la DB");
-                }                
-            } else {
-                JOptionPane.showMessageDialog(this, "Numero de Tarjeta no Valido");
+                    this.lblEstadoTarjeta.setText("CANCELADA");
+                }                    
             }
             this.txtNumeroTarjeta.setText("");
-        }
+        }            
     }//GEN-LAST:event_btnConsultarActionPerformed
 
+    private boolean isCamposValidos() {
+        if (this.txtNumeroTarjeta.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Debe Completar el Campo del Formulario", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isNumeroTarjetaValido(this.txtNumeroTarjeta.getText())) {
+            JOptionPane.showMessageDialog(this, "El Numero de Tarjeta ingresado NO es Valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isNumeroTarjetaRepetida(this.txtNumeroTarjeta.getText())) {
+            JOptionPane.showMessageDialog(this, "El Numero de Tarjeta NO esta Registrada en el Sistema", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultar;

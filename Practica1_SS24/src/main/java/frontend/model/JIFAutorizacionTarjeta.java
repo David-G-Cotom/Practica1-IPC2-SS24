@@ -13,11 +13,14 @@ import javax.swing.JOptionPane;
  */
 public class JIFAutorizacionTarjeta extends javax.swing.JInternalFrame {
 
+    private Bancario bancario;
+    
     /**
      * Creates new form JIFAutorizacionTarjeta
      */
     public JIFAutorizacionTarjeta() {
         initComponents();
+        this.bancario = new Bancario();
     }
 
     /**
@@ -79,19 +82,31 @@ public class JIFAutorizacionTarjeta extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAutorizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutorizarActionPerformed
-        if (this.txtNumeroSolicitud.equals("")) {
-            JOptionPane.showMessageDialog(this, "Debe Completar el Campos del Formulario");
-        } else {
-            Bancario bancario = new Bancario();
-            if (bancario.isInteger(this.txtNumeroSolicitud.getText())) {
-                bancario.verificarAutorizacionLeida(Integer.parseInt(this.txtNumeroSolicitud.getText()));                         
+        if (this.isCamposValidos()) {
+            if (bancario.verificarAutorizacionLeida(Integer.parseInt(this.txtNumeroSolicitud.getText()))) {
+                JOptionPane.showMessageDialog(this, "Autorizacion Realizada con Exito");
             } else {
-                JOptionPane.showMessageDialog(this, "Debe Ingresar un Numero entero");
+                JOptionPane.showMessageDialog(this, "No se pudo realizar la Autorizacion");
             }
             this.txtNumeroSolicitud.setText("");
-        }
+        }            
     }//GEN-LAST:event_btnAutorizarActionPerformed
 
+    private boolean isCamposValidos() {
+        if (this.txtNumeroSolicitud.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Debe Completar el Campos del Formulario", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isInteger(this.txtNumeroSolicitud.getText())) {
+            JOptionPane.showMessageDialog(this, "El Numero de Solicitud ingresado NO es Valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!this.bancario.isNumeroSolicitudRepetida(Integer.parseInt(this.txtNumeroSolicitud.getText()))) {
+            JOptionPane.showMessageDialog(this, "El Numero de Solicitud NO esta Registrada en el Sistema", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAutorizar;

@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -22,7 +23,10 @@ public class MovimientoTarjetaDB {
 
     public MovimientoTarjetaDB(MovimientoTarjeta movimiento) {
         this.movimiento = movimiento;
-    }        
+    }  
+
+    public MovimientoTarjetaDB() {
+    }
     
     public void crearRegistro() {
         String query = "INSERT INTO movimiento (fecha_movimiento, numero_tarjeta, descripcion, establecimiento, monto, tipo_movimiento) VALUES ('" + movimiento.getFechaOperacion() + "', '" + movimiento.getNumeroTarjeta() + "', '" + movimiento.getDescripcion() + "', '" + movimiento.getEstablecimiento() + "', " + movimiento.getMontoTransferido() + ", '" + movimiento.getTipoMovimiento() + "')";        
@@ -63,6 +67,21 @@ public class MovimientoTarjetaDB {
             System.out.println("Error al Obtener el Estado de la Tarjeta");
         }
         return estado;
+    }
+    
+    public ArrayList<String> getNumerosTarjeta() {
+        String query = "SELECT numero_tarjeta FROM tarjeta";
+        ArrayList<String> listaNumerosTarjetas = new ArrayList<>();
+        try (Statement statementConsulta = this.connection.createStatement();
+                ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
+            while (resulConsulta.next()) {
+                String numeroTarjeta = resulConsulta.getString("numero_tarjeta");
+                listaNumerosTarjetas.add(numeroTarjeta);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar todos los Numeros de Tarjetas en la BD");
+        }
+        return listaNumerosTarjetas;
     }
     
 }

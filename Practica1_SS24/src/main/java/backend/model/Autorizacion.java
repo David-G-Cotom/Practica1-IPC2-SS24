@@ -75,12 +75,14 @@ public class Autorizacion {
         return (this.salarioCliente * this.PORCENTAJE_BANCARIO) > this.limiteCreditoTipo;
     }
 
-    public boolean autorizarTarjeta() {
+    public boolean exitoEnAutorizarTarjeta() {
         if (this.isLimiteCreditoAprobado()) {
             this.crearNumeroTarjeta();
             this.tarjeta = new Tarjeta(this.numeroTarjeta, this.tipoTarjeta, true, 0, (this.salarioCliente * this.PORCENTAJE_BANCARIO), 0);
+            System.out.println("Autorizacion Aceptada");
             return true;
         }
+        System.out.println("Autorizacion Rechazada por Limite de Credito");
         return false;
     }
 

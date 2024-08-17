@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
 
     private final DefaultTableModel modeloTabla;
-    Bancario bancario;
+    private Bancario bancario;
 
     /**
      * Creates new form JIFListadoTarjetas
@@ -188,8 +188,14 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
                 String restoQuery = filtro.filtrarDatos();
                 ListadoTarjetasDB listadoTarjetas = new ListadoTarjetasDB();
                 ArrayList<ListadoTarjetas> datos = listadoTarjetas.getListadoTarjetas(restoQuery);                
-                vaciarTabla();
+                if (datos.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No hay Datos por Mostrar");
+                    vaciarTabla();
+                    vaciarCampos();
+                    return;
+                }                                
                 llenarTabla(datos);
+                vaciarCampos();
             } else {
                 JOptionPane.showMessageDialog(this, "Consulta de Listado de Tarjetas NO Valido para su Ejecucion. Vuelva a revisar los Campos Rellenados");
             }
@@ -208,7 +214,8 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
         return true;
     }
     
-    private void llenarTabla(ArrayList<ListadoTarjetas> datos) {                
+    private void llenarTabla(ArrayList<ListadoTarjetas> datos) {
+        vaciarTabla();
         Object[] fila;
         for (int i = 0; i < datos.size(); i++) {
             fila = new Object[7];
@@ -232,6 +239,12 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
                 this.modeloTabla.removeRow(0);           
             }            
         }
+    }
+    
+    private void vaciarCampos() {
+        this.txtFechaFin.setText("");
+        this.txtFechaInicio.setText("");
+        this.txtLimiteTarjeta.setText("");
     }
     
     private void iniciarTablero() {
