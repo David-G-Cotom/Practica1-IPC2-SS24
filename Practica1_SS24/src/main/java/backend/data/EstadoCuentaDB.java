@@ -6,6 +6,8 @@ package backend.data;
 
 import backend.model.EstadoCuenta;
 import backend.model.MovimientoTarjeta;
+import backend.enums.TipoMovimientos;
+import backend.enums.TipoTarjetas;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,7 +40,7 @@ public class EstadoCuentaDB {
                 String nombreClietne = resulConsulta.getString("nombre");
                 String direccionCliente = resulConsulta.getString("direccion");
                 ArrayList<MovimientoTarjeta> movimientos = getMovimienotsTarjeta(numeroTarjeta);                
-                EstadoCuenta registroCuenta = new EstadoCuenta(numeroTarjeta, tipoTarjeta, nombreClietne, direccionCliente, movimientos, interesTipoTarjeta);
+                EstadoCuenta registroCuenta = new EstadoCuenta(numeroTarjeta, TipoTarjetas.valueOf(tipoTarjeta), nombreClietne, direccionCliente, movimientos, interesTipoTarjeta);
                 estadosCuenta.add(registroCuenta);            
             }
         } catch (SQLException e) {
@@ -58,7 +60,7 @@ public class EstadoCuentaDB {
                 String descripcion = resulConsulta.getString("descripcion");
                 String establecimiento = resulConsulta.getString("establecimiento");
                 double montoEjecutado = resulConsulta.getDouble("monto");
-                MovimientoTarjeta registroCuenta = new MovimientoTarjeta(numeroTarjeta, fechaMovimiento, tipoMovimiento, descripcion, establecimiento,  montoEjecutado);
+                MovimientoTarjeta registroCuenta = new MovimientoTarjeta(numeroTarjeta, fechaMovimiento, TipoMovimientos.valueOf(tipoMovimiento), descripcion, establecimiento,  montoEjecutado);
                 movimientos.add(registroCuenta);            
             }
         } catch (SQLException e) {

@@ -5,8 +5,10 @@
 package frontend.model;
 
 import backend.data.ListadoTarjetasDB;
+import backend.enums.EstadosTarjeta;
 import backend.model.Bancario;
 import backend.model.ListadoTarjetas;
+import backend.enums.TipoTarjetas;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -177,13 +179,25 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
         if (camposValidos()) {
             double montoLimite;
+            ListadoTarjetas filtro;
             if (this.bancario.isDouble(this.txtLimiteTarjeta.getText())) {
                 montoLimite = Double.parseDouble(this.txtLimiteTarjeta.getText());
             } else {
                 montoLimite = -1;
             }
-            ListadoTarjetas filtro = new ListadoTarjetas(this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()), montoLimite,
-                    this.txtFechaInicio.getText(), this.txtFechaFin.getText(), this.cmbEstadoTarjeta.getItemAt(this.cmbEstadoTarjeta.getSelectedIndex()));
+            filtro = new ListadoTarjetas(montoLimite, this.txtFechaInicio.getText(), this.txtFechaFin.getText());
+            if (this.bancario.isTipoTarjetaValido(this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()))) {
+                filtro.setTipoTarjeta(TipoTarjetas.valueOf(this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex())));
+                filtro.setHayTipoTarjeta(true);
+            } else {
+                filtro.setHayTipoTarjeta(false);
+            }
+            if (this.bancario.isEstadoTarjetaValido(this.cmbEstadoTarjeta.getItemAt(this.cmbEstadoTarjeta.getSelectedIndex()))) {
+                filtro.setEstadoTarjeta(EstadosTarjeta.valueOf(this.cmbEstadoTarjeta.getItemAt(this.cmbEstadoTarjeta.getSelectedIndex())));
+                filtro.setHayEstadoTarjeta(true);
+            } else {
+                filtro.setHayEstadoTarjeta(false);
+            }
             if (this.bancario.verificarFiltroListadoTarjetas(filtro)) {
                 String restoQuery = filtro.filtrarDatos();
                 ListadoTarjetasDB listadoTarjetas = new ListadoTarjetasDB();

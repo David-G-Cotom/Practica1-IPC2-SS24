@@ -4,11 +4,15 @@
  */
 package backend.model;
 
+import backend.enums.TipoMovimientos;
+import backend.enums.TipoTarjetas;
 import backend.data.AutorizacionTarjetaDB;
 import backend.data.CancelacionTarjetaDB;
 import backend.data.ConsultaTarjetaDB;
 import backend.data.MovimientoTarjetaDB;
 import backend.data.SolicitudTarjetaDB;
+import backend.enums.EstadosSolicitud;
+import backend.enums.EstadosTarjeta;
 import java.util.ArrayList;
 
 /**
@@ -17,10 +21,6 @@ import java.util.ArrayList;
  */
 public class Bancario {
 
-    private final String[] TIPO_TARJETAS = {"NACIONAL", "REGIONAL", "INTERNACIONAL"};
-    private final String[] TIPO_MOVIMIENTOS = {"CARGO", "ABONO"};
-    private final String[] ESTADO_TARJETA = {"AUTORIZADA", "ACTIVA", "CANCELADA"};
-    private final String[] ESTADO_SOLICITUD = {"APROBADA", "AUTORIZADA", "RECHAZADA"};
     private String pathCarpeta;
 
     public String getPathCarpeta() {
@@ -95,10 +95,11 @@ public class Bancario {
         String dd = datos[0];
         return yyyy + "-" + mm + "-" + dd;
     }
-
+    
     public boolean isTipoTarjetaValido(String tipoTarjeta) {
-        for (int i = 0; i < TIPO_TARJETAS.length; i++) {
-            if (TIPO_TARJETAS[i].equalsIgnoreCase(tipoTarjeta)) {
+        TipoTarjetas[] tipos = TipoTarjetas.values();
+        for (int i = 0; i < tipos.length; i++) {
+            if (tipos[i].toString().equals(tipoTarjeta)) {
                 System.out.println("Tipo de Tarjeta Valida");
                 return true;
             }
@@ -128,13 +129,14 @@ public class Bancario {
     }
 
     public boolean isTipoMovimientoValido(String tipoMovimiento) {
-        for (int i = 0; i < TIPO_MOVIMIENTOS.length; i++) {
-            if (TIPO_MOVIMIENTOS[i].equalsIgnoreCase(tipoMovimiento)) {
+        TipoMovimientos[] tipos = TipoMovimientos.values();
+        for (int i = 0; i < tipos.length; i++) {
+            if (tipos[i].toString().equals(tipoMovimiento)) {
                 System.out.println("Tipo de Movimiento Valido");
                 return true;
             }
         }
-        System.out.println("Tipode Movimiento Invalido");
+        System.out.println("Tipo de Movimiento Invalido");
         return false;
     }
 
@@ -172,8 +174,9 @@ public class Bancario {
     }
 
     public boolean isEstadoTarjetaValido(String estadoTarjeta) {
-        for (int i = 0; i < ESTADO_TARJETA.length; i++) {
-            if (ESTADO_TARJETA[i].equalsIgnoreCase(estadoTarjeta)) {
+        EstadosTarjeta[] estados = EstadosTarjeta.values();
+        for (int i = 0; i < estados.length; i++) {
+            if (estados[i].toString().equals(estadoTarjeta)) {
                 System.out.println("Estado de Tarjeta Valido");
                 return true;
             }
@@ -183,8 +186,9 @@ public class Bancario {
     }
 
     public boolean isEstadoSolicitudValido(String estadoSolicitud) {
-        for (int i = 0; i < ESTADO_SOLICITUD.length; i++) {
-            if (ESTADO_SOLICITUD[i].equalsIgnoreCase(estadoSolicitud)) {
+        EstadosSolicitud[] estados = EstadosSolicitud.values();
+        for (int i = 0; i < estados.length; i++) {
+            if (estados[i].toString().equals(estadoSolicitud)) {
                 System.out.println("Estado de Solicitud Valido");
                 return true;
             }
@@ -203,8 +207,7 @@ public class Bancario {
     }
 
     public boolean verificarSolicitudLeida(SolicitudTarjeta solicitud) {
-        if (!isNumeroSolicitudRepetida(solicitud.getNumeroSolicitud()) && isFormatoFechaCorrecto(solicitud.getFechaSolicitud())
-                && isTipoTarjetaValido(solicitud.getTipoTarjetaSolicitada())) {
+        if (!isNumeroSolicitudRepetida(solicitud.getNumeroSolicitud()) && isFormatoFechaCorrecto(solicitud.getFechaSolicitud())) {
             solicitud.setNombreSolicitante(this.quitarComillas(solicitud.getNombreSolicitante()));
             solicitud.setDireccionSolicitante(this.quitarComillas(solicitud.getDireccionSolicitante()));
             solicitud.setFechaSolicitud(this.transformarFormatoFecha(this.quitarComillas(solicitud.getFechaSolicitud())));
@@ -221,8 +224,7 @@ public class Bancario {
     }
 
     public boolean verificarMovimientoLeido(MovimientoTarjeta movimiento) {
-        if (isNumeroTarjetaValido(movimiento.getNumeroTarjeta()) && isFormatoFechaCorrecto(movimiento.getFechaOperacion())
-                && isTipoMovimientoValido(movimiento.getTipoMovimiento())) {
+        if (isNumeroTarjetaValido(movimiento.getNumeroTarjeta()) && isFormatoFechaCorrecto(movimiento.getFechaOperacion())) {
             movimiento.setDescripcion(this.quitarComillas(movimiento.getDescripcion()));
             movimiento.setEstablecimiento(this.quitarComillas(movimiento.getEstablecimiento()));
             movimiento.setFechaOperacion(this.transformarFormatoFecha(this.quitarComillas(movimiento.getFechaOperacion())));
@@ -255,23 +257,11 @@ public class Bancario {
             if (!isNumeroTarjetaRepetida(filtro.getNumeroTarjeta())) {
                 return false;
             }
-        }
-        if (!filtro.getTipoTarjeta().equals("")) {
-            if (!isTipoTarjetaValido(filtro.getTipoTarjeta())) {
-                System.out.println("Tipo de Tarjeta Invalida");
-                return false;
-            }
         }        
         return true;        
     }
 
     public boolean verificarFiltroListadoTarjetas(ListadoTarjetas filtro) {
-        if (!filtro.getTipoTarjeta().equals("")) {
-            if (!isTipoTarjetaValido(filtro.getTipoTarjeta())) {
-                System.out.println("Tipo de Tarjeta Invalida");
-                return false;
-            }
-        }
         if (!filtro.getFechaInicio().equals("")) {
             /*if (!isFormatoFechaCorrecto(filtro.getFechaInicio())) {
                 System.out.println("Formato de Fecha Invalido");
@@ -287,12 +277,6 @@ public class Bancario {
             }
             filtro.setFechaFinal(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaFinal())));*/
             filtro.setFechaFinal("");
-        }
-        if (!filtro.getEstadoTarjeta().equals("")) {
-            if (!isEstadoTarjetaValido(filtro.getEstadoTarjeta())) {
-                System.out.println("Estado de Tarjeta Invalido");
-                return false;
-            }
         }        
         return true;        
     }
@@ -313,18 +297,6 @@ public class Bancario {
             }
             filtro.setFechaFin(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaFin())));*/
             filtro.setFechaFin("");
-        }
-        if (!filtro.getTipoTarjeta().equals("")) {
-            if (!isTipoTarjetaValido(filtro.getTipoTarjeta())) {
-                System.out.println("Tipo de Tarjeta Invalida");
-                return false;
-            }
-        }
-        if (!filtro.getEstadoSolicitud().equals("")) {
-            if (!isEstadoSolicitudValido(filtro.getEstadoSolicitud())) {
-                System.out.println("Estado de Solicitud Invalido");
-                return false;
-            }
         }        
         return true;
     }

@@ -4,6 +4,8 @@
  */
 package backend.model;
 
+import backend.enums.TipoTarjetas;
+
 /**
  *
  * @author Carlos Cotom
@@ -12,12 +14,12 @@ public class SolicitudTarjeta {
     
     private int numeroSolicitud;
     private String fechaSolicitud;
-    private String tipoTarjetaSolicitada;
+    private TipoTarjetas tipoTarjetaSolicitada;
     private String nombreSolicitante;
     private double salarioSolicitante;
     private String direccionSolicitante;
 
-    public SolicitudTarjeta(int numeroSolicitud, String fechaSolicitud, String tipoTarjetaSolicitada, String nombreSolicitante, double salarioSolicitante, String direccionSolicitante) {
+    public SolicitudTarjeta(int numeroSolicitud, String fechaSolicitud, TipoTarjetas tipoTarjetaSolicitada, String nombreSolicitante, double salarioSolicitante, String direccionSolicitante) {
         this.numeroSolicitud = numeroSolicitud;
         this.fechaSolicitud = fechaSolicitud;
         this.tipoTarjetaSolicitada = tipoTarjetaSolicitada;
@@ -42,11 +44,11 @@ public class SolicitudTarjeta {
         this.fechaSolicitud = fechaSolicitud;
     }
 
-    public String getTipoTarjetaSolicitada() {
+    public TipoTarjetas getTipoTarjetaSolicitada() {
         return tipoTarjetaSolicitada;
     }
 
-    public void setTipoTarjetaSolicitada(String tipoTarjetaSolicitada) {
+    public void setTipoTarjetaSolicitada(TipoTarjetas tipoTarjetaSolicitada) {
         this.tipoTarjetaSolicitada = tipoTarjetaSolicitada;
     }
 

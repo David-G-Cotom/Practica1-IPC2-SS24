@@ -4,6 +4,7 @@
  */
 package backend.model;
 
+import backend.enums.TipoTarjetas;
 import java.util.ArrayList;
 
 /**
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 public class EstadoCuenta {
     
     private String numeroTarjeta;
-    private String tipoTarjeta;
+    private TipoTarjetas tipoTarjeta;
     private String nombreCliente;
     private String direccionCliente;
     private double interesTipoTarjeta;
@@ -22,7 +23,7 @@ public class EstadoCuenta {
     private double intereses;
     private double saldoTotal;
 
-    public EstadoCuenta(String numeroTarjeta, String tipoTarjeta, String nombreClietne, String direccionCliente, ArrayList<MovimientoTarjeta> movimientos, double interesTipoTarjeta) {
+    public EstadoCuenta(String numeroTarjeta, TipoTarjetas tipoTarjeta, String nombreClietne, String direccionCliente, ArrayList<MovimientoTarjeta> movimientos, double interesTipoTarjeta) {
         this.numeroTarjeta = numeroTarjeta;
         this.tipoTarjeta = tipoTarjeta;
         this.nombreCliente = nombreClietne;
@@ -39,11 +40,11 @@ public class EstadoCuenta {
         this.numeroTarjeta = numeroTarjeta;
     }
 
-    public String getTipoTarjeta() {
+    public TipoTarjetas getTipoTarjeta() {
         return tipoTarjeta;
     }
 
-    public void setTipoTarjeta(String tipoTarjeta) {
+    public void setTipoTarjeta(TipoTarjetas tipoTarjeta) {
         this.tipoTarjeta = tipoTarjeta;
     }    
     

@@ -4,7 +4,9 @@
  */
 package backend.data;
 
+import backend.enums.EstadosTarjeta;
 import backend.model.ListadoTarjetas;
+import backend.enums.TipoTarjetas;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,13 +29,19 @@ public class ListadoTarjetasDB {
                 ResultSet resulConsulta = statementConsulta.executeQuery(query)) {            
             while (resulConsulta.next()) {                
                 String tipoTarjeta = resulConsulta.getString("tipo");
-                String estadoTarjeta = resulConsulta.getString("estado");
+                boolean estadoTarjeta = resulConsulta.getBoolean("estado");
                 String numeroTarjeta = resulConsulta.getString("numero_tarjeta");
                 double limiteCredito = resulConsulta.getDouble("tarjeta.limite_credito");
                 String nombreCliente = resulConsulta.getString("nombre");
                 String direccionCliente = resulConsulta.getString("direccion");
                 String fechaCambioEstado = resulConsulta.getString("fecha_cambio_estado");
-                ListadoTarjetas registroTarjeta = new ListadoTarjetas(tipoTarjeta, estadoTarjeta, numeroTarjeta, limiteCredito, nombreCliente, direccionCliente, fechaCambioEstado);
+                EstadosTarjeta estado;
+                if (estadoTarjeta) {
+                    estado = EstadosTarjeta.ACTIVA;
+                } else {
+                    estado = EstadosTarjeta.CANCELADA;
+                }
+                ListadoTarjetas registroTarjeta = new ListadoTarjetas(TipoTarjetas.valueOf(tipoTarjeta), estado, numeroTarjeta, limiteCredito, nombreCliente, direccionCliente, fechaCambioEstado);
                 listadoTarjetas.add(registroTarjeta);            
             }
         } catch (SQLException e) {

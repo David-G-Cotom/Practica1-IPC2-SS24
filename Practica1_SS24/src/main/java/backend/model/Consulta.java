@@ -4,6 +4,8 @@
  */
 package backend.model;
 
+import backend.enums.EstadosTarjeta;
+import backend.enums.TipoTarjetas;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,15 +18,15 @@ import java.io.IOException;
 public class Consulta {
     
     private String numeroTarjeta;
-    private String tipoTarjeta;
+    private TipoTarjetas tipoTarjeta;
     private double limiteCredito;
     private String nombreCliente;
     private String direccionCliente;
-    private boolean estadoTarjeta;
+    private EstadosTarjeta estadoTarjeta;
     private String pathCarpeta;
     private File file;
 
-    public Consulta(String numeroTarjeta, String tipoTarjeta, double limiteCredito, String nombreCliente, String direccionCliente, boolean estadoTarjeta) {
+    public Consulta(String numeroTarjeta, TipoTarjetas tipoTarjeta, double limiteCredito, String nombreCliente, String direccionCliente, EstadosTarjeta estadoTarjeta) {
         this.numeroTarjeta = numeroTarjeta;
         this.tipoTarjeta = tipoTarjeta;
         this.limiteCredito = limiteCredito;
@@ -41,11 +43,11 @@ public class Consulta {
         this.numeroTarjeta = numeroTarjeta;
     }
 
-    public String getTipoTarjeta() {
+    public TipoTarjetas getTipoTarjeta() {
         return tipoTarjeta;
     }
 
-    public void setTipoTarjeta(String tipoTarjeta) {
+    public void setTipoTarjeta(TipoTarjetas tipoTarjeta) {
         this.tipoTarjeta = tipoTarjeta;
     }
 
@@ -73,11 +75,11 @@ public class Consulta {
         this.direccionCliente = direccionCliente;
     }
 
-    public boolean isEstadoTarjeta() {
+    public EstadosTarjeta isEstadoTarjeta() {
         return estadoTarjeta;
     }
 
-    public void setEstadoTarjeta(boolean estadoTarjeta) {
+    public void setEstadoTarjeta(EstadosTarjeta estadoTarjeta) {
         this.estadoTarjeta = estadoTarjeta;
     }
 
@@ -134,18 +136,12 @@ public class Consulta {
     
     private String generarContenido(String data) {
         data += "\n<h3>Consulta de Tarjeta con Numero: " + numeroTarjeta + "</h3>";
-        String estado;
-        if (estadoTarjeta) {
-            estado = "ACTIVA";
-        } else {
-            estado = "CANCELADA";
-        }
         data += "\n<p>Numero de Tarjeta: " + numeroTarjeta + "</p>"
-                + "\n<p>Tipo de Tarjeta: " + tipoTarjeta + "</p>"
+                + "\n<p>Tipo de Tarjeta: " + tipoTarjeta.toString() + "</p>"
                 + "\n<p>Limite de Credito: " + limiteCredito + "</p>"
                 + "\n<p>Nombre de Propieteario: " + nombreCliente + "</p>"
                 + "\n<p>Direccion del Propoietario: " + direccionCliente + " </p>"
-                + "\n<p>Estado de la Tarjeta: " + estado + " </p>";
+                + "\n<p>Estado de la Tarjeta: " + estadoTarjeta.toString() + " </p>";
         return data;
     }
     

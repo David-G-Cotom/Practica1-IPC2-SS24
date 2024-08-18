@@ -4,6 +4,8 @@
  */
 package backend.model;
 
+import backend.enums.EstadosTarjeta;
+import backend.enums.TipoTarjetas;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,11 +18,11 @@ import java.util.ArrayList;
  */
 public class ListadoTarjetas {
 
-    private String tipoTarjeta;
+    private TipoTarjetas tipoTarjeta;
     private double limiteMinimo;
     private String fechaInicio;
     private String fechaFinal;
-    private String estadoTarjeta;
+    private EstadosTarjeta estadoTarjeta;
     private ArrayList<ListadoTarjetas> datosTarjetas;
     private String numeroTarjeta;
     private double limiteCreditoTarjeta;
@@ -28,16 +30,16 @@ public class ListadoTarjetas {
     private String direccionCliente;
     private String fechaCambioEstado;
     private File file;
+    private boolean hayTipoTarjeta;
+    private boolean hayEstadoTarjeta;
 
-    public ListadoTarjetas(String tipoTarjeta, double limiteMinimo, String fechaInicio, String fechaFinal, String estado) {
-        this.tipoTarjeta = tipoTarjeta;
+    public ListadoTarjetas(double limiteMinimo, String fechaInicio, String fechaFinal) {
         this.limiteMinimo = limiteMinimo;
         this.fechaInicio = fechaInicio;
         this.fechaFinal = fechaFinal;
-        this.estadoTarjeta = estado;
     }
 
-    public ListadoTarjetas(String tipoTarjeta, String estadoTarjeta, String numeroTarjeta, double limiteCreditoTarjeta, String nombreCliente, String direccionCliente, String fechaCambioEstado) {
+    public ListadoTarjetas(TipoTarjetas tipoTarjeta, EstadosTarjeta estadoTarjeta, String numeroTarjeta, double limiteCreditoTarjeta, String nombreCliente, String direccionCliente, String fechaCambioEstado) {
         this.tipoTarjeta = tipoTarjeta;
         this.estadoTarjeta = estadoTarjeta;
         this.numeroTarjeta = numeroTarjeta;
@@ -47,11 +49,11 @@ public class ListadoTarjetas {
         this.fechaCambioEstado = fechaCambioEstado;
     }
 
-    public String getTipoTarjeta() {
+    public TipoTarjetas getTipoTarjeta() {
         return tipoTarjeta;
     }
 
-    public void setTipoTarjeta(String tipoTarjeta) {
+    public void setTipoTarjeta(TipoTarjetas tipoTarjeta) {
         this.tipoTarjeta = tipoTarjeta;
     }
 
@@ -79,11 +81,11 @@ public class ListadoTarjetas {
         this.fechaFinal = fechaFinal;
     }
 
-    public String getEstadoTarjeta() {
+    public EstadosTarjeta getEstadoTarjeta() {
         return estadoTarjeta;
     }
 
-    public void setEstadoTarjeta(String estadoTarjeta) {
+    public void setEstadoTarjeta(EstadosTarjeta estadoTarjeta) {
         this.estadoTarjeta = estadoTarjeta;
     }
 
@@ -135,11 +137,27 @@ public class ListadoTarjetas {
         this.fechaCambioEstado = fechaCambioEstado;
     }
 
+    public boolean isHayTipoTarjeta() {
+        return hayTipoTarjeta;
+    }
+
+    public void setHayTipoTarjeta(boolean hayTipoTarjeta) {
+        this.hayTipoTarjeta = hayTipoTarjeta;
+    }
+
+    public boolean isHayEstadoTarjeta() {
+        return hayEstadoTarjeta;
+    }
+
+    public void setHayEstadoTarjeta(boolean hayEstadoTarjeta) {
+        this.hayEstadoTarjeta = hayEstadoTarjeta;
+    }
+
     public String filtrarDatos() {
         String query = "";
         boolean hayPrimerCondicion = false;
-        if (!this.tipoTarjeta.equals("")) {
-            query += " WHERE tipo = '" + this.tipoTarjeta + "'";
+        if (hayTipoTarjeta) {
+            query += " WHERE tipo = '" + this.tipoTarjeta.toString() + "'";
             hayPrimerCondicion = true;
         }
         if (!(this.limiteMinimo < 0)) {
@@ -166,13 +184,8 @@ public class ListadoTarjetas {
                 query += " AND DATEDIFF(day, (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + "), '" + this.fechaFinal + "') >= 0";
             }
         }
-        if (!this.estadoTarjeta.equals("")) {
-            boolean estado;
-            if (this.estadoTarjeta.equals("AUTORIZADA") || this.estadoTarjeta.equals("ACTIVA")) {
-                estado = true;
-            } else {
-                estado = false;
-            }
+        if (hayEstadoTarjeta) {
+            boolean estado = this.estadoTarjeta.toString().equals("AUTORIZADA") || this.estadoTarjeta.toString().equals("ACTIVA");
             if (!hayPrimerCondicion) {
                 query += " WHERE estado = " + estado;
             } else {
@@ -260,7 +273,7 @@ public class ListadoTarjetas {
         for (int i = 0; i < this.datosTarjetas.size(); i++) {
             data += "\n<tr>"
                 + "\n<td>" + datosTarjetas.get(i).getNumeroTarjeta() + "</td>"
-                + "\n<td>" + datosTarjetas.get(i).getTipoTarjeta() + "</td>"
+                + "\n<td>" + datosTarjetas.get(i).getTipoTarjeta().toString() + "</td>"
                 + "\n<td>" + datosTarjetas.get(i).getLimiteCreditoTarjeta() + "</td>"
                 + "\n<td>" + datosTarjetas.get(i).getNombreCliente() + "</td>"
                 + "\n<td>" + datosTarjetas.get(i).getDireccionCliente() + "</td>"

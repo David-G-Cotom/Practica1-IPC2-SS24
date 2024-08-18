@@ -4,6 +4,7 @@
  */
 package frontend.model;
 
+import backend.data.AutorizacionTarjetaDB;
 import backend.model.Bancario;
 import javax.swing.JOptionPane;
 
@@ -84,7 +85,9 @@ public class JIFAutorizacionTarjeta extends javax.swing.JInternalFrame {
     private void btnAutorizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutorizarActionPerformed
         if (this.isCamposValidos()) {
             if (bancario.verificarAutorizacionLeida(Integer.parseInt(this.txtNumeroSolicitud.getText()))) {
-                JOptionPane.showMessageDialog(this, "Autorizacion Realizada con Exito");
+                AutorizacionTarjetaDB data = new AutorizacionTarjetaDB();
+                String numeroTarjeta = data.getNumeroTarjeta(Integer.parseInt(this.txtNumeroSolicitud.getText()));
+                JOptionPane.showMessageDialog(this, "Se Autorizo la Tarjeta con Numero " + numeroTarjeta + " para la Solicitud " + this.txtNumeroSolicitud.getText());
             } else {
                 JOptionPane.showMessageDialog(this, "No se pudo realizar la Autorizacion");
             }

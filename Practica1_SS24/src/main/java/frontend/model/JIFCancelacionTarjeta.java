@@ -194,7 +194,7 @@ public class JIFCancelacionTarjeta extends javax.swing.JInternalFrame {
         if (this.isCamposValidos()) {
             Cancelacion cancelacion = bancario.verificarCancelacionLeida(this.txtNumeroTarjeta.getText());
             if (cancelacion != null) {
-                if (!cancelacion.getEstadoTarjeta()) {
+                if (cancelacion.getEstadoTarjeta().toString().equals("CANCELADA")) {
                     JOptionPane.showMessageDialog(this, "No se puede Cancelar la Tarjeta porque ya esta Cancelada");
                     return;
                 }

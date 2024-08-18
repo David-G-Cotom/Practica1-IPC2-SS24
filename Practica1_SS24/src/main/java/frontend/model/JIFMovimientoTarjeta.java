@@ -6,6 +6,7 @@ package frontend.model;
 
 import backend.model.Bancario;
 import backend.model.MovimientoTarjeta;
+import backend.enums.TipoMovimientos;
 import javax.swing.JOptionPane;
 
 /**
@@ -158,7 +159,7 @@ public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (this.camposValidos()) {
             MovimientoTarjeta movimiento = new MovimientoTarjeta(this.txtNumeroTarjeta.getText(), this.txtFecha.getText(),
-                    this.cmbTiposMovimiento.getItemAt(this.cmbTiposMovimiento.getSelectedIndex()), this.txtDescripcion.getText(),
+                    TipoMovimientos.valueOf(this.cmbTiposMovimiento.getItemAt(this.cmbTiposMovimiento.getSelectedIndex())), this.txtDescripcion.getText(),
                     this.txtEstablecimiento.getText(), Double.parseDouble(this.txtMontoEjecutado.getText()));
             if (this.bancario.verificarMovimientoLeido(movimiento)) {
                 JOptionPane.showMessageDialog(this, "Movimiento Registrado Exitosamente!!!");

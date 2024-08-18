@@ -4,7 +4,9 @@
  */
 package backend.data;
 
+import backend.enums.EstadosTarjeta;
 import backend.model.Consulta;
+import backend.enums.TipoTarjetas;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,7 +33,13 @@ public class ConsultaTarjetaDB {
                 String nombre = resulConsulta.getString("nombre");
                 String direccion = resulConsulta.getString("direccion");
                 boolean estado = resulConsulta.getBoolean("estado");
-                tarjetaConsultada = new Consulta(numero_tarjeta, tipo_tarjeta, limite_credito, nombre, direccion, estado);
+                EstadosTarjeta estadoTarjeta;
+                if (estado) {
+                    estadoTarjeta = EstadosTarjeta.ACTIVA;
+                } else {
+                    estadoTarjeta = EstadosTarjeta.CANCELADA;
+                }
+                tarjetaConsultada = new Consulta(numero_tarjeta, TipoTarjetas.valueOf(tipo_tarjeta), limite_credito, nombre, direccion, estadoTarjeta);
             }
         } catch (SQLException e) {
             System.out.println("Error al consultar todos los numeros de Tarjetas en la BD");

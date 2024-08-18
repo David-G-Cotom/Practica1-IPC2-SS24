@@ -4,6 +4,9 @@
  */
 package backend.model;
 
+import backend.enums.EstadosTarjeta;
+import backend.enums.TipoTarjetas;
+
 /**
  *
  * @author Carlos Cotom
@@ -11,13 +14,13 @@ package backend.model;
 public class Tarjeta {
     
     private String numeroTarjeta;
-    private String tipo;
-    private boolean estado;
+    private TipoTarjetas tipo;
+    private EstadosTarjeta estado;
     private double saldo;
     private double limiteCredito;
     private double intereses;
 
-    public Tarjeta(String numeroTarjeta, String tipo, boolean estado, double saldo, double limiteCredito, double intereses) {
+    public Tarjeta(String numeroTarjeta, TipoTarjetas tipo, EstadosTarjeta estado, double saldo, double limiteCredito, double intereses) {
         this.numeroTarjeta = numeroTarjeta;
         this.tipo = tipo;
         this.estado = estado;
@@ -34,19 +37,19 @@ public class Tarjeta {
         this.numeroTarjeta = numeroTarjeta;
     }
 
-    public String getTipo() {
+    public TipoTarjetas getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoTarjetas tipo) {
         this.tipo = tipo;
     }
 
-    public boolean isEstado() {
+    public EstadosTarjeta isEstado() {
         return estado;
     }
 
-    public void setEstado(boolean estado) {
+    public void setEstado(EstadosTarjeta estado) {
         this.estado = estado;
     }
 

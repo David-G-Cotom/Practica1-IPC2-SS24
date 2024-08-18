@@ -4,6 +4,8 @@
  */
 package backend.model;
 
+import backend.enums.EstadosSolicitud;
+import backend.enums.TipoTarjetas;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -18,9 +20,9 @@ public class ListadoSolicitudes {
     
     private String fechaInicio;
     private String fechaFin;
-    private String tipoTarjeta;
+    private TipoTarjetas tipoTarjeta;
     private double salarioMinimo;
-    private String estadoSolicitud;
+    private EstadosSolicitud estadoSolicitud;
     private ArrayList<ListadoSolicitudes> datosSolicitudes;
     private int numeroSolicitud;
     private String fechaCambioEstado;    
@@ -28,18 +30,17 @@ public class ListadoSolicitudes {
     private double salarioCliente;
     private String direccionCliente;
     private File file;
+    private boolean hayTipoTarjeta;
+    private boolean hayEstadoSolicitud;
 
-    public ListadoSolicitudes(String fechaInicio, String fechaFin, String tipoTarjeta, double salarioMinimo, String estadoSolicitud) {
+    public ListadoSolicitudes(String fechaInicio, String fechaFin,  double salarioMinimo) {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
-        this.tipoTarjeta = tipoTarjeta;
         this.salarioMinimo = salarioMinimo;
-        this.estadoSolicitud = estadoSolicitud;
     }
 
-    public ListadoSolicitudes(String tipoTarjeta, String estadoSolicitud, int numeroSolicitud, String fechaCambioEstado, String nombreCliente, double salarioCliente, String direccionClietne) {
+    public ListadoSolicitudes(TipoTarjetas tipoTarjeta, int numeroSolicitud, String fechaCambioEstado, String nombreCliente, double salarioCliente, String direccionClietne) {
         this.tipoTarjeta = tipoTarjeta;
-        this.estadoSolicitud = estadoSolicitud;
         this.numeroSolicitud = numeroSolicitud;
         this.fechaCambioEstado = fechaCambioEstado;
         this.nombreCliente = nombreCliente;
@@ -63,11 +64,11 @@ public class ListadoSolicitudes {
         this.fechaFin = fechaFin;
     }
 
-    public String getTipoTarjeta() {
+    public TipoTarjetas getTipoTarjeta() {
         return tipoTarjeta;
     }
 
-    public void setTipoTarjeta(String tipoTarjeta) {
+    public void setTipoTarjeta(TipoTarjetas tipoTarjeta) {
         this.tipoTarjeta = tipoTarjeta;
     }
 
@@ -79,11 +80,11 @@ public class ListadoSolicitudes {
         this.salarioMinimo = salarioMinimo;
     }
 
-    public String getEstadoSolicitud() {
+    public EstadosSolicitud getEstadoSolicitud() {
         return estadoSolicitud;
     }
 
-    public void setEstadoSolicitud(String estadoSolicitud) {
+    public void setEstadoSolicitud(EstadosSolicitud estadoSolicitud) {
         this.estadoSolicitud = estadoSolicitud;
     }
 
@@ -135,6 +136,22 @@ public class ListadoSolicitudes {
         this.direccionCliente = direccionCliente;
     }
 
+    public boolean isHayTipoTarjeta() {
+        return hayTipoTarjeta;
+    }
+
+    public void setHayTipoTarjeta(boolean hayTipoTarjeta) {
+        this.hayTipoTarjeta = hayTipoTarjeta;
+    }
+
+    public boolean isHayEstadoSolicitud() {
+        return hayEstadoSolicitud;
+    }
+
+    public void setHayEstadoSolicitud(boolean hayEstadoSolicitud) {
+        this.hayEstadoSolicitud = hayEstadoSolicitud;
+    }
+
     public String filtrarDatos() {
         String query = "";
         boolean hayPrimerCondicion = false;
@@ -149,15 +166,15 @@ public class ListadoSolicitudes {
             } else {
                 query += " AND DATEDIFF(day, (SELECT fecha_cambio_estado FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + query + "), '" + this.fechaFin + "') >= 0";
             }
-        }        
-        if (!this.tipoTarjeta.equals("")) {
+        }
+        if (hayTipoTarjeta) {
             if (!hayPrimerCondicion) {
-                query += " WHERE tipo = '" + this.tipoTarjeta + "'";
+                query += " WHERE tipo = '" + this.tipoTarjeta.toString() + "'";
                 hayPrimerCondicion = true;
             } else {
-                query += " AND tipo = '" + this.tipoTarjeta + "'";
-            }            
-        }        
+                query += " AND tipo = '" + this.tipoTarjeta.toString() + "'";
+            }
+        }      
         if (!(this.salarioMinimo < 0)) {
             if (!hayPrimerCondicion) {
                 query += " WHERE salario > " + this.salarioMinimo;
@@ -166,13 +183,8 @@ public class ListadoSolicitudes {
                 query += " AND salario > " + this.salarioMinimo;
             }
         }
-        if (!this.estadoSolicitud.equals("")) {
-            boolean estado;
-            if (this.estadoSolicitud.equals("AUTORIZADA") || this.estadoSolicitud.equals("APROBADA")) {
-                estado = true;
-            } else {
-                estado = false;
-            }
+        if (hayEstadoSolicitud) {
+            boolean estado = this.estadoSolicitud.toString().equals("AUTORIZADA") || this.estadoSolicitud.toString().equals("APROBADA");
             if (!hayPrimerCondicion) {
                 query += " WHERE estado = " + estado;
             } else {
@@ -263,9 +275,15 @@ public class ListadoSolicitudes {
                 + "\n<td>" + datosSolicitudes.get(i).getTipoTarjeta() + "</td>"
                 + "\n<td>" + datosSolicitudes.get(i).getNombreCliente() + "</td>"
                 + "\n<td>" + datosSolicitudes.get(i).getSalarioCliente()+ "</td>"
-                + "\n<td>" + datosSolicitudes.get(i).getDireccionCliente()+ "</td>"
-                + "\n<td>" + datosSolicitudes.get(i).getEstadoSolicitud()+ "</td>"
+                + "\n<td>" + datosSolicitudes.get(i).getDireccionCliente()+ "</td>";
+            if (datosSolicitudes.get(i).hayEstadoSolicitud) {
+                data += "\n<td>" + datosSolicitudes.get(i).getEstadoSolicitud().toString() + "</td>"
                 + "\n</tr>";
+            } else {
+                data += """                        
+                        <td></td>
+                        </tr>""";
+            }                
         }
         data += "\n</table>";
         return data;

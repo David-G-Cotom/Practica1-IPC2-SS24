@@ -4,6 +4,8 @@
  */
 package backend.model;
 
+import backend.enums.TipoMovimientos;
+
 /**
  *
  * @author Carlos Cotom
@@ -12,12 +14,12 @@ public class MovimientoTarjeta {
     
     private String numeroTarjeta;
     private String fechaOperacion;
-    private String tipoMovimiento;
+    private TipoMovimientos tipoMovimiento;
     private String descripcion;
     private String establecimiento;
     private double montoTransferido;
 
-    public MovimientoTarjeta(String numeroTarjeta, String fechaOperacion, String tipoMovimiento, String descripcion, String establecimiento, double montoTransferido) {
+    public MovimientoTarjeta(String numeroTarjeta, String fechaOperacion, TipoMovimientos tipoMovimiento, String descripcion, String establecimiento, double montoTransferido) {
         this.numeroTarjeta = numeroTarjeta;
         this.fechaOperacion = fechaOperacion;
         this.tipoMovimiento = tipoMovimiento;
@@ -42,11 +44,11 @@ public class MovimientoTarjeta {
         this.fechaOperacion = fechaOperacion;
     }
 
-    public String getTipoMovimiento() {
+    public TipoMovimientos getTipoMovimiento() {
         return tipoMovimiento;
     }
 
-    public void setTipoMovimiento(String tipoMovimiento) {
+    public void setTipoMovimiento(TipoMovimientos tipoMovimiento) {
         this.tipoMovimiento = tipoMovimiento;
     }
 

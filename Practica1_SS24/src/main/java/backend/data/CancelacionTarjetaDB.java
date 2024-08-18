@@ -4,6 +4,7 @@
  */
 package backend.data;
 
+import backend.enums.EstadosTarjeta;
 import backend.model.Cancelacion;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -33,7 +34,13 @@ public class CancelacionTarjetaDB {
                 String salario = resulConsulta.getString("salario");
                 String direccion = resulConsulta.getString("direccion");
                 double saldo = resulConsulta.getDouble("saldo");
-                tarjetaCancelada = new Cancelacion(numero_tarjeta, estado, nombre, salario, direccion, saldo);
+                EstadosTarjeta estadoTarjeta;
+                if (estado) {
+                    estadoTarjeta = EstadosTarjeta.ACTIVA;
+                } else {
+                    estadoTarjeta = EstadosTarjeta.CANCELADA;
+                }
+                tarjetaCancelada = new Cancelacion(numero_tarjeta, estadoTarjeta, nombre, salario, direccion, saldo);
             }
         } catch (SQLException e) {
             System.out.println("Error al consultar todos los numeros de Tarjetas en la BD");

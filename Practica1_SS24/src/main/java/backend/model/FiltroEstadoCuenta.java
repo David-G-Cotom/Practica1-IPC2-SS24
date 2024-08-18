@@ -4,6 +4,7 @@
  */
 package backend.model;
 
+import backend.enums.TipoTarjetas;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,17 +18,26 @@ import java.util.ArrayList;
 public class FiltroEstadoCuenta {
     
     private String numeroTarjeta;
-    private String tipoTarjeta;
+    private TipoTarjetas tipoTarjeta;
     private double saldoMinimo;
     private double interesesMinimo;
     private ArrayList<EstadoCuenta> datosEstadosCuenta;
     private File file;
+    private boolean hayTipoTarjeta;
 
-    public FiltroEstadoCuenta(String numeroTarjeta, String TipoTarjeta, double saldoMinimo, double iteresesMinomo) {
+    public FiltroEstadoCuenta(String numeroTarjeta, TipoTarjetas TipoTarjeta, double saldoMinimo, double iteresesMinomo) {
         this.numeroTarjeta = numeroTarjeta;
         this.tipoTarjeta = TipoTarjeta;
         this.saldoMinimo = saldoMinimo;
         this.interesesMinimo = iteresesMinomo;
+        this.hayTipoTarjeta = true;
+    }
+    
+    public FiltroEstadoCuenta(String numeroTarjeta, double saldoMinimo, double iteresesMinomo) {
+        this.numeroTarjeta = numeroTarjeta;
+        this.saldoMinimo = saldoMinimo;
+        this.interesesMinimo = iteresesMinomo;
+        this.hayTipoTarjeta = false;
     }
 
     public String getNumeroTarjeta() {
@@ -38,11 +48,11 @@ public class FiltroEstadoCuenta {
         this.numeroTarjeta = numeroTarjeta;
     }
 
-    public String getTipoTarjeta() {
+    public TipoTarjetas getTipoTarjeta() {
         return tipoTarjeta;
     }
 
-    public void setTipoTarjeta(String tipoTarjeta) {
+    public void setTipoTarjeta(TipoTarjetas tipoTarjeta) {
         this.tipoTarjeta = tipoTarjeta;
     }
 
@@ -74,9 +84,9 @@ public class FiltroEstadoCuenta {
         String query = "";
         if (!this.numeroTarjeta.equals("")) {
             query += " AND tarjeta.numero_tarjeta = '" + this.numeroTarjeta + "'";
-        }       
-        if (!this.tipoTarjeta.equals("")) {
-            query += " AND tipo = '" + this.tipoTarjeta + "'";          
+        }
+        if (hayTipoTarjeta) {
+            query += " AND tipo = '" + this.tipoTarjeta.toString() + "'";
         }        
         if (!(this.saldoMinimo < 0)) {
             query += " AND saldo > " + this.saldoMinimo;
@@ -206,7 +216,7 @@ public class FiltroEstadoCuenta {
         for (int i = 0; i < this.datosEstadosCuenta.size(); i++) {
             double montoTotal = 0;
             for (int j = 0; j < this.datosEstadosCuenta.get(i).getMovimientos().size(); j++) {
-                if (this.datosEstadosCuenta.get(i).getMovimientos().get(j).getTipoMovimiento().equals("ABONO")) {
+                if (this.datosEstadosCuenta.get(i).getMovimientos().get(j).getTipoMovimiento().toString().equals("ABONO")) {
                     montoTotal += this.datosEstadosCuenta.get(i).getMovimientos().get(j).getMontoTransferido();
                 } else {
                     montoTotal -= this.datosEstadosCuenta.get(i).getMovimientos().get(j).getMontoTransferido();

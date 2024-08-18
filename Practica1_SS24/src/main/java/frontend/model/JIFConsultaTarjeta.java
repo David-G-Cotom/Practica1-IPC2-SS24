@@ -178,15 +178,11 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
             Consulta consulta = bancario.verificarConsultaTarjeta(this.txtNumeroTarjeta.getText());
             if (consulta != null) {
                 this.lblNumeroTarjeta.setText(consulta.getNumeroTarjeta());
-                this.lblTipoTarjeta.setText(consulta.getTipoTarjeta());
+                this.lblTipoTarjeta.setText(consulta.getTipoTarjeta().toString());
                 this.lblLimite.setText(consulta.getLimiteCredito() + "");
                 this.lblNombreCliente.setText(consulta.getNombreCliente());
                 this.lblDireccionCliente.setText(consulta.getDireccionCliente());
-                if (consulta.isEstadoTarjeta()) {
-                    this.lblEstadoTarjeta.setText("ACTIVA");
-                } else {
-                    this.lblEstadoTarjeta.setText("CANCELADA");
-                }                    
+                this.lblEstadoTarjeta.setText(consulta.isEstadoTarjeta().toString());                   
             }
             this.txtNumeroTarjeta.setText("");
         }            

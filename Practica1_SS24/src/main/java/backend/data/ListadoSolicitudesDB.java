@@ -4,7 +4,9 @@
  */
 package backend.data;
 
+import backend.enums.EstadosSolicitud;
 import backend.model.ListadoSolicitudes;
+import backend.enums.TipoTarjetas;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,8 +35,17 @@ public class ListadoSolicitudesDB {
                 String nombreCliente = resulConsulta.getString("nombre");
                 double salarioCliente = resulConsulta.getDouble("salario");
                 String direccionCliente = resulConsulta.getString("direccion");
-                ListadoSolicitudes registroTarjeta = new ListadoSolicitudes(tipoSolicitud, estadoSolicitud, numeroSolicitud, fechaCambioEstado, nombreCliente, salarioCliente, direccionCliente);
-                listadoSolicitudes.add(registroTarjeta);            
+                ListadoSolicitudes registroSolicitud = new ListadoSolicitudes(TipoTarjetas.valueOf(tipoSolicitud), numeroSolicitud, fechaCambioEstado, nombreCliente, salarioCliente, direccionCliente);
+                if (estadoSolicitud.equals("1")) {
+                    registroSolicitud.setEstadoSolicitud(EstadosSolicitud.APROBADA);
+                    registroSolicitud.setHayEstadoSolicitud(true);
+                } else if (estadoSolicitud.equals("0")) {
+                    registroSolicitud.setEstadoSolicitud(EstadosSolicitud.RECHAZADA);
+                    registroSolicitud.setHayEstadoSolicitud(true);
+                } else {                        
+                    registroSolicitud.setHayEstadoSolicitud(false);
+                }
+                listadoSolicitudes.add(registroSolicitud);            
             }
         } catch (SQLException e) {
             System.out.println("Error al hacer la consulta para el Listado de Tarjetas en la BD " + e);

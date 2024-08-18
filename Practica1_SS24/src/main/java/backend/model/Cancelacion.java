@@ -4,6 +4,8 @@
  */
 package backend.model;
 
+import backend.enums.EstadosTarjeta;
+
 /**
  *
  * @author Carlos Cotom
@@ -11,13 +13,13 @@ package backend.model;
 public class Cancelacion {
     
     private String numeroTarjeta;
-    private boolean estadoTarjeta;
+    private EstadosTarjeta estadoTarjeta;
     private String nombrePropietario;
     private String salarioPropietario;
     private String direccionPropietario;
     private double saldoTarjeta;
 
-    public Cancelacion(String numeroTarjeta, boolean estadoTarjeta, String nombrePropietario, String salarioPropietario, String direccionPropietario, double saldoTarjeta) {
+    public Cancelacion(String numeroTarjeta, EstadosTarjeta estadoTarjeta, String nombrePropietario, String salarioPropietario, String direccionPropietario, double saldoTarjeta) {
         this.numeroTarjeta = numeroTarjeta;
         this.estadoTarjeta = estadoTarjeta;
         this.nombrePropietario = nombrePropietario;
@@ -34,11 +36,11 @@ public class Cancelacion {
         this.numeroTarjeta = numeroTarjeta;
     }
 
-    public boolean getEstadoTarjeta() {
+    public EstadosTarjeta getEstadoTarjeta() {
         return estadoTarjeta;
     }
 
-    public void setEstadoTarjeta(boolean estadoTarjeta) {
+    public void setEstadoTarjeta(EstadosTarjeta estadoTarjeta) {
         this.estadoTarjeta = estadoTarjeta;
     }
 

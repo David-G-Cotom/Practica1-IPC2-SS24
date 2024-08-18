@@ -6,6 +6,7 @@ package frontend.model;
 
 import backend.model.Bancario;
 import backend.model.SolicitudTarjeta;
+import backend.enums.TipoTarjetas;
 import javax.swing.JOptionPane;
 
 /**
@@ -156,7 +157,7 @@ public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (this.camposValidos()) {
             SolicitudTarjeta solicitud = new SolicitudTarjeta(Integer.parseInt(this.txtNumeroSolicitud.getText()), this.txtFecha.getText(),
-                    this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()), this.txtNombreSolicitante.getText(),
+                    TipoTarjetas.valueOf(this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex())), this.txtNombreSolicitante.getText(),
                     Double.parseDouble(this.txtSalarioSolicitante.getText()), this.txtDireccionSolicitante.getText());
             if (this.bancario.verificarSolicitudLeida(solicitud)) {
                 JOptionPane.showMessageDialog(this, "Solicitud Registrada Exitosamente!!!");

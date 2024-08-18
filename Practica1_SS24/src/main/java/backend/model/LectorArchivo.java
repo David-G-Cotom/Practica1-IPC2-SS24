@@ -4,10 +4,15 @@
  */
 package backend.model;
 
+import backend.enums.TipoMovimientos;
+import backend.enums.TipoTarjetas;
+import backend.data.AutorizacionTarjetaDB;
 import backend.data.CancelacionTarjetaDB;
 import backend.data.EstadoCuentaDB;
 import backend.data.ListadoSolicitudesDB;
 import backend.data.ListadoTarjetasDB;
+import backend.enums.EstadosSolicitud;
+import backend.enums.EstadosTarjeta;
 import frontend.model.JIFIngresoArchivo;
 import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
@@ -30,9 +35,6 @@ public class LectorArchivo extends Thread {
     private JLabel proceso;
     private Bancario bancario;
     private final int velocidadPorcesamiento;
-    private FiltroEstadoCuenta filtroEstadoCuenta;
-    private ListadoSolicitudes filtroListadoSolicitudes;
-    private ListadoTarjetas filtroListadoTarjetas;
     
     public LectorArchivo(File archivoEntrada, JIFIngresoArchivo ingresoArchivoFront, JLabel descripcion, JLabel proceso, int velocidadProcesamiento) {
         this.archivoEntrada = archivoEntrada;
@@ -151,15 +153,19 @@ public class LectorArchivo extends Thread {
         this.proceso.setText("Procesando la Solictud de Tarjeta");
         if (datosRecolectados.length == 6) {
             if (!this.bancario.isInteger(datosRecolectados[0])) {
-                this.descripcion.setText("Error en Lectura de Archivo: Texto ingresado NO es Numero Entero Positivo");
+                this.descripcion.setText("Error en Lectura de Solicitud: Texto ingresado NO es Numero Entero Positivo");
                 return;
             }
             if (!this.bancario.isDouble(datosRecolectados[4])) {
-                this.descripcion.setText("Error en Lectura de Archivo: Texto ingresado NO es Numero Decimal Positivo");
+                this.descripcion.setText("Error en Lectura de Solicitud: Texto ingresado NO es Numero Decimal Positivo");
+                return;
+            }
+            if (!this.bancario.isTipoTarjetaValido(datosRecolectados[2])) {
+                this.descripcion.setText("Error en Lectura de Solicitud: Texto ingresado NO valido para Tipo de Tarjeta");
                 return;
             }
             SolicitudTarjeta solicitud = new SolicitudTarjeta(Integer.parseInt(datosRecolectados[0]), datosRecolectados[1],
-                    datosRecolectados[2], datosRecolectados[3], Double.parseDouble(datosRecolectados[4]), datosRecolectados[5]);
+                    TipoTarjetas.valueOf(datosRecolectados[2]), datosRecolectados[3], Double.parseDouble(datosRecolectados[4]), datosRecolectados[5]);
             if (this.bancario.verificarSolicitudLeida(solicitud)) {
                 this.descripcion.setText("Solicitud de Tarjeta Valida para su Ejecucion");
             } else {
@@ -175,11 +181,15 @@ public class LectorArchivo extends Thread {
         if (datosRecolectados.length == 6) {
             String numeroTarjeta = this.bancario.transformarNumeroTarjeta(datosRecolectados[0]);
             if (!this.bancario.isDouble(datosRecolectados[5])) {
-                this.descripcion.setText("Error en Lectura de Archivo: Texto ingresado NO es Numero Decimal Positivo");
+                this.descripcion.setText("Error en Lectura de Movimientos: Texto ingresado NO es Numero Decimal Positivo");
                 return;                                
             }
+            if (!this.bancario.isTipoMovimientoValido(datosRecolectados[2])) {
+                this.descripcion.setText("Error en Lectura de Movimientos: Texto ingresado NO valido para Tipo de Movimiento");
+                return;
+            }
             MovimientoTarjeta movimiento = new MovimientoTarjeta(numeroTarjeta, datosRecolectados[1],
-                        datosRecolectados[2], datosRecolectados[3], datosRecolectados[4], Double.parseDouble(datosRecolectados[5]));
+                        TipoMovimientos.valueOf(datosRecolectados[2]), datosRecolectados[3], datosRecolectados[4], Double.parseDouble(datosRecolectados[5]));
             if (this.bancario.verificarMovimientoLeido(movimiento)) {
                 this.descripcion.setText("Movimiento de Tarjeta Valida para su Ejecucion");
             } else {
@@ -218,7 +228,9 @@ public class LectorArchivo extends Thread {
             }
             this.descripcion.setText("Autorizacion de Tarjeta Valida para su Ejecucion");
             if (this.bancario.verificarAutorizacionLeida(Integer.parseInt(datosRecolectados[0]))) {
-                this.descripcion.setText("Autorizacion Realizada con Exito");
+                AutorizacionTarjetaDB data = new AutorizacionTarjetaDB();
+                String numeroTarjeta = data.getNumeroTarjeta(Integer.parseInt(datosRecolectados[0]));
+                this.descripcion.setText("Se Autorizo la Tarjeta con Numero " + numeroTarjeta + " para la Solicitud " + Integer.valueOf(datosRecolectados[0]));
             } else {
                 this.descripcion.setText("No se pudo realizar la Autorizacion");
             }
@@ -238,7 +250,7 @@ public class LectorArchivo extends Thread {
             this.descripcion.setText("Cancelacion de Tarjeta Valida para Ejecutarse");
             Cancelacion cancelacion = this.bancario.verificarCancelacionLeida(numeroTarjeta);
             if (cancelacion != null) {
-                if (!cancelacion.getEstadoTarjeta()) {
+                if (cancelacion.getEstadoTarjeta().toString().equals("CANCELADA")) {
                     this.descripcion.setText("La Tarjeta NO se puede Cancelar porque ya Estaba Cancelada");
                     return;
                 }
@@ -260,6 +272,7 @@ public class LectorArchivo extends Thread {
         if (datosRecolectados.length == 4) {
             double saldoMinimo;
             double interesMinimo;
+            FiltroEstadoCuenta filtroEstadoCuenta;
             if (this.bancario.isDouble(datosRecolectados[2])) {
                 saldoMinimo = Double.parseDouble(datosRecolectados[2]);
             } else {
@@ -270,7 +283,11 @@ public class LectorArchivo extends Thread {
             } else {
                 interesMinimo = -1;
             }
-            this.filtroEstadoCuenta = new FiltroEstadoCuenta(datosRecolectados[0], datosRecolectados[1], saldoMinimo, interesMinimo);
+            if (this.bancario.isTipoTarjetaValido(datosRecolectados[1])) {
+                filtroEstadoCuenta = new FiltroEstadoCuenta(datosRecolectados[0], TipoTarjetas.valueOf(datosRecolectados[1]), saldoMinimo, interesMinimo);
+            } else {
+                filtroEstadoCuenta = new FiltroEstadoCuenta(datosRecolectados[0], saldoMinimo, interesMinimo);
+            }
             if (this.bancario.verificarFiltroEstadoCuenta(filtroEstadoCuenta)) {
                 this.descripcion.setText("Filtro para Estado de Cuenta Valido para su Ejecucion");
                 String restoQuery = filtroEstadoCuenta.filtrarDatos();
@@ -294,13 +311,25 @@ public class LectorArchivo extends Thread {
         this.proceso.setText("Procesando el Reporte para el Listado de Tarjetas");
         if (datosRecolectados.length == 5) {
             double montoLimite;
+            ListadoTarjetas filtroListadoTarjetas;
             if (this.bancario.isDouble(datosRecolectados[1])) {
                 montoLimite = Double.parseDouble(datosRecolectados[1]);
             } else {
                 montoLimite = -1;
             }
-            this.filtroListadoTarjetas = new ListadoTarjetas(datosRecolectados[0], montoLimite,
-                    datosRecolectados[2], datosRecolectados[3], datosRecolectados[4]);
+            filtroListadoTarjetas = new ListadoTarjetas(montoLimite, datosRecolectados[2], datosRecolectados[3]);
+            if (this.bancario.isTipoTarjetaValido(datosRecolectados[0])) {
+                filtroListadoTarjetas.setTipoTarjeta(TipoTarjetas.valueOf(datosRecolectados[0]));
+                filtroListadoTarjetas.setHayTipoTarjeta(true);
+            } else {
+                filtroListadoTarjetas.setHayTipoTarjeta(false);
+            }
+            if (this.bancario.isEstadoTarjetaValido(datosRecolectados[4])) {
+                filtroListadoTarjetas.setEstadoTarjeta(EstadosTarjeta.valueOf(datosRecolectados[4]));
+                filtroListadoTarjetas.setHayEstadoTarjeta(true);
+            } else {
+                filtroListadoTarjetas.setHayEstadoTarjeta(false);
+            }
             if (this.bancario.verificarFiltroListadoTarjetas(filtroListadoTarjetas)) {
                 this.descripcion.setText("Filtro de Listado de Tarjetas Valido para su Ejecucion");
                 String restoQuery = filtroListadoTarjetas.filtrarDatos();
@@ -324,13 +353,25 @@ public class LectorArchivo extends Thread {
         this.proceso.setText("Procesando el Reporte para el Listado de Solicitudes");
         if (datosRecolectados.length == 5) {
             double montoLimite;
+            ListadoSolicitudes filtroListadoSolicitudes;
             if (this.bancario.isDouble(datosRecolectados[3])) {
                 montoLimite = Double.parseDouble(datosRecolectados[3]);
             } else {
                 montoLimite = -1;
             }
-            this.filtroListadoSolicitudes = new ListadoSolicitudes(datosRecolectados[0], datosRecolectados[1],
-                    datosRecolectados[2], montoLimite, datosRecolectados[4]);
+            filtroListadoSolicitudes = new ListadoSolicitudes(datosRecolectados[0], datosRecolectados[1], montoLimite);
+            if (this.bancario.isTipoTarjetaValido(datosRecolectados[2])) {
+                filtroListadoSolicitudes.setTipoTarjeta(TipoTarjetas.valueOf(datosRecolectados[2]));
+                filtroListadoSolicitudes.setHayTipoTarjeta(true);
+            } else {
+                filtroListadoSolicitudes.setHayTipoTarjeta(false);
+            }
+            if (this.bancario.isEstadoSolicitudValido(datosRecolectados[4])) {
+                filtroListadoSolicitudes.setEstadoSolicitud(EstadosSolicitud.valueOf(datosRecolectados[4]));
+                filtroListadoSolicitudes.setHayEstadoSolicitud(true);
+            } else {
+                filtroListadoSolicitudes.setHayEstadoSolicitud(false);
+            }
             if (this.bancario.verificarFiltroListadoSolicitudes(filtroListadoSolicitudes)) {
                 System.out.println("Filtro de Listado de Solicitudes Valido para su Ejecucion");
                 String restoQuery = filtroListadoSolicitudes.filtrarDatos();

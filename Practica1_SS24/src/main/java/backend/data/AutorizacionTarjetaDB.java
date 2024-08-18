@@ -7,6 +7,7 @@ package backend.data;
 import backend.model.Cliente;
 import backend.model.SolicitudTarjeta;
 import backend.model.Tarjeta;
+import backend.enums.TipoTarjetas;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +27,7 @@ public class AutorizacionTarjetaDB {
     private int numeroSolicitud;
     private int limiteCreditoTipoTarjeta;
     private double interesTipoTarjeta;
-    private int tipo_tarjeta;
+    private int tipoTarjeta;
     private Connection connection = ConexionDB.getConnection();
 
     public AutorizacionTarjetaDB(int numeroSolicitud) {
@@ -115,7 +116,7 @@ public class AutorizacionTarjetaDB {
         Date fechaSistema = new Date();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
         String fechaActual = formatoFecha.format(fechaSistema);
-        String query = "INSERT INTO tarjeta (numero_tarjeta, numero_solicitud, estado, saldo, tipo_tarjeta, fecha_cambio_estado, limite_credito, id_cliente) VALUES ('" + tarjeta.getNumeroTarjeta() + "', " + this.numeroSolicitud + ", " + tarjeta.isEstado() + ", " + tarjeta.getSaldo() + ", " + this.tipo_tarjeta + ", '" + fechaActual + "', " + tarjeta.getLimiteCredito() + ", " + this.cliente.getIdCliente() + ")";
+        String query = "INSERT INTO tarjeta (numero_tarjeta, numero_solicitud, estado, saldo, tipo_tarjeta, fecha_cambio_estado, limite_credito, id_cliente) VALUES ('" + tarjeta.getNumeroTarjeta() + "', " + this.numeroSolicitud + ", " + tarjeta.isEstado() + ", " + tarjeta.getSaldo() + ", " + this.tipoTarjeta + ", '" + fechaActual + "', " + tarjeta.getLimiteCredito() + ", " + this.cliente.getIdCliente() + ")";
         try (Statement statementInsert = this.connection.createStatement()) {            
                 statementInsert.executeUpdate(query);
             System.out.println("Registro de Tarjeta Creada Exitosamente");
@@ -149,7 +150,7 @@ public class AutorizacionTarjetaDB {
                 int numero_solicitud = resulConsulta.getInt("numero_solicitud");
                 String fecha_solicitud = resulConsulta.getString("fecha_solicitud");
                 String tipo_tarjeta = resulConsulta.getString("tipo");
-                this.solicitud = new SolicitudTarjeta(numero_solicitud, fecha_solicitud, tipo_tarjeta, this.cliente.getNombre(), this.cliente.getSalario(), this.cliente.getDireccion());
+                this.solicitud = new SolicitudTarjeta(numero_solicitud, fecha_solicitud, TipoTarjetas.valueOf(tipo_tarjeta), this.cliente.getNombre(), this.cliente.getSalario(), this.cliente.getDireccion());
             }
         } catch (SQLException e) {
             System.out.println("Error al construir una Solicitud para la Autorizacion");
@@ -163,7 +164,7 @@ public class AutorizacionTarjetaDB {
             while (resulConsulta.next()) {
                 this.limiteCreditoTipoTarjeta = resulConsulta.getInt("limite_credito");
                 this.interesTipoTarjeta = resulConsulta.getDouble("interes");
-                this.tipo_tarjeta = resulConsulta.getInt("id_tipo");
+                this.tipoTarjeta = resulConsulta.getInt("id_tipo");
             }
         } catch (SQLException e) {
             System.out.println("Error al obtener datos para el Tipo de Tarjeta");
@@ -183,6 +184,20 @@ public class AutorizacionTarjetaDB {
             System.out.println("Error al consultar todos los numeros de Tarjetas en la BD");
         }
         return listaNumerosTarjetas;
+    }
+    
+    public String getNumeroTarjeta(int numeroSOlicitud) {
+        String query = "SELECT numero_tarjeta FROM tarjeta WHERE numero_solicitud = " + numeroSOlicitud;
+        String numeroTarjeta = "";
+        try (Statement statementConsulta = this.connection.createStatement();
+                ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
+            while (resulConsulta.next()) {
+                numeroTarjeta = resulConsulta.getString("numero_tarjeta");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar todos los numeros de Tarjetas en la BD");
+        }
+        return numeroTarjeta;
     }
     
 }

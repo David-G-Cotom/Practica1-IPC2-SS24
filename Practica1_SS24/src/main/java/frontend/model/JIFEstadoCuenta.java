@@ -9,6 +9,7 @@ import backend.model.Bancario;
 import backend.model.EstadoCuenta;
 import backend.model.FiltroEstadoCuenta;
 import backend.model.MovimientoTarjeta;
+import backend.enums.TipoTarjetas;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -324,6 +325,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         if (camposValidos()) {
             double saldoMinimo;
             double intereseMinimo;
+            FiltroEstadoCuenta filtro;
             if (this.bancario.isDouble(this.txtSaldoMinimo.getText())) {
                 saldoMinimo = Double.parseDouble(this.txtSaldoMinimo.getText());
             } else {
@@ -334,8 +336,12 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
             } else {
                 intereseMinimo = -1;
             }
-            FiltroEstadoCuenta filtro = new FiltroEstadoCuenta(this.txtNumeroTarjeta.getText(),
-                    this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()), saldoMinimo, intereseMinimo);
+            if (this.bancario.isTipoTarjetaValido(this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()))) {
+                filtro = new FiltroEstadoCuenta(this.txtNumeroTarjeta.getText(),
+                    TipoTarjetas.valueOf(this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex())), saldoMinimo, intereseMinimo);
+            } else {
+                filtro = new FiltroEstadoCuenta(this.txtNumeroTarjeta.getText(), saldoMinimo, intereseMinimo);
+            }
             if (this.bancario.verificarFiltroEstadoCuenta(filtro)) {
                 String restoQuery = filtro.filtrarDatos();
                 EstadoCuentaDB listadoSolicitudes = new EstadoCuentaDB();
@@ -384,7 +390,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
     
     private void mostrarDatos() {
         this.lblNumeroTarjeta.setText(this.datos.get(this.indiceDatos).getNumeroTarjeta());
-        this.lblTipoTarjeta.setText(this.datos.get(this.indiceDatos).getTipoTarjeta());
+        this.lblTipoTarjeta.setText(this.datos.get(this.indiceDatos).getTipoTarjeta().toString());
         this.lblNombreCLiente.setText(this.datos.get(this.indiceDatos).getNombreCliente());
         this.lblDireccionCliente.setText(this.datos.get(this.indiceDatos).getDireccionCliente());
         vaciarTabla();        
