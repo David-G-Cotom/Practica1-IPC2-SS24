@@ -372,14 +372,17 @@ public class Bancario {
             if (!isLongitudCadenaValida(movimiento.getDescripcion(), 200)) {
                 return false;
             }
-            if (movimientoTarjeta.isTarjetaActiva()) {
-                movimientoTarjeta.crearRegistro();
-                movimientoTarjeta.actualizarSaldoTarjeta();
-                return true;
-            } else {
+            if (!movimientoTarjeta.isTarjetaActiva()) {
                 System.out.println("Tarjeta Inactiva");
                 return false;
             }
+            if (!movimientoTarjeta.isMovimientoEnLimite()) {
+                System.out.println("Movimiento sobrepasa el Limite de Credito");
+                return false;
+            }
+            movimientoTarjeta.crearRegistro();
+            movimientoTarjeta.actualizarSaldoTarjeta();
+            return true;
         }
         System.out.println("Movimiento de Tarjeta NO Valido para su Ejecucion\n");
         return false;
@@ -395,7 +398,7 @@ public class Bancario {
      * @return verdadero si los valores del filtro ingresado de parametro son
      * Validos, de los contrario retorna falso
      */
-    public boolean verificarFiltroEstadoCuenta(FiltroEstadoCuenta filtro) {
+    public boolean verificarFiltroEstadoCuenta(FiltroEstadoCuenta filtro) {        
         if (!filtro.getNumeroTarjeta().equals("")) {
             if (!isNumeroTarjetaValido(filtro.getNumeroTarjeta())) {
                 System.out.println("Numero de Tarjeta Invalida");

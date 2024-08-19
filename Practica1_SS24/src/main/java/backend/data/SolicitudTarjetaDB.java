@@ -37,7 +37,7 @@ public class SolicitudTarjetaDB {
      * Datos
      */
     public void crearSolicitud() {
-        String query = "INSERT INTO solicitud (fecha_solicitud, tipo_tarjeta, id_cliente) VALUES ('" + this.solicitud.getFechaSolicitud() + "', " + this.getIdTipoTarjeta() + ", " + this.getIdCliente() + ")";
+        String query = "INSERT INTO solicitud (numero_solicitud, fecha_solicitud, tipo_tarjeta, id_cliente) VALUES (" + this.solicitud.getNumeroSolicitud() + ", '" + this.solicitud.getFechaSolicitud() + "', " + this.getIdTipoTarjeta() + ", " + this.getIdCliente() + ")";
         try (Statement statementInsert = this.connection.createStatement()) {
             statementInsert.executeUpdate(query);
             System.out.println("Registro de Solicitud Creada Exxitosamente");

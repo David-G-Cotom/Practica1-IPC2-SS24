@@ -242,6 +242,10 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "No se seleccionó un tipo de Tarjeta valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        if (!this.txtSalarioMinimo.getText().equals("") && !this.bancario.isDouble(this.txtSalarioMinimo.getText())) {
+            JOptionPane.showMessageDialog(this, "El valor ingresado en el Campo de Salario Minimo no es Valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         return true;
     }
 

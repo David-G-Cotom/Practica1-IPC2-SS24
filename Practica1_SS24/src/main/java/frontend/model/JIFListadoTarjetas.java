@@ -236,6 +236,10 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "No se seleccionó un tipode Movimiento valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        if (!this.txtLimiteTarjeta.getText().equals("") && !this.bancario.isDouble(this.txtLimiteTarjeta.getText())) {
+            JOptionPane.showMessageDialog(this, "El valor ingresado en el Campo de Limite Minimo no es Valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         return true;
     }
 

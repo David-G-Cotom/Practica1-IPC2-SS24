@@ -138,7 +138,8 @@ public class AutorizacionTarjetaDB {
         Date fechaSistema = new Date();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
         String fechaActual = formatoFecha.format(fechaSistema);
-        String query = "INSERT INTO tarjeta (numero_tarjeta, numero_solicitud, estado, saldo, tipo_tarjeta, fecha_cambio_estado, limite_credito, id_cliente) VALUES ('" + tarjeta.getNumeroTarjeta() + "', " + this.numeroSolicitud + ", " + tarjeta.isEstado() + ", " + tarjeta.getSaldo() + ", " + this.tipoTarjeta + ", '" + fechaActual + "', " + tarjeta.getLimiteCredito() + ", " + this.cliente.getIdCliente() + ")";
+        boolean estado = !tarjeta.isEstado().toString().equals("CANCELADA");
+        String query = "INSERT INTO tarjeta (numero_tarjeta, numero_solicitud, estado, saldo, tipo_tarjeta, fecha_cambio_estado, limite_credito, id_cliente) VALUES ('" + tarjeta.getNumeroTarjeta() + "', " + this.numeroSolicitud + ", " + estado + ", " + tarjeta.getSaldo() + ", " + this.tipoTarjeta + ", '" + fechaActual + "', " + tarjeta.getLimiteCredito() + ", " + this.cliente.getIdCliente() + ")";
         try (Statement statementInsert = this.connection.createStatement()) {
             statementInsert.executeUpdate(query);
             System.out.println("Registro de Tarjeta Creada Exitosamente");
@@ -164,7 +165,7 @@ public class AutorizacionTarjetaDB {
                 this.cliente = new Cliente(id_cliente, nombre, salario, direccion);
             }
         } catch (SQLException e) {
-            System.out.println("Error al construir un Cliente para la Autorizacion");
+            System.out.println("Error al construir un Cliente para la Autorizacion " + e);
         }
     }
 
@@ -183,7 +184,7 @@ public class AutorizacionTarjetaDB {
                 this.solicitud = new SolicitudTarjeta(numero_solicitud, fecha_solicitud, TipoTarjetas.valueOf(tipo_tarjeta), this.cliente.getNombre(), this.cliente.getSalario(), this.cliente.getDireccion());
             }
         } catch (SQLException e) {
-            System.out.println("Error al construir una Solicitud para la Autorizacion");
+            System.out.println("Error al construir una Solicitud para la Autorizacion " + e);
         }
     }
 
@@ -202,7 +203,7 @@ public class AutorizacionTarjetaDB {
                 this.tipoTarjeta = resulConsulta.getInt("id_tipo");
             }
         } catch (SQLException e) {
-            System.out.println("Error al obtener datos para el Tipo de Tarjeta");
+            System.out.println("Error al obtener datos para el Tipo de Tarjeta en Autorizacion " + e);
         }
     }
 
@@ -225,7 +226,7 @@ public class AutorizacionTarjetaDB {
                 listaNumerosTarjetas.add(numeroTarjeta);
             }
         } catch (SQLException e) {
-            System.out.println("Error al consultar todos los numeros de Tarjetas en la BD");
+            System.out.println("Error al consultar todos los numeros de Tarjetas en la BD para Autorizacion " + e);
         }
         return listaNumerosTarjetas;
     }

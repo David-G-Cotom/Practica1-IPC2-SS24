@@ -96,12 +96,12 @@ public class FiltroEstadoCuenta {
         if (hayTipoTarjeta) {
             query += " AND tipo = '" + this.tipoTarjeta.toString() + "'";
         }
-        if (!(this.saldoMinimo < 0)) {
+        /*if (!(this.saldoMinimo < 0)) {
             query += " AND saldo > " + this.saldoMinimo;
         }
         if (!(this.interesesMinimo < 0)) {
             query += " AND intereses > " + this.interesesMinimo;
-        }
+        }*/
         return query;
     }
 
@@ -136,9 +136,9 @@ public class FiltroEstadoCuenta {
                     i = 0;
                 }
             }
-            this.file = new File(pathCarpeta + "\\" + nombreArchivo);
+            this.file = new File(pathCarpeta + File.separatorChar + nombreArchivo);
         } else {
-            this.file = new File(pathCarpeta + "\\Reporte de Estado de Cuentas 0.html");
+            this.file = new File(pathCarpeta + File.separatorChar + "Reporte de Estado de Cuentas 0.html");
         }
         System.out.println(file.getAbsolutePath());
         if (file.exists()) {
@@ -236,9 +236,9 @@ public class FiltroEstadoCuenta {
             double montoTotal = 0;
             for (int j = 0; j < this.datosEstadosCuenta.get(i).getMovimientos().size(); j++) {
                 if (this.datosEstadosCuenta.get(i).getMovimientos().get(j).getTipoMovimiento().toString().equals("ABONO")) {
-                    montoTotal += this.datosEstadosCuenta.get(i).getMovimientos().get(j).getMontoTransferido();
-                } else {
                     montoTotal -= this.datosEstadosCuenta.get(i).getMovimientos().get(j).getMontoTransferido();
+                } else {
+                    montoTotal += this.datosEstadosCuenta.get(i).getMovimientos().get(j).getMontoTransferido();
                 }
             }
             System.out.println(montoTotal);

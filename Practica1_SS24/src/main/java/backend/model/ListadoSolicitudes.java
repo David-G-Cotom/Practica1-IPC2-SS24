@@ -233,9 +233,9 @@ public class ListadoSolicitudes {
                     i = 0;
                 }
             }
-            this.file = new File(pathCarpeta + "\\" + nombreArchivo);
+            this.file = new File(pathCarpeta + File.separatorChar + nombreArchivo);
         } else {
-            this.file = new File(pathCarpeta + "\\Reporte de Listado de Solicitudes 0.html");
+            this.file = new File(pathCarpeta + File.separatorChar + "Reporte de Listado de Solicitudes 0.html");
         }
         System.out.println(file.getAbsolutePath());
         if (file.exists()) {

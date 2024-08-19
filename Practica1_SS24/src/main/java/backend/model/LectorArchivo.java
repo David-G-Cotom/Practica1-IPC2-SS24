@@ -347,6 +347,7 @@ public class LectorArchivo extends Thread {
             } else {
                 filtroEstadoCuenta = new FiltroEstadoCuenta(datosRecolectados[0], saldoMinimo, interesMinimo);
             }
+            filtroEstadoCuenta.setNumeroTarjeta(this.bancario.transformarNumeroTarjeta(filtroEstadoCuenta.getNumeroTarjeta()));
             if (this.bancario.verificarFiltroEstadoCuenta(filtroEstadoCuenta)) {
                 this.descripcion.setText("Filtro para Estado de Cuenta Valido para su Ejecucion");
                 String restoQuery = filtroEstadoCuenta.filtrarDatos();

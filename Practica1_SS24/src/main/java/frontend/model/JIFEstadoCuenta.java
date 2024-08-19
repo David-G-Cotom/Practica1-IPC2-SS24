@@ -54,8 +54,6 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         txtNumeroTarjeta = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtNombreSolicitante = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
         txtInteresMinimo = new javax.swing.JTextField();
         btnConsultar = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
@@ -93,8 +91,6 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         jLabel2.setText("Saldo Minimo de la Tarjeta:");
 
         jLabel3.setText("Tipo de Tarjeta:");
-
-        jLabel4.setText("Nombre del Cliente:");
 
         btnConsultar.setText("Consultar");
         btnConsultar.addActionListener(new java.awt.event.ActionListener() {
@@ -173,20 +169,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(170, 170, 170)
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtNombreSolicitante, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(328, 328, 328)
-                                .addComponent(btnConsultar))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(50, 50, 50)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -248,8 +231,15 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
                                             .addGap(18, 18, 18)
                                             .addComponent(btnSiguiente))
                                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)))
+                        .addGap(0, 49, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jSeparator1)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(309, 309, 309)
+                .addComponent(btnConsultar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,12 +257,8 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
                     .addComponent(jLabel7)
                     .addComponent(txtInteresMinimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtNombreSolicitante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addComponent(btnConsultar)
-                .addGap(18, 18, 18)
+                .addGap(58, 58, 58)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -489,7 +475,6 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -506,7 +491,6 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lblTipoTarjeta;
     private javax.swing.JTable tblListadoMovimientos;
     private javax.swing.JTextField txtInteresMinimo;
-    private javax.swing.JTextField txtNombreSolicitante;
     private javax.swing.JTextField txtNumeroTarjeta;
     private javax.swing.JTextField txtSaldoMinimo;
     // End of variables declaration//GEN-END:variables

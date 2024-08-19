@@ -50,9 +50,9 @@ public class MovimientoTarjetaDB {
      */
     public void actualizarSaldoTarjeta() {
         if ("ABONO".equals(this.movimiento.getTipoMovimiento().toString())) {
-            this.saldoTarjeta += this.movimiento.getMontoTransferido();
-        } else if ("CARGO".equals(this.movimiento.getTipoMovimiento().toString())) {
             this.saldoTarjeta -= this.movimiento.getMontoTransferido();
+        } else if ("CARGO".equals(this.movimiento.getTipoMovimiento().toString())) {
+            this.saldoTarjeta += this.movimiento.getMontoTransferido();
         }
         String query = "UPDATE tarjeta SET saldo = " + this.saldoTarjeta + " WHERE numero_tarjeta = '" + this.movimiento.getNumeroTarjeta() + "'";
         try (Statement statementInsert = this.connection.createStatement()) {
@@ -64,6 +64,42 @@ public class MovimientoTarjetaDB {
     }
 
     /**
+     * Metodo que obtiene de la base de datos el saldo y el limite de credito de
+     * la Tarjeta, y evalua qu la Cantidad que se Ejecuto en el Movimiento junto
+     * con el saldo actual no sobrepase el limite de la Tarjeta
+     *
+     * @return verdadero si la Cantidad Ejecutada en el Movimiento no sobrepasa
+     * el Limite de Credito, de lo contrario retorna falso
+     */
+    public boolean isMovimientoEnLimite() {
+        String query = "SELECT saldo, limite_credito FROM tarjeta WHERE numero_tarjeta = '" + this.movimiento.getNumeroTarjeta() + "'";
+        double limiteCredito = 0;
+        try (Statement statementConsulta = this.connection.createStatement();
+                ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
+            while (resulConsulta.next()) {
+                this.saldoTarjeta = resulConsulta.getInt("saldo");
+                limiteCredito = resulConsulta.getDouble("limite_credito");
+            }
+            System.out.println("Obtencion de Saldo de la Tarjeta realizada con Exito");
+        } catch (SQLException e) {
+            System.out.println("Error al Obtener Saldo e Interes de la Tarjeta en Movimiento " + e);
+        }
+        if (this.saldoTarjeta >= 0) {
+            if (this.movimiento.getTipoMovimiento().toString().equals("CARGO")) {
+                return (this.saldoTarjeta + this.movimiento.getMontoTransferido()) <= limiteCredito;                
+            } else {
+                return (this.saldoTarjeta - this.movimiento.getMontoTransferido()) >= (limiteCredito * (-1));
+            }
+        } else {
+            if (this.movimiento.getTipoMovimiento().toString().equals("ABONO")) {
+                return (this.saldoTarjeta - this.movimiento.getMontoTransferido()) >= (limiteCredito * (-1));
+            } else {
+                return (this.saldoTarjeta + this.movimiento.getMontoTransferido()) <= limiteCredito;
+            }            
+        }
+    }
+
+    /**
      * Metodo que obtiene de la Base de Datos el Estado de la Tarjeta que cumpla
      * con el Numero de Tarjeta que se tiene
      *
@@ -71,17 +107,16 @@ public class MovimientoTarjetaDB {
      * falso
      */
     public boolean isTarjetaActiva() {
-        String query = "SELECT estado, saldo FROM tarjeta WHERE numero_tarjeta = '" + this.movimiento.getNumeroTarjeta() + "'";
+        String query = "SELECT estado FROM tarjeta WHERE numero_tarjeta = '" + this.movimiento.getNumeroTarjeta() + "'";
         boolean estado = false;
         try (Statement statementConsulta = this.connection.createStatement();
                 ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
             while (resulConsulta.next()) {
                 estado = resulConsulta.getBoolean("estado");
-                this.saldoTarjeta = resulConsulta.getInt("saldo");
             }
             System.out.println("Obtencion de Estado de la Tarjeta realizada con Exito");
-        } catch (Exception e) {
-            System.out.println("Error al Obtener el Estado de la Tarjeta");
+        } catch (SQLException e) {
+            System.out.println("Error al Obtener el Estado de la Tarjeta en Movimiento " + e);
         }
         return estado;
     }
@@ -96,8 +131,7 @@ public class MovimientoTarjetaDB {
     public ArrayList<String> getNumerosTarjeta() {
         String query = "SELECT numero_tarjeta FROM tarjeta";
         ArrayList<String> listaNumerosTarjetas = new ArrayList<>();
-        try (Statement statementConsulta = this.connection.createStatement();
-                ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
+        try (Statement statementConsulta = this.connection.createStatement(); ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
             while (resulConsulta.next()) {
                 String numeroTarjeta = resulConsulta.getString("numero_tarjeta");
                 listaNumerosTarjetas.add(numeroTarjeta);

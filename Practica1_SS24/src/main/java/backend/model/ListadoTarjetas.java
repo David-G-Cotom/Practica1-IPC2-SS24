@@ -234,10 +234,9 @@ public class ListadoTarjetas {
                     i = 0;
                 }
             }
-            //int numeroUltimoReporte = Integer.parseInt(contenidoCarpeta[contenidoCarpeta.length-1].getName().substring(contenidoCarpeta.length-6, contenidoCarpeta.length-5));
-            this.file = new File(pathCarpeta + "\\" + nombreArchivo);
+            this.file = new File(pathCarpeta + File.separatorChar + nombreArchivo);
         } else {
-            this.file = new File(pathCarpeta + "\\Reporte de Listado de Tarjetas 0.html");
+            this.file = new File(pathCarpeta + File.separatorChar + "Reporte de Listado de Tarjetas 0.html");
         }
         System.out.println(file.getAbsolutePath());
         if (file.exists()) {
