@@ -16,13 +16,13 @@ import javax.swing.JOptionPane;
 public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
 
     private Bancario bancario;
-    
+
     /**
      * Creates new form JIFSolicitudTarjeta
      */
     public JIFSolicitudTarjeta() {
         initComponents();
-        this.bancario = new Bancario();        
+        this.bancario = new Bancario();
     }
 
     /**
@@ -154,6 +154,7 @@ public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //---------------------------------------- METODOS DE EVENTO ----------------------------------------//
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (this.camposValidos()) {
             SolicitudTarjeta solicitud = new SolicitudTarjeta(Integer.parseInt(this.txtNumeroSolicitud.getText()), this.txtFecha.getText(),
@@ -172,6 +173,14 @@ public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que evalua cada campo del formulario para verificar que esten
+     * completos y de ser asi verificar que sean datos correctos
+     *
+     * @return verdadero si los campos del formulario son validos, de los
+     * contrario retorna falso
+     */
     private boolean camposValidos() {
         if ("".equals(this.txtNumeroSolicitud.getText()) || "".equals(this.txtFecha.getText())
                 || "".equals(this.txtNombreSolicitante.getText()) || "".equals(this.txtSalarioSolicitante.getText())
@@ -209,7 +218,7 @@ public class JIFSolicitudTarjeta extends javax.swing.JInternalFrame {
         }
         return true;
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JComboBox<String> cmbTiposTarjeta;

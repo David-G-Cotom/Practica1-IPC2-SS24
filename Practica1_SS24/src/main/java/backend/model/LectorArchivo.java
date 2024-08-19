@@ -28,14 +28,14 @@ import javax.swing.JLabel;
  * @author Carlos Cotom
  */
 public class LectorArchivo extends Thread {
-    
+
     private final File archivoEntrada;
     private JIFIngresoArchivo ingresoArchivoFront;
     private JLabel descripcion;
     private JLabel proceso;
     private Bancario bancario;
     private final int velocidadPorcesamiento;
-    
+
     public LectorArchivo(File archivoEntrada, JIFIngresoArchivo ingresoArchivoFront, JLabel descripcion, JLabel proceso, int velocidadProcesamiento) {
         this.archivoEntrada = archivoEntrada;
         this.ingresoArchivoFront = ingresoArchivoFront;
@@ -44,10 +44,10 @@ public class LectorArchivo extends Thread {
         this.velocidadPorcesamiento = velocidadProcesamiento;
         this.bancario = new Bancario();
         this.bancario.setPathCarpeta(this.ingresoArchivoFront.getPathCarpeta());
-    }         
-    
+    }
+
     @Override
-    public void run(){
+    public void run() {
         try (BufferedReader lector = new BufferedReader(new FileReader(this.archivoEntrada))) {
             String lineaLeida = lector.readLine();
             while (lineaLeida != null) {
@@ -55,9 +55,9 @@ public class LectorArchivo extends Thread {
                     String[] cadenaLeida = leerIntruccion(lineaLeida);
                     String[] datosRecolectados = obtenerDatos(cadenaLeida[1]);
                     switch (cadenaLeida[0]) {
-                        case "SOLICITUD":                            
+                        case "SOLICITUD":
                             ejecutarSolicitud(datosRecolectados);
-                            break;                        
+                            break;
                         case "MOVIMIENTO":
                             ejecutarMovimiento(datosRecolectados);
                             break;
@@ -82,24 +82,33 @@ public class LectorArchivo extends Thread {
                         default:
                             this.proceso.setText("");
                             this.descripcion.setText("Error en la Lectura de Archivo: Intruccion invalida");
-                    }                    
+                    }
                 }
                 lineaLeida = lector.readLine();
                 Thread.sleep(this.velocidadPorcesamiento);
                 this.descripcion.setText("");
             }
             this.ingresoArchivoFront.mostrarMensaje("Archivo Leido Exitosamente!!!");
-            this.ingresoArchivoFront.setClosed(true);            
+            this.ingresoArchivoFront.setClosed(true);
         } catch (FileNotFoundException e) {
             System.out.println("Archivo de Texto no Encontrado para Lectura");
-        } catch (IOException ex) {            
+        } catch (IOException ex) {
         } catch (InterruptedException exc) {
             System.out.println("Error en el Thread para slepear la laectura de instruccion");
         } catch (PropertyVetoException exce) {
             System.out.println("Error al cerrar automaticamente el Front de Ingreso de Archivo");
         }
     }
-    
+
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que recibe la linea leida del archivo de texto y la separa en dos
+     * para poder obtener la instruccion a ejecutar y sus valores
+     *
+     * @param lineaLeida es la linea que se acaba de leer del archivo de texto
+     * @return un Arreglo de dos posiciones en donde la primer posicion esta la
+     * instruccion y en la segunda posicion estan los valores de la misma
+     */
     private String[] leerIntruccion(String lineaLeida) {
         String[] resultadoLectura = new String[2];
         String[] cadena = lineaLeida.split("");
@@ -109,36 +118,43 @@ public class LectorArchivo extends Thread {
         for (int i = 0; i < cadena.length; i++) {
             if (!cadena[i].equals(" ")) {
                 if (cadena[i].equals("(")) {
-                dentroParentesis = true;
-                continue;
+                    dentroParentesis = true;
+                    continue;
                 }
                 if (!dentroParentesis) {
-                    accion+=cadena[i];                
+                    accion += cadena[i];
                 } else {
                     if (cadena[i].equals(")")) {
                         break;
                     }
-                    datos+=cadena[i];
+                    datos += cadena[i];
                 }
-            }            
+            }
         }
         resultadoLectura[0] = accion;
         resultadoLectura[1] = datos;
         return resultadoLectura;
     }
-    
+
+    /**
+     * Metodo que recibe los datos de la linea leida en el archivo de texto, en
+     * donde los separa para tener una mejor manipulacion
+     *
+     * @param datosAgrupados son los datos pero de forma en que estan juntos
+     * @return un Arreglo con los datos de forma separada
+     */
     private String[] obtenerDatos(String datosAgrupados) {
         String[] datos = datosAgrupados.split("");
         ArrayList<String> datosArray = new ArrayList<>();
         String dato = "";
         for (int i = 0; i < datos.length; i++) {
             if (!datos[i].equals(",")) {
-                dato+=datos[i];
+                dato += datos[i];
             } else {
                 datosArray.add(dato);
                 dato = "";
             }
-            if (i == datos.length-1) {
+            if (i == datos.length - 1) {
                 datosArray.add(dato);
             }
         }
@@ -148,7 +164,14 @@ public class LectorArchivo extends Thread {
         }
         return datosIndividuales;
     }
-    
+
+    /**
+     * Metodo que verifica que los datos recibidos como parametro sean
+     * correctos, de ser asi efectua la Solicitud para Tarjeta
+     *
+     * @param datosRecolectados son los datos que serviran para ejecutar la
+     * Solicitud de la Tarjeta
+     */
     private void ejecutarSolicitud(String[] datosRecolectados) {
         this.proceso.setText("Procesando la Solictud de Tarjeta");
         if (datosRecolectados.length == 6) {
@@ -175,21 +198,28 @@ public class LectorArchivo extends Thread {
             this.descripcion.setText("Error en Lectura de Archivo: Cantidad de datos invalidos para la Solicitud de Tarjeta");
         }
     }
-    
+
+    /**
+     * Metodo que verifica que los datos recibidos como parametro sean
+     * correctos, de ser asi efectua el Movimiento de Tarjeta
+     *
+     * @param datosRecolectados son los datos que serviran para ejecutar el
+     * Movimiento de la Tarjeta
+     */
     private void ejecutarMovimiento(String[] datosRecolectados) {
         this.proceso.setText("Procesando el Movimiento de Tarjeta");
         if (datosRecolectados.length == 6) {
             String numeroTarjeta = this.bancario.transformarNumeroTarjeta(datosRecolectados[0]);
             if (!this.bancario.isDouble(datosRecolectados[5])) {
                 this.descripcion.setText("Error en Lectura de Movimientos: Texto ingresado NO es Numero Decimal Positivo");
-                return;                                
+                return;
             }
             if (!this.bancario.isTipoMovimientoValido(datosRecolectados[2])) {
                 this.descripcion.setText("Error en Lectura de Movimientos: Texto ingresado NO valido para Tipo de Movimiento");
                 return;
             }
             MovimientoTarjeta movimiento = new MovimientoTarjeta(numeroTarjeta, datosRecolectados[1],
-                        TipoMovimientos.valueOf(datosRecolectados[2]), datosRecolectados[3], datosRecolectados[4], Double.parseDouble(datosRecolectados[5]));
+                    TipoMovimientos.valueOf(datosRecolectados[2]), datosRecolectados[3], datosRecolectados[4], Double.parseDouble(datosRecolectados[5]));
             if (this.bancario.verificarMovimientoLeido(movimiento)) {
                 this.descripcion.setText("Movimiento de Tarjeta Valida para su Ejecucion");
             } else {
@@ -199,7 +229,14 @@ public class LectorArchivo extends Thread {
             this.descripcion.setText("Error en Lectura de Archivo: Cantidad de datos invalidos para el Movimiento de Tarjeta");
         }
     }
-    
+
+    /**
+     * Metodo que verifica que los datos recibidos como parametro sean
+     * correctos, de ser asi efectua la Consulta de Tarjeta
+     *
+     * @param datosRecolectados son los datos que serviran para ejecutar la
+     * Consulta de la Tarjeta
+     */
     private void ejecutarConsulta(String[] datosRecolectados) {
         this.proceso.setText("Procesando la Consulta de Tarjeta");
         if (datosRecolectados.length == 1) {
@@ -207,18 +244,25 @@ public class LectorArchivo extends Thread {
             if (!this.bancario.isNumeroTarjetaValido(numeroTarjeta)) {
                 this.descripcion.setText("Numero de Tarjeta NO Valido para Hacer la Consulta de Tarjeta");
                 return;
-            }                                   
+            }
             this.descripcion.setText("Consulta de Tarjeta Valida para su Ejecucion");
             Consulta consulta = this.bancario.verificarConsultaTarjeta(numeroTarjeta);
             if (consulta != null) {
                 consulta.setPathCarpeta(this.ingresoArchivoFront.getPathCarpeta());
-                consulta.exportarReportes();                                      
+                consulta.exportarReportes();
             }
         } else {
             this.descripcion.setText("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Consulta de Tarjeta");
         }
     }
-    
+
+    /**
+     * Metodo que verifica que los datos recibidos como parametro sean
+     * correctos, de ser asi efectua la Autorizacion de una Tarjeta
+     *
+     * @param datosRecolectados son los datos que serviran para ejecutar la
+     * Autorizacion de la Tarjeta
+     */
     private void ejecutarAutorizacion(String[] datosRecolectados) {
         this.proceso.setText("Procesando la Autorizacion de Tarjeta");
         if (datosRecolectados.length == 1) {
@@ -238,7 +282,14 @@ public class LectorArchivo extends Thread {
             this.descripcion.setText("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Autorizacion de Tarjeta");
         }
     }
-    
+
+    /**
+     * Metodo que verifica que los datos recibidos como parametro sean
+     * correctos, de ser asi efectua la Cancelacion de una Tarjeta
+     *
+     * @param datosRecolectados son los datos que serviran para ejecutar la
+     * Cancelacion de la Tarjeta
+     */
     private void ejecutarCancelacion(String[] datosRecolectados) {
         this.proceso.setText("Procesando la Cancelacion de Tarjeta");
         if (datosRecolectados.length == 1) {
@@ -266,7 +317,15 @@ public class LectorArchivo extends Thread {
             this.descripcion.setText("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Cancelacion de Tarjeta");
         }
     }
-    
+
+    /**
+     * Metodo que verifica que los datos recibidos como parametro sean
+     * correctos, de ser asi efectua la creacion de Reporte para el Estado de
+     * Cuenta para Tarjetas
+     *
+     * @param datosRecolectados son los datos que serviran para ejecutar la
+     * Creacion del Reporte para el Estado de Cuenta de Tarjetas
+     */
     private void ejecutarEstadoCuenta(String[] datosRecolectados) {
         this.proceso.setText("Procesando el Reporte para el Estado de Cuenta");
         if (datosRecolectados.length == 4) {
@@ -302,11 +361,19 @@ public class LectorArchivo extends Thread {
             } else {
                 this.descripcion.setText("Filtro para Estado de Cuenta NO Valido para su Ejecucion");
             }
-        } else {                                
+        } else {
             this.descripcion.setText("Error en la Lectura de Archivo: Cantidad de datos invalidos para Consultar el Estado de Cuenta");
         }
     }
-    
+
+    /**
+     * Metodo que verifica que los datos recibidos como parametro sean
+     * correctos, de ser asi efectua la creacion del Reporte para el Listado de
+     * Tarjetas
+     *
+     * @param datosRecolectados son los datos que serviran para ejecutar la
+     * Creacion del Reporte para el Listado de Tarjetas
+     */
     private void ejecutarListadoTarjetas(String[] datosRecolectados) {
         this.proceso.setText("Procesando el Reporte para el Listado de Tarjetas");
         if (datosRecolectados.length == 5) {
@@ -339,16 +406,24 @@ public class LectorArchivo extends Thread {
                     this.descripcion.setText("No se pudo crear Archivo porque No hay Datos por Mostrar");
                     return;
                 }
-                filtroListadoTarjetas.setDatosTarjetas(datos);        
+                filtroListadoTarjetas.setDatosTarjetas(datos);
                 filtroListadoTarjetas.exportarReportes(this.ingresoArchivoFront.getPathCarpeta());
             } else {
                 this.descripcion.setText("Filtro de Listado de Tarjetas NO Valido para su Ejecucion");
-            }                                
+            }
         } else {
             this.descripcion.setText("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Cancelacion de Tarjeta");
         }
     }
-    
+
+    /**
+     * Metodo que verifica que los datos recibidos como parametro sean
+     * correctos, de ser asi efectua la creacion del Reporte para el Listado de
+     * Solicitudes
+     *
+     * @param datosRecolectados son los datos que serviran para ejecutar la
+     * creacion del Reporte para el Listado de Solicitudes
+     */
     private void ejecutarListadoSolicitudes(String[] datosRecolectados) {
         this.proceso.setText("Procesando el Reporte para el Listado de Solicitudes");
         if (datosRecolectados.length == 5) {
@@ -385,10 +460,10 @@ public class LectorArchivo extends Thread {
                 filtroListadoSolicitudes.exportarReportes(this.ingresoArchivoFront.getPathCarpeta());
             } else {
                 this.descripcion.setText("Filtro de Listado de Solicitudes NO Valido para su Ejecucion");
-            }                                
+            }
         } else {
             this.descripcion.setText("Error en la Lectura de Archivo: Cantidad de datos invalidos para la Cancelacion de Tarjeta");
         }
     }
-    
+
 }

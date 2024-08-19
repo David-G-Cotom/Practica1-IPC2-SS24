@@ -21,7 +21,7 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
 
     private final DefaultTableModel modeloTabla;
     private Bancario bancario;
-    
+
     /**
      * Creates new form JIFListadoSolicitudes
      */
@@ -184,6 +184,7 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //---------------------------------------- METODOS DE EVENTO ----------------------------------------//
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
         if (camposValidos()) {
             double montoLimite;
@@ -209,7 +210,7 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
             if (this.bancario.verificarFiltroListadoSolicitudes(filtro)) {
                 String restoQuery = filtro.filtrarDatos();
                 ListadoSolicitudesDB listadoSolicitudes = new ListadoSolicitudesDB();
-                ArrayList<ListadoSolicitudes> datos = listadoSolicitudes.getListadoSolicitudes(restoQuery);                
+                ArrayList<ListadoSolicitudes> datos = listadoSolicitudes.getListadoSolicitudes(restoQuery);
                 if (datos.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "No hay Datos por Mostrar");
                     vaciarTabla();
@@ -224,6 +225,14 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnConsultarActionPerformed
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que evalua cada campo del formulario para verificar que esten
+     * completos y de ser asi verificar que sean datos correctos
+     *
+     * @return verdadero si los campos del formulario son validos, de los
+     * contrario retorna falso
+     */
     private boolean camposValidos() {
         if (this.cmbEstadoSolicitud.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(this, "No se seleccionó un tipo de Estado de Solicitud valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
@@ -235,7 +244,13 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
         }
         return true;
     }
-    
+
+    /**
+     * Metodo que muestra en la Tabla de la interfaz los datos de cada Solicitud
+     * que esta en el Array recibido como parametro
+     *
+     * @param datos son los datos de cada solicitud registrarda en sistema
+     */
     private void llenarTabla(ArrayList<ListadoSolicitudes> datos) {
         vaciarTabla();
         Object[] fila;
@@ -252,23 +267,35 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
         }
         JOptionPane.showMessageDialog(this, "Consulta Exitosa!!!");
     }
-    
+
+    /**
+     * Metodo que limpia la Tabla de la Interfaz para no tener problemas de
+     * colapsos
+     */
     private void vaciarTabla() {
         this.tblListadoSolicitudes.removeAll();
         int filasTabla = this.modeloTabla.getRowCount();
         if (filasTabla != 0) {
-            for (int i = 0; i < filasTabla; i++) {            
-                this.modeloTabla.removeRow(0);           
-            }            
+            for (int i = 0; i < filasTabla; i++) {
+                this.modeloTabla.removeRow(0);
+            }
         }
     }
-    
+
+    /**
+     * Metodo que limpia los campos en donde se ingresaron los datos para la
+     * busqueda
+     */
     private void vaciarCampos() {
         this.txtFechaFin.setText("");
         this.txtFechaInicio.setText("");
         this.txtSalarioMinimo.setText("");
     }
-    
+
+    /**
+     * Metodo que le da a la Tabla de la interfaz el modelo adecuado para su
+     * visualizacion
+     */
     private void iniciarTablero() {
         this.tblListadoSolicitudes.setModel(modeloTabla);
         this.modeloTabla.addColumn("Numero de Solicitud");
@@ -278,7 +305,7 @@ public class JIFListadoSolicitudes extends javax.swing.JInternalFrame {
         this.modeloTabla.addColumn("Salario del Cliente");
         this.modeloTabla.addColumn("Direccion del Cliente");
         this.modeloTabla.addColumn("Estado");
-    }    
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultar;

@@ -16,7 +16,7 @@ import java.io.IOException;
  * @author Carlos Cotom
  */
 public class Consulta {
-    
+
     private String numeroTarjeta;
     private TipoTarjetas tipoTarjeta;
     private double limiteCredito;
@@ -26,15 +26,17 @@ public class Consulta {
     private String pathCarpeta;
     private File file;
 
+    //---------------------------------------- CONSTRUCTOR ----------------------------------------//
     public Consulta(String numeroTarjeta, TipoTarjetas tipoTarjeta, double limiteCredito, String nombreCliente, String direccionCliente, EstadosTarjeta estadoTarjeta) {
         this.numeroTarjeta = numeroTarjeta;
         this.tipoTarjeta = tipoTarjeta;
         this.limiteCredito = limiteCredito;
         this.nombreCliente = nombreCliente;
         this.direccionCliente = direccionCliente;
-        this.estadoTarjeta = estadoTarjeta;        
+        this.estadoTarjeta = estadoTarjeta;
     }
 
+    //---------------------------------------- GETERS AND SETERS ----------------------------------------//
     public String getNumeroTarjeta() {
         return numeroTarjeta;
     }
@@ -97,19 +99,19 @@ public class Consulta {
 
     public void setFile(File file) {
         this.file = file;
-    }    
-    
+    }
+
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
     /**
-     * Metodo para exportar el reportes de la consulta de tarjeta a un formato
+     * Metodo para exportar el reporte de la consulta de tarjeta a un formato
      * HTML para su posterior visualizacion en la WEB
-     *
      */
     public void exportarReportes() {
         String data = obtenerDataActual();
         data = generarContenido(data);
         generarHTML(data);
     }
-    
+
     /**
      * Metodo que verifica si existe el archivo HTML para poder establecer la
      * cabecer de etiquetas que tendra el mismo
@@ -126,14 +128,21 @@ public class Consulta {
             return """
                    <html>
                    <head>
-                   	<title>Bitacora Escapa del Laberinto</title>
+                   	<title>Reporte de Consulta de Tarjeta</title>
                    </head>
                    <body>
                    """;
         }
         return null;
     }
-    
+
+    /**
+     * Metodo que le agrega a la data recibida como parametro el contenido que
+     * se debe tener para la respectiva consulta de una Tarjeta
+     *
+     * @param data son las etiqeutas de cabecera que tendra el archivo HTML
+     * @return el contenido que tendra el archivo HTML
+     */
     private String generarContenido(String data) {
         data += "\n<h3>Consulta de Tarjeta con Numero: " + numeroTarjeta + "</h3>";
         data += "\n<p>Numero de Tarjeta: " + numeroTarjeta + "</p>"
@@ -144,7 +153,7 @@ public class Consulta {
                 + "\n<p>Estado de la Tarjeta: " + estadoTarjeta.toString() + " </p>";
         return data;
     }
-    
+
     /**
      * Metodo que escribe el contenido recibido como parametro ademas de agregar
      * las etiquetas de cierre en un archivo HTML
@@ -162,5 +171,5 @@ public class Consulta {
             System.out.println("No se pudo escribir el archivo " + numeroTarjeta + ".html en la carpeta seleccionada");
         }
     }
-    
+
 }

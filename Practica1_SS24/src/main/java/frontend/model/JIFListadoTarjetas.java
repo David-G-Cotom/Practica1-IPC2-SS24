@@ -141,7 +141,9 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18)
                         .addComponent(cmbEstadoTarjeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnConsultar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(252, 252, 252)
+                        .addComponent(btnConsultar)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -176,6 +178,7 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //---------------------------------------- METODOS DE EVENTO ----------------------------------------//
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
         if (camposValidos()) {
             double montoLimite;
@@ -201,13 +204,13 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
             if (this.bancario.verificarFiltroListadoTarjetas(filtro)) {
                 String restoQuery = filtro.filtrarDatos();
                 ListadoTarjetasDB listadoTarjetas = new ListadoTarjetasDB();
-                ArrayList<ListadoTarjetas> datos = listadoTarjetas.getListadoTarjetas(restoQuery);                
+                ArrayList<ListadoTarjetas> datos = listadoTarjetas.getListadoTarjetas(restoQuery);
                 if (datos.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "No hay Datos por Mostrar");
                     vaciarTabla();
                     vaciarCampos();
                     return;
-                }                                
+                }
                 llenarTabla(datos);
                 vaciarCampos();
             } else {
@@ -216,6 +219,14 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnConsultarActionPerformed
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que evalua cada campo del formulario para verificar que esten
+     * completos y de ser asi verificar que sean datos correctos
+     *
+     * @return verdadero si los campos del formulario son validos, de los
+     * contrario retorna falso
+     */
     private boolean camposValidos() {
         if (this.cmbEstadoTarjeta.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(this, "No se seleccionó un tipode Movimiento valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
@@ -227,7 +238,13 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
         }
         return true;
     }
-    
+
+    /**
+     * Metodo que muestra en la Tabla de la interfaz los datos de cada Tarjeta
+     * que esta en el Array recibido como parametro
+     *
+     * @param datos son los datos de cada tarjeta registrarda en sistema
+     */
     private void llenarTabla(ArrayList<ListadoTarjetas> datos) {
         vaciarTabla();
         Object[] fila;
@@ -244,23 +261,35 @@ public class JIFListadoTarjetas extends javax.swing.JInternalFrame {
         }
         JOptionPane.showMessageDialog(this, "Consulta Exitosa!!!");
     }
-    
+
+    /**
+     * Metodo que limpia la Tabla de la Interfaz para no tener problemas de
+     * colapsos
+     */
     private void vaciarTabla() {
         this.tblListadoTarjetas.removeAll();
         int filasTabla = this.modeloTabla.getRowCount();
         if (filasTabla != 0) {
-            for (int i = 0; i < filasTabla; i++) {            
-                this.modeloTabla.removeRow(0);           
-            }            
+            for (int i = 0; i < filasTabla; i++) {
+                this.modeloTabla.removeRow(0);
+            }
         }
     }
-    
+
+    /**
+     * Metodo que limpia los campos en donde se ingresaron los datos para la
+     * busqueda
+     */
     private void vaciarCampos() {
         this.txtFechaFin.setText("");
         this.txtFechaInicio.setText("");
         this.txtLimiteTarjeta.setText("");
     }
-    
+
+    /**
+     * Metodo que le da a la Tabla de la interfaz el modelo adecuado para su
+     * visualizacion
+     */
     private void iniciarTablero() {
         this.tblListadoTarjetas.setModel(modeloTabla);
         this.modeloTabla.addColumn("Numero de Tarjeta");

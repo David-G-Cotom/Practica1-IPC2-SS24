@@ -33,6 +33,7 @@ public class ListadoTarjetas {
     private boolean hayTipoTarjeta;
     private boolean hayEstadoTarjeta;
 
+    //---------------------------------------- CONSTRUCTORES ----------------------------------------//
     public ListadoTarjetas(double limiteMinimo, String fechaInicio, String fechaFinal) {
         this.limiteMinimo = limiteMinimo;
         this.fechaInicio = fechaInicio;
@@ -49,6 +50,7 @@ public class ListadoTarjetas {
         this.fechaCambioEstado = fechaCambioEstado;
     }
 
+    //---------------------------------------- GETERS AND SETERS ----------------------------------------//
     public TipoTarjetas getTipoTarjeta() {
         return tipoTarjeta;
     }
@@ -153,6 +155,12 @@ public class ListadoTarjetas {
         this.hayEstadoTarjeta = hayEstadoTarjeta;
     }
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que genera una query SQL que dependera de los datos que se tengan
+     *
+     * @return el resto de la consulta para la Base de Datos
+     */
     public String filtrarDatos() {
         String query = "";
         boolean hayPrimerCondicion = false;
@@ -196,10 +204,10 @@ public class ListadoTarjetas {
     }
 
     /**
-     * Metodo para exportar todos los reportes de la aplicacion a un formato
+     * Metodo para exportar el reporte del Listado de Tarjetas en un formato
      * HTML para su posterior visualizacion en la WEB
      *
-     * @param pathCarpeta
+     * @param pathCarpeta es la ruta de carpeta en donde se guardara el reporte
      */
     public void exportarReportes(String pathCarpeta) {
         String data = generarArchivo(pathCarpeta);
@@ -209,7 +217,7 @@ public class ListadoTarjetas {
 
     /**
      * Metodo que verifica si existe el archivo HTML para poder establecer la
-     * cabecer que tendra el mismo
+     * cabecer de etiquetas que tendra el mismo
      *
      * @return la cabecera que tendra el archivo HTML
      */
@@ -256,6 +264,13 @@ public class ListadoTarjetas {
         return null;
     }
 
+    /**
+     * Metodo que le agrega a la data recibida como parametro el contenido que
+     * se debe tener para el respectivo Listado de Tarjetas
+     *
+     * @param data son las etiqeutas de cabecera que tendra el archivo HTML
+     * @return el contenido que tendra el archivo HTML
+     */
     private String generarContenido(String data) {
         data += """                
                 <h3>Listado de Tarjetas Registradas en el Sistema</h3>
@@ -269,25 +284,25 @@ public class ListadoTarjetas {
                         <th>Fecha Cambio de Estado</th>
                         <th>Estado</th>
                     </tr>
-                """;        
+                """;
         for (int i = 0; i < this.datosTarjetas.size(); i++) {
             data += "\n<tr>"
-                + "\n<td>" + datosTarjetas.get(i).getNumeroTarjeta() + "</td>"
-                + "\n<td>" + datosTarjetas.get(i).getTipoTarjeta().toString() + "</td>"
-                + "\n<td>" + datosTarjetas.get(i).getLimiteCreditoTarjeta() + "</td>"
-                + "\n<td>" + datosTarjetas.get(i).getNombreCliente() + "</td>"
-                + "\n<td>" + datosTarjetas.get(i).getDireccionCliente() + "</td>"
-                + "\n<td>" + datosTarjetas.get(i).getFechaCambioEstado() + "</td>"
-                + "\n<td>" + datosTarjetas.get(i).getEstadoTarjeta() + "</td>"
-                + "\n</tr>";
+                    + "\n<td>" + datosTarjetas.get(i).getNumeroTarjeta() + "</td>"
+                    + "\n<td>" + datosTarjetas.get(i).getTipoTarjeta().toString() + "</td>"
+                    + "\n<td>" + datosTarjetas.get(i).getLimiteCreditoTarjeta() + "</td>"
+                    + "\n<td>" + datosTarjetas.get(i).getNombreCliente() + "</td>"
+                    + "\n<td>" + datosTarjetas.get(i).getDireccionCliente() + "</td>"
+                    + "\n<td>" + datosTarjetas.get(i).getFechaCambioEstado() + "</td>"
+                    + "\n<td>" + datosTarjetas.get(i).getEstadoTarjeta() + "</td>"
+                    + "\n</tr>";
         }
         data += "\n</table>";
         return data;
     }
 
     /**
-     * Metodo que escribe el contenido recibido como parametro en un archivo
-     * HTML
+     * Metodo que escribe el contenido recibido como parametro ademas de agregar
+     * las etiquetas de cierre en un archivo HTML
      *
      * @param contenido es el contenido final que se escribira en el archivo
      * HTML

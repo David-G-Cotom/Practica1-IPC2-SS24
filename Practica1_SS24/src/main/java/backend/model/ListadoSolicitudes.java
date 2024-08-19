@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * @author Carlos Cotom
  */
 public class ListadoSolicitudes {
-    
+
     private String fechaInicio;
     private String fechaFin;
     private TipoTarjetas tipoTarjeta;
@@ -25,7 +25,7 @@ public class ListadoSolicitudes {
     private EstadosSolicitud estadoSolicitud;
     private ArrayList<ListadoSolicitudes> datosSolicitudes;
     private int numeroSolicitud;
-    private String fechaCambioEstado;    
+    private String fechaCambioEstado;
     private String nombreCliente;
     private double salarioCliente;
     private String direccionCliente;
@@ -33,7 +33,8 @@ public class ListadoSolicitudes {
     private boolean hayTipoTarjeta;
     private boolean hayEstadoSolicitud;
 
-    public ListadoSolicitudes(String fechaInicio, String fechaFin,  double salarioMinimo) {
+    //---------------------------------------- CONSTRUCTORES ----------------------------------------//
+    public ListadoSolicitudes(String fechaInicio, String fechaFin, double salarioMinimo) {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.salarioMinimo = salarioMinimo;
@@ -46,8 +47,9 @@ public class ListadoSolicitudes {
         this.nombreCliente = nombreCliente;
         this.salarioCliente = salarioCliente;
         this.direccionCliente = direccionClietne;
-    }        
+    }
 
+    //---------------------------------------- GETERS AND SETERS ----------------------------------------//
     public String getFechaInicio() {
         return fechaInicio;
     }
@@ -152,6 +154,12 @@ public class ListadoSolicitudes {
         this.hayEstadoSolicitud = hayEstadoSolicitud;
     }
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que genera una query SQL que dependera de los datos que se tengan
+     *
+     * @return el resto de la consulta para la Base de Datos
+     */
     public String filtrarDatos() {
         String query = "";
         boolean hayPrimerCondicion = false;
@@ -174,7 +182,7 @@ public class ListadoSolicitudes {
             } else {
                 query += " AND tipo = '" + this.tipoTarjeta.toString() + "'";
             }
-        }      
+        }
         if (!(this.salarioMinimo < 0)) {
             if (!hayPrimerCondicion) {
                 query += " WHERE salario > " + this.salarioMinimo;
@@ -195,10 +203,10 @@ public class ListadoSolicitudes {
     }
 
     /**
-     * Metodo para exportar todos los reportes de la aplicacion a un formato
+     * Metodo para exportar el reporte del Listado de Solicitudes en un formato
      * HTML para su posterior visualizacion en la WEB
      *
-     * @param pathCarpeta
+     * @param pathCarpeta es la ruta de carpeta en donde se guardara el reporte
      */
     public void exportarReportes(String pathCarpeta) {
         String data = generarArchivo(pathCarpeta);
@@ -208,7 +216,7 @@ public class ListadoSolicitudes {
 
     /**
      * Metodo que verifica si existe el archivo HTML para poder establecer la
-     * cabecer que tendra el mismo
+     * cabecer de etiquetas que tendra el mismo
      *
      * @return la cabecera que tendra el archivo HTML
      */
@@ -254,6 +262,13 @@ public class ListadoSolicitudes {
         return null;
     }
 
+    /**
+     * Metodo que le agrega a la data recibida como parametro el contenido que
+     * se debe tener para el respectivo Listado de Solicitudes
+     *
+     * @param data son las etiqeutas de cabecera que tendra el archivo HTML
+     * @return el contenido que tendra el archivo HTML
+     */
     private String generarContenido(String data) {
         data += """                
                 <h3>Listado de Solicitudes Registradas en el Sistema</h3>
@@ -267,31 +282,31 @@ public class ListadoSolicitudes {
                         <th>Direccion Cliente</th>
                         <th>Estado</th>
                     </tr>
-                """;        
+                """;
         for (int i = 0; i < this.datosSolicitudes.size(); i++) {
             data += "\n<tr>"
-                + "\n<td>" + datosSolicitudes.get(i).getNumeroSolicitud()+ "</td>"
-                + "\n<td>" + datosSolicitudes.get(i).getFechaCambioEstado() + "</td>"
-                + "\n<td>" + datosSolicitudes.get(i).getTipoTarjeta() + "</td>"
-                + "\n<td>" + datosSolicitudes.get(i).getNombreCliente() + "</td>"
-                + "\n<td>" + datosSolicitudes.get(i).getSalarioCliente()+ "</td>"
-                + "\n<td>" + datosSolicitudes.get(i).getDireccionCliente()+ "</td>";
+                    + "\n<td>" + datosSolicitudes.get(i).getNumeroSolicitud() + "</td>"
+                    + "\n<td>" + datosSolicitudes.get(i).getFechaCambioEstado() + "</td>"
+                    + "\n<td>" + datosSolicitudes.get(i).getTipoTarjeta() + "</td>"
+                    + "\n<td>" + datosSolicitudes.get(i).getNombreCliente() + "</td>"
+                    + "\n<td>" + datosSolicitudes.get(i).getSalarioCliente() + "</td>"
+                    + "\n<td>" + datosSolicitudes.get(i).getDireccionCliente() + "</td>";
             if (datosSolicitudes.get(i).hayEstadoSolicitud) {
                 data += "\n<td>" + datosSolicitudes.get(i).getEstadoSolicitud().toString() + "</td>"
-                + "\n</tr>";
+                        + "\n</tr>";
             } else {
                 data += """                        
                         <td></td>
                         </tr>""";
-            }                
+            }
         }
         data += "\n</table>";
         return data;
     }
 
     /**
-     * Metodo que escribe el contenido recibido como parametro en un archivo
-     * HTML
+     * Metodo que escribe el contenido recibido como parametro ademas de agregar
+     * las etiquetas de cierre en un archivo HTML
      *
      * @param contenido es el contenido final que se escribira en el archivo
      * HTML
@@ -306,5 +321,5 @@ public class ListadoSolicitudes {
             System.out.println("No se pudo escribir el archivo HTML en la carpeta seleccionada");
         }
     }
-    
+
 }

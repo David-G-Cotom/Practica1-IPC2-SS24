@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 public class JIFCancelacionTarjeta extends javax.swing.JInternalFrame {
 
     private Bancario bancario;
-    
+
     /**
      * Creates new form JIFCancelacionTarjeta
      */
@@ -190,6 +190,7 @@ public class JIFCancelacionTarjeta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //---------------------------------------- METODOS DE EVENTO ----------------------------------------//
     private void btnCancelacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelacionActionPerformed
         if (this.isCamposValidos()) {
             Cancelacion cancelacion = bancario.verificarCancelacionLeida(this.txtNumeroTarjeta.getText());
@@ -211,7 +212,7 @@ public class JIFCancelacionTarjeta extends javax.swing.JInternalFrame {
                 this.confirmacionDialog.setResizable(false);
             }
             this.txtNumeroTarjeta.setText("");
-        }            
+        }
     }//GEN-LAST:event_btnCancelacionActionPerformed
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
@@ -226,6 +227,14 @@ public class JIFCancelacionTarjeta extends javax.swing.JInternalFrame {
         this.confirmacionDialog.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que evalua cada campo del formulario para verificar que esten
+     * completos y de ser asi verificar que sean datos correctos
+     *
+     * @return verdadero si los campos del formulario son validos, de los
+     * contrario retorna falso
+     */
     private boolean isCamposValidos() {
         if (this.txtNumeroTarjeta.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Debe Completar el Campo del Formulario", "Error!!!", JOptionPane.ERROR_MESSAGE);
@@ -241,7 +250,7 @@ public class JIFCancelacionTarjeta extends javax.swing.JInternalFrame {
         }
         return true;
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelacion;
     private javax.swing.JButton btnCancelar;

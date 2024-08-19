@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
 
     private Bancario bancario;
-    
+
     /**
      * Creates new form JIFConsultaTarjeta
      */
@@ -173,6 +173,7 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //---------------------------------------- METODOS DE EVENTO ----------------------------------------//
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
         if (this.isCamposValidos()) {
             Consulta consulta = bancario.verificarConsultaTarjeta(this.txtNumeroTarjeta.getText());
@@ -182,12 +183,20 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
                 this.lblLimite.setText(consulta.getLimiteCredito() + "");
                 this.lblNombreCliente.setText(consulta.getNombreCliente());
                 this.lblDireccionCliente.setText(consulta.getDireccionCliente());
-                this.lblEstadoTarjeta.setText(consulta.isEstadoTarjeta().toString());                   
+                this.lblEstadoTarjeta.setText(consulta.isEstadoTarjeta().toString());
             }
             this.txtNumeroTarjeta.setText("");
-        }            
+        }
     }//GEN-LAST:event_btnConsultarActionPerformed
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que evalua cada campo del formulario para verificar que esten
+     * completos y de ser asi verificar que sean datos correctos
+     *
+     * @return verdadero si los campos del formulario son validos, de los
+     * contrario retorna falso
+     */
     private boolean isCamposValidos() {
         if (this.txtNumeroTarjeta.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Debe Completar el Campo del Formulario", "Error!!!", JOptionPane.ERROR_MESSAGE);
@@ -202,7 +211,7 @@ public class JIFConsultaTarjeta extends javax.swing.JInternalFrame {
             return false;
         }
         return true;
-    }    
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultar;

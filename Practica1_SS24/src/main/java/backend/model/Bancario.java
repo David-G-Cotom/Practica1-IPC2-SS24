@@ -29,8 +29,18 @@ public class Bancario {
 
     public void setPathCarpeta(String pathCarpeta) {
         this.pathCarpeta = pathCarpeta;
-    }        
+    }
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que verifica si el numero de solicitud ingresada como parametro
+     * existe dentro de la Base de Datos del sistema
+     *
+     * @param numeroSolicitud es el numero de solicitud que se quiere saber si
+     * existe en el sistema
+     * @return verdadero si el numero de solicitud ingresado como parametro esta
+     * repetida dentro del registro sel sistema, de los contrario retorna falso
+     */
     public boolean isNumeroSolicitudRepetida(int numeroSolicitud) {
         SolicitudTarjetaDB datosSolicitud = new SolicitudTarjetaDB();
         ArrayList<Integer> solicitudesEnBS = datosSolicitud.getNumeroSolicitud();
@@ -43,12 +53,21 @@ public class Bancario {
         System.out.println("No se encontro el Numero de Solicitud Ingresado");
         return false;
     }
-    
-    public boolean isNumeroTarjetaRepetida(String numeroSolicitud) {
+
+    /**
+     * Metodo que verifica si el numero de tarjeta ingresada como parametro
+     * existe dentro de la Base de Datos del sistema
+     *
+     * @param numeroTarjeta es el numero de tarjeta que se quiere saber si
+     * existe en el sistema
+     * @return verdadero si el numero de tarjeta ingresado como parametro esta
+     * repetida dentro del registro sel sistema, de los contrario retorna falso
+     */
+    public boolean isNumeroTarjetaRepetida(String numeroTarjeta) {
         MovimientoTarjetaDB datosSolicitud = new MovimientoTarjetaDB();
         ArrayList<String> tarjetasEnBS = datosSolicitud.getNumerosTarjeta();
         for (int i = 0; i < tarjetasEnBS.size(); i++) {
-            if (tarjetasEnBS.get(i).equals(numeroSolicitud)) {
+            if (tarjetasEnBS.get(i).equals(numeroTarjeta)) {
                 System.out.println("Numero de Tarjeta Repetida");
                 return true;
             }
@@ -57,6 +76,13 @@ public class Bancario {
         return false;
     }
 
+    /**
+     * Metodo que quita las comillas del texto ingresado como parametro si es
+     * que las tiene
+     *
+     * @param texto es una cadena que tiene comillas dentro de si
+     * @return el texto ingresado como parametro pero ahora sin comillas
+     */
     public String quitarComillas(String texto) {
         String textoModificado;
         if (texto.contains("\"")) {
@@ -66,6 +92,14 @@ public class Bancario {
         return texto;
     }
 
+    /**
+     * Metodo que verifica si la fecha ingresada como parametro tiene el formato
+     * adecuado de ingreso
+     *
+     * @param fecha es la fecha con un determinado formato
+     * @return verdadero si la fecha ingersada como parametro tiene el formato
+     * correcto, de lo contario retorna falso
+     */
     public boolean isFormatoFechaCorrecto(String fecha) {
         fecha = this.quitarComillas(fecha);
         if (fecha.contains("/")) {
@@ -79,7 +113,7 @@ public class Bancario {
                         if (Integer.parseInt(mm) < 13 && Integer.parseInt(mm) > 0 && Integer.parseInt(dd) < 32 && Integer.parseInt(dd) > 0) {
                             System.out.println("Formato de Fecha Correcta");
                             return true;
-                        }                        
+                        }
                     }
                 }
             }
@@ -88,6 +122,13 @@ public class Bancario {
         return false;
     }
 
+    /**
+     * Metodo que transforma la fecha ingresada como parametro a un formato
+     * correcto para sus posteriores procesamientos
+     *
+     * @param fecha es el valor de la fecha con un determinado formato
+     * @return el formato de fecha correcto par su proceso en la Base de Datos
+     */
     public String transformarFormatoFecha(String fecha) {
         String[] datos = fecha.split("/");
         String yyyy = datos[2];
@@ -95,7 +136,15 @@ public class Bancario {
         String dd = datos[0];
         return yyyy + "-" + mm + "-" + dd;
     }
-    
+
+    /**
+     * Metodo que evalua si el valor de la cadena tipoTarjeta pertenece a los
+     * tipos de tarjeta validos para una tarjeta
+     *
+     * @param tipoTarjeta es el valor del Tipo de Tarjeta para una Tarjeta
+     * @return verdadero si la cadena tipoTarjeta es valido, de lo contario
+     * retorna falso
+     */
     public boolean isTipoTarjetaValido(String tipoTarjeta) {
         TipoTarjetas[] tipos = TipoTarjetas.values();
         for (int i = 0; i < tipos.length; i++) {
@@ -108,6 +157,15 @@ public class Bancario {
         return false;
     }
 
+    /**
+     * Metodo que evalua si el texto ingresado como parametro es valido para ser
+     * un numero entero positivo
+     *
+     * @param texto es la cadena que se quiere saber si puede ser un numero
+     * entero positivo
+     * @return verdadero si el texto ingresado como parametro cumple para ser un
+     * numero entero positivo, de los contrario retorna falso
+     */
     public boolean isInteger(String texto) {
         try {
             int numero = Integer.parseInt(texto);
@@ -118,6 +176,15 @@ public class Bancario {
         }
     }
 
+    /**
+     * Metodo que evalua si el texto ingresado como parametro es valido para ser
+     * un numero decimal positivo
+     *
+     * @param texto es la cadena que se quiere saber si puede ser un numero
+     * decimal positivo
+     * @return verdadero si el texto ingresado como parametro cumple para ser un
+     * numero decimal positivo, de los contrario retorna falso
+     */
     public boolean isDouble(String texto) {
         try {
             double numero = Double.parseDouble(texto);
@@ -128,6 +195,14 @@ public class Bancario {
         }
     }
 
+    /**
+     * Metodo que evalua si el valor de la cadena tipoMovimiento pertenece a los
+     * tipos de movimiento valido para una Tarjeta
+     *
+     * @param tipoMovimiento es el valor del Tipo de Movimiento para una Tarjeta
+     * @return verdadero si la cadena tipoMovimiento es valido, de lo contario
+     * retorna falso
+     */
     public boolean isTipoMovimientoValido(String tipoMovimiento) {
         TipoMovimientos[] tipos = TipoMovimientos.values();
         for (int i = 0; i < tipos.length; i++) {
@@ -140,6 +215,15 @@ public class Bancario {
         return false;
     }
 
+    /**
+     * Metodo que verifica si el valor de la cadena numeroTarjeta recibido como
+     * parametro tiene el formato correcto para considerarse un numero de
+     * tarjeta valido
+     *
+     * @param numeroTarjeta es el posible numero para una tarjeta
+     * @return verdadero si el valor de numeroTarjeta es valido como un numero
+     * de tarjeta, de los contrario retorna falso
+     */
     public boolean isNumeroTarjetaValido(String numeroTarjeta) {
         if (numeroTarjeta.equals("")) {
             return false;
@@ -158,13 +242,23 @@ public class Bancario {
         }
         return isValido;
     }
-    
+
+    /**
+     * Metodo que transforma el valor de la cadena numeroSinFormato recibida
+     * como parametro al formato correcto que debe tener el numero de las
+     * tarjetas para su procesamiento
+     *
+     * @param numeroSinFormato es el numero de tarjeta pero sin el formato
+     * adecuado
+     * @return la cadena del numero de Tarjeta recibido como parametro con el
+     * formato adecuado
+     */
     public String transformarNumeroTarjeta(String numeroSinFormato) {
         String numeroFormateado = "";
         String[] numero = numeroSinFormato.split("");
         if (numero.length == 16) {
             for (int i = 0; i < numero.length; i++) {
-                if ((i%4) == 0 && i != 0) {
+                if (((i % 4) == 0) && (i != 0)) {
                     numeroFormateado += " ";
                 }
                 numeroFormateado += numero[i];
@@ -173,6 +267,14 @@ public class Bancario {
         return numeroFormateado;
     }
 
+    /**
+     * Metodo que evalua si el valor de la cadena estadoTarjeta pertenece a los
+     * estados validos para una Tarjeta
+     *
+     * @param estadoTarjeta es el valor del Estado de la Tarjeta
+     * @return verdadero si la cadena estadoTarjeta es valido, de lo contario
+     * retorna falso
+     */
     public boolean isEstadoTarjetaValido(String estadoTarjeta) {
         EstadosTarjeta[] estados = EstadosTarjeta.values();
         for (int i = 0; i < estados.length; i++) {
@@ -185,6 +287,14 @@ public class Bancario {
         return false;
     }
 
+    /**
+     * Metodo que evalua si el valor de la cadena estadoSolicitud pertenece a
+     * los estados validos para una Solicitud
+     *
+     * @param estadoSolicitud es el valor del Estado de la Solicitud
+     * @return verdadero si la cadena estadoSolicitud es valido, de lo contario
+     * retorna falso
+     */
     public boolean isEstadoSolicitudValido(String estadoSolicitud) {
         EstadosSolicitud[] estados = EstadosSolicitud.values();
         for (int i = 0; i < estados.length; i++) {
@@ -196,7 +306,16 @@ public class Bancario {
         System.out.println("Estado de Solicitud Invalido");
         return false;
     }
-    
+
+    /**
+     * Metodo que evalua si la longitud de cadena de texto ingresada como
+     * parametro es menor al valor longitud ingresado como parametro
+     *
+     * @param cadena es la cadena de texto que se quiere evaluar su longitud
+     * @param longitud es la longitu con la que debe cumplir la cadena recibida
+     * @return verdadero si la cadena es menor a la longitud especificada, de
+     * los contrario retorna falso
+     */
     public boolean isLongitudCadenaValida(String cadena, int longitud) {
         if (cadena.length() < longitud) {
             System.out.println("Longitud de Cadena Valida");
@@ -206,6 +325,15 @@ public class Bancario {
         return false;
     }
 
+    /**
+     * Metodo que realiza la SOlicitud de una Tarjeta siempre que los atributos
+     * de la Instancia Solicitud Tarjeta recibido de parametro sean validos
+     *
+     * @param solicitud es una Instancia de de Solicitud Tarjeta que contiene la
+     * informacion necesaria para efectuar una Solicitud de Tarjeta
+     * @return verdadero si la Solicitud de Tarjeta se realiza con exito, de los
+     * contrario se retorna falso
+     */
     public boolean verificarSolicitudLeida(SolicitudTarjeta solicitud) {
         if (!isNumeroSolicitudRepetida(solicitud.getNumeroSolicitud()) && isFormatoFechaCorrecto(solicitud.getFechaSolicitud())) {
             solicitud.setNombreSolicitante(this.quitarComillas(solicitud.getNombreSolicitante()));
@@ -216,13 +344,22 @@ public class Bancario {
                 SolicitudTarjetaDB nuevaSolicitud = new SolicitudTarjetaDB(solicitud);
                 nuevaSolicitud.crearCliente();
                 nuevaSolicitud.crearSolicitud();
-                return true;                
+                return true;
             }
         }
         System.out.println("Solicitud de Tarjeta NO Valida para su Ejecucion\n");
         return false;
     }
 
+    /**
+     * Metodo que realiza el Movimeinto de una Tarjeta siempre que los atributos
+     * de la Instancia Movimiento Tarjeta recibido de parametro sean validos
+     *
+     * @param movimiento es una Instancia de Movimiento Tarjeta que contiene la
+     * informacion necesaria para poder efectuar un Movimiento de Tarjeta
+     * @return verdadero si el Movimiento de Tarjeta se realiza de forma
+     * exitosa, de lo contrario retorna falso
+     */
     public boolean verificarMovimientoLeido(MovimientoTarjeta movimiento) {
         if (isNumeroTarjetaValido(movimiento.getNumeroTarjeta()) && isFormatoFechaCorrecto(movimiento.getFechaOperacion())) {
             movimiento.setDescripcion(this.quitarComillas(movimiento.getDescripcion()));
@@ -248,6 +385,16 @@ public class Bancario {
         return false;
     }
 
+    /**
+     * Metodo que verifica si los atributos de la Instancia Filtro de Estado de
+     * Cuenta ingresado como parametro es valido para poder hacer la ejecucion
+     * de la consulta en Base de Datos
+     *
+     * @param filtro es una Instancia de Filtro Estado Cuenta que contiene los
+     * valores para filtrar consulta
+     * @return verdadero si los valores del filtro ingresado de parametro son
+     * Validos, de los contrario retorna falso
+     */
     public boolean verificarFiltroEstadoCuenta(FiltroEstadoCuenta filtro) {
         if (!filtro.getNumeroTarjeta().equals("")) {
             if (!isNumeroTarjetaValido(filtro.getNumeroTarjeta())) {
@@ -257,10 +404,20 @@ public class Bancario {
             if (!isNumeroTarjetaRepetida(filtro.getNumeroTarjeta())) {
                 return false;
             }
-        }        
-        return true;        
+        }
+        return true;
     }
 
+    /**
+     * Metodo que verifica si los atributos de la Instancia Listado de Tarjetas
+     * ingresado como parametro es valido para poder hacer la ejecucion de la
+     * consulta en Base de Datos
+     *
+     * @param filtro es una Instancia de Listado Tarjetas que contiene los
+     * valores para filtrar consulta
+     * @return verdadero si los valores del filtro ingresado de parametro son
+     * Validos, de los contrario retorna falso
+     */
     public boolean verificarFiltroListadoTarjetas(ListadoTarjetas filtro) {
         if (!filtro.getFechaInicio().equals("")) {
             /*if (!isFormatoFechaCorrecto(filtro.getFechaInicio())) {
@@ -277,10 +434,20 @@ public class Bancario {
             }
             filtro.setFechaFinal(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaFinal())));*/
             filtro.setFechaFinal("");
-        }        
-        return true;        
+        }
+        return true;
     }
 
+    /**
+     * Metodo que verifica si los atributos de la Instancia Listado de
+     * Solicitudes ingresado como parametro es valido para poder hacer la
+     * ejecucion de la consulta en Base de Datos
+     *
+     * @param filtro es una Instancia de Listado Solicitudes que contiene los
+     * valores para filtrar consulta
+     * @return verdadero si los valores del filtro ingresado de parametro son
+     * Validos, de los contrario retorna falso
+     */
     public boolean verificarFiltroListadoSolicitudes(ListadoSolicitudes filtro) {
         if (!filtro.getFechaInicio().equals("")) {
             /*if (!isFormatoFechaCorrecto(filtro.getFechaInicio())) {
@@ -297,10 +464,17 @@ public class Bancario {
             }
             filtro.setFechaFin(this.transformarFormatoFecha(this.quitarComillas(filtro.getFechaFin())));*/
             filtro.setFechaFin("");
-        }        
+        }
         return true;
     }
 
+    /**
+     * Metodo que retorna un boolean dependiendo de si la Autorizacion de la
+     * Solicitud con Numero ingresado como parametro se ha realizado bien
+     *
+     * @param numeroSolicitud es el Numero de Solicitud que se quiere Autorizar
+     * @return verdadero si existe la Solicitud, de los contrario retornra falso
+     */
     public boolean verificarAutorizacionLeida(int numeroSolicitud) {
         if (this.isNumeroSolicitudRepetida(numeroSolicitud)) {
             AutorizacionTarjetaDB autorizacionDB = new AutorizacionTarjetaDB(numeroSolicitud);
@@ -312,7 +486,7 @@ public class Bancario {
                     autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, true);
                     return true;
                 } else {
-                    autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, false);                    
+                    autorizacionDB.actualizarEstadoSolicitud(numeroSolicitud, false);
                 }
             } else {
                 System.out.println("Solicitud ya se encontraba Autorizada");
@@ -320,7 +494,14 @@ public class Bancario {
         }
         return false;
     }
-    
+
+    /**
+     * Metodo que Retorna una COnsulta de Tarjeta para el Numero de Tarjeta
+     * ingresado como parametro siempre que exista la misma
+     *
+     * @param numeroTarjeta es el Numero de Tarjeta que se quiere Consultar
+     * @return una Instancia de Consulta
+     */
     public Consulta verificarConsultaTarjeta(String numeroTarjeta) {
         ConsultaTarjetaDB consultaDB = new ConsultaTarjetaDB();
         Consulta consulta;
@@ -330,7 +511,14 @@ public class Bancario {
         consulta = consultaDB.getConsulta(numeroTarjeta);
         return consulta;
     }
-    
+
+    /**
+     * Metodo que Retorna una Cancelacion de Tarjeta para el Numero de Tarjeta
+     * ingresado como parametro siempre que exista la misma
+     *
+     * @param numeroTarjeta es el Numero de Tarjeta que se quiere Cancelar
+     * @return una Instancioa de Cancelacion
+     */
     public Cancelacion verificarCancelacionLeida(String numeroTarjeta) {
         CancelacionTarjetaDB cancelacionDB = new CancelacionTarjetaDB();
         Cancelacion cancelacion;

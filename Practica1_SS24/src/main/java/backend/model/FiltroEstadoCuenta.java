@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * @author Carlos Cotom
  */
 public class FiltroEstadoCuenta {
-    
+
     private String numeroTarjeta;
     private TipoTarjetas tipoTarjeta;
     private double saldoMinimo;
@@ -25,6 +25,7 @@ public class FiltroEstadoCuenta {
     private File file;
     private boolean hayTipoTarjeta;
 
+    //---------------------------------------- CONSTRUCTORES ----------------------------------------//
     public FiltroEstadoCuenta(String numeroTarjeta, TipoTarjetas TipoTarjeta, double saldoMinimo, double iteresesMinomo) {
         this.numeroTarjeta = numeroTarjeta;
         this.tipoTarjeta = TipoTarjeta;
@@ -32,7 +33,7 @@ public class FiltroEstadoCuenta {
         this.interesesMinimo = iteresesMinomo;
         this.hayTipoTarjeta = true;
     }
-    
+
     public FiltroEstadoCuenta(String numeroTarjeta, double saldoMinimo, double iteresesMinomo) {
         this.numeroTarjeta = numeroTarjeta;
         this.saldoMinimo = saldoMinimo;
@@ -40,6 +41,7 @@ public class FiltroEstadoCuenta {
         this.hayTipoTarjeta = false;
     }
 
+    //---------------------------------------- GETERS AND SETERS ----------------------------------------//
     public String getNumeroTarjeta() {
         return numeroTarjeta;
     }
@@ -78,8 +80,14 @@ public class FiltroEstadoCuenta {
 
     public void setDatosEstadosCuenta(ArrayList<EstadoCuenta> datosEstadosCuenta) {
         this.datosEstadosCuenta = datosEstadosCuenta;
-    }    
-    
+    }
+
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que genera una query SQL que dependera de los datos que se tengan
+     *
+     * @return el resto de la consulta para la Base de Datos
+     */
     public String filtrarDatos() {
         String query = "";
         if (!this.numeroTarjeta.equals("")) {
@@ -87,7 +95,7 @@ public class FiltroEstadoCuenta {
         }
         if (hayTipoTarjeta) {
             query += " AND tipo = '" + this.tipoTarjeta.toString() + "'";
-        }        
+        }
         if (!(this.saldoMinimo < 0)) {
             query += " AND saldo > " + this.saldoMinimo;
         }
@@ -96,12 +104,12 @@ public class FiltroEstadoCuenta {
         }
         return query;
     }
-    
+
     /**
-     * Metodo para exportar todos los reportes de la aplicacion a un formato
-     * HTML para su posterior visualizacion en la WEB
+     * Metodo para exportar el reporte del Estado de Cuenta para cada tarjeta en
+     * un formato HTML para su posterior visualizacion en la WEB
      *
-     * @param pathCarpeta
+     * @param pathCarpeta es la ruta de carpeta en donde se guardara el reporte
      */
     public void exportarReportes(String pathCarpeta) {
         String data = generarArchivo(pathCarpeta);
@@ -111,7 +119,7 @@ public class FiltroEstadoCuenta {
 
     /**
      * Metodo que verifica si existe el archivo HTML para poder establecer la
-     * cabecer que tendra el mismo
+     * cabecer de etiquetas que tendra el mismo
      *
      * @return la cabecera que tendra el archivo HTML
      */
@@ -157,6 +165,13 @@ public class FiltroEstadoCuenta {
         return null;
     }
 
+    /**
+     * Metodo que le agrega a la data recibida como parametro el contenido que
+     * se debe tener para el respectivo Estado de Cuenta de una Tarjeta
+     *
+     * @param data son las etiqeutas de cabecera que tendra el archivo HTML
+     * @return el contenido que tendra el archivo HTML
+     */
     private String generarContenido(String data) {
         filtrarEstadosCuenta();
         data += "\n<h3>Listado de los Estados de Cuenta de cada Tarjetas Activa en el Sistema</h3>";
@@ -175,27 +190,27 @@ public class FiltroEstadoCuenta {
                             <th>Establecimiento</th>
                             <th>Monto Ejecutado</th>
                         </tr>
-                    """;       
+                    """;
             for (int j = 0; j < this.datosEstadosCuenta.get(i).getMovimientos().size(); j++) {
                 data += "\n<tr>"
-                    + "\n<td>" + datosEstadosCuenta.get(i).getMovimientos().get(j).getFechaOperacion() + "</td>"
-                    + "\n<td>" + datosEstadosCuenta.get(i).getMovimientos().get(j).getTipoMovimiento()+ "</td>"
-                    + "\n<td>" + datosEstadosCuenta.get(i).getMovimientos().get(j).getDescripcion()+ "</td>"
-                    + "\n<td>" + datosEstadosCuenta.get(i).getMovimientos().get(j).getEstablecimiento()+ "</td>"
-                    + "\n<td>" + datosEstadosCuenta.get(i).getMovimientos().get(j).getMontoTransferido()+ "</td>"
-                    + "\n</tr>";
+                        + "\n<td>" + datosEstadosCuenta.get(i).getMovimientos().get(j).getFechaOperacion() + "</td>"
+                        + "\n<td>" + datosEstadosCuenta.get(i).getMovimientos().get(j).getTipoMovimiento() + "</td>"
+                        + "\n<td>" + datosEstadosCuenta.get(i).getMovimientos().get(j).getDescripcion() + "</td>"
+                        + "\n<td>" + datosEstadosCuenta.get(i).getMovimientos().get(j).getEstablecimiento() + "</td>"
+                        + "\n<td>" + datosEstadosCuenta.get(i).getMovimientos().get(j).getMontoTransferido() + "</td>"
+                        + "\n</tr>";
             }
             data += "\n</table>";
             data += "\n<p>Monto Total: " + this.datosEstadosCuenta.get(i).getMontoTotalEjecutado() + "</p>"
-                    + "\n<p>Intereses: " + this.datosEstadosCuenta.get(i).getIntereses()+ "</p>"
-                    + "\n<p>Saldo Total: " + this.datosEstadosCuenta.get(i).getSaldoTotal()+ "</p>";
-        }                
+                    + "\n<p>Intereses: " + this.datosEstadosCuenta.get(i).getIntereses() + "</p>"
+                    + "\n<p>Saldo Total: " + this.datosEstadosCuenta.get(i).getSaldoTotal() + "</p>";
+        }
         return data;
     }
 
     /**
-     * Metodo que escribe el contenido recibido como parametro en un archivo
-     * HTML
+     * Metodo que escribe el contenido recibido como parametro ademas de agregar
+     * las etiquetas de cierre en un archivo HTML
      *
      * @param contenido es el contenido final que se escribira en el archivo
      * HTML
@@ -210,7 +225,11 @@ public class FiltroEstadoCuenta {
             System.out.println("No se pudo escribir el archivo HTML en la carpeta seleccionada");
         }
     }
-    
+
+    /**
+     * Metodo que filtra el Array de Estado Cuenta que se tiene en base a que
+     * superen los filtros minimos de interes y saldos
+     */
     public void filtrarEstadosCuenta() {
         ArrayList<EstadoCuenta> estadosFiltrados = new ArrayList<>();
         for (int i = 0; i < this.datosEstadosCuenta.size(); i++) {
@@ -224,8 +243,8 @@ public class FiltroEstadoCuenta {
             }
             System.out.println(montoTotal);
             this.datosEstadosCuenta.get(i).setMontoTotalEjecutado(montoTotal);
-            this.datosEstadosCuenta.get(i).setIntereses(this.datosEstadosCuenta.get(i).getInteresTipoTarjeta()*this.datosEstadosCuenta.get(i).getMontoTotalEjecutado());
-            this.datosEstadosCuenta.get(i).setSaldoTotal(this.datosEstadosCuenta.get(i).getIntereses()+this.datosEstadosCuenta.get(i).getMontoTotalEjecutado());
+            this.datosEstadosCuenta.get(i).setIntereses(this.datosEstadosCuenta.get(i).getInteresTipoTarjeta() * this.datosEstadosCuenta.get(i).getMontoTotalEjecutado());
+            this.datosEstadosCuenta.get(i).setSaldoTotal(this.datosEstadosCuenta.get(i).getIntereses() + this.datosEstadosCuenta.get(i).getMontoTotalEjecutado());
             if (!(this.interesesMinimo < 0)) {
                 if (this.datosEstadosCuenta.get(i).getIntereses() < this.interesesMinimo) {
                     continue;
@@ -237,8 +256,8 @@ public class FiltroEstadoCuenta {
                 }
             }
             estadosFiltrados.add(this.datosEstadosCuenta.get(i));
-        }        
+        }
         this.datosEstadosCuenta = estadosFiltrados;
     }
-    
+
 }

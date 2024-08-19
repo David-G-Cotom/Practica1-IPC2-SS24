@@ -21,7 +21,7 @@ import java.util.Date;
  * @author Carlos Cotom
  */
 public class AutorizacionTarjetaDB {
-    
+
     private Cliente cliente;
     private SolicitudTarjeta solicitud;
     private int numeroSolicitud;
@@ -30,6 +30,7 @@ public class AutorizacionTarjetaDB {
     private int tipoTarjeta;
     private Connection connection = ConexionDB.getConnection();
 
+    //---------------------------------------- CONSTRUCTORES ----------------------------------------//
     public AutorizacionTarjetaDB(int numeroSolicitud) {
         this.numeroSolicitud = numeroSolicitud;
         this.contruirCliente();
@@ -38,8 +39,9 @@ public class AutorizacionTarjetaDB {
     }
 
     public AutorizacionTarjetaDB() {
-    }    
+    }
 
+    //---------------------------------------- GETERS AND SETERS ----------------------------------------//
     public Cliente getCliente() {
         return cliente;
     }
@@ -78,12 +80,18 @@ public class AutorizacionTarjetaDB {
 
     public void setInteresTipoTarjeta(double interesTipoTarjeta) {
         this.interesTipoTarjeta = interesTipoTarjeta;
-    }        
-    
-    public void actualizarEstadoTarjeta(String numeroTarjeta) {
-        
     }
-    
+
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que actualiza en la Base de Datos el valor del Estado y la Fecha
+     * en que se cambio el Estado de la Solicitud que cumpla con el numero de
+     * Solicitud ingresado como parametro
+     *
+     * @param numeroSolicitud es el Numero de la Solicitud a la que se le quiere
+     * Actualizar el Estado
+     * @param autorizado es el nuevo valor de Estado que tendra la Solicitud
+     */
     public void actualizarEstadoSolicitud(int numeroSolicitud, boolean autorizado) {
         Date fechaSistema = new Date();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
@@ -96,7 +104,16 @@ public class AutorizacionTarjetaDB {
             System.out.println("Error en la Actualizacion de Estado de la Solicitud");
         }
     }
-    
+
+    /**
+     * Metodo que obtiene de la Base de Datos el Estado de la Solicitud que
+     * cumpla con el numero ingresado como parametro
+     *
+     * @param numeroSolicitud es el numero de la Solicitud a la que se le quiere
+     * Actualizar el Estado
+     * @return verdadero si la Solicitud ya estaba Autorizada, de los contrario
+     * retorna falso
+     */
     public boolean isSolicitudAutorizada(int numeroSolicitud) {
         String query = "SELECT estado FROM solicitud WHERE numero_solicitud = " + numeroSolicitud;
         boolean estado = false;
@@ -111,22 +128,31 @@ public class AutorizacionTarjetaDB {
         }
         return estado;
     }
-    
+
+    /**
+     * Metodo que Inserta un nuevo Registro de Tipo Tarjeta en la Base de Datos
+     *
+     * @param tarjeta es el Objeto Tarjeta que se Creara en la Base de Datos
+     */
     public void crearTarjeta(Tarjeta tarjeta) {
         Date fechaSistema = new Date();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
         String fechaActual = formatoFecha.format(fechaSistema);
         String query = "INSERT INTO tarjeta (numero_tarjeta, numero_solicitud, estado, saldo, tipo_tarjeta, fecha_cambio_estado, limite_credito, id_cliente) VALUES ('" + tarjeta.getNumeroTarjeta() + "', " + this.numeroSolicitud + ", " + tarjeta.isEstado() + ", " + tarjeta.getSaldo() + ", " + this.tipoTarjeta + ", '" + fechaActual + "', " + tarjeta.getLimiteCredito() + ", " + this.cliente.getIdCliente() + ")";
-        try (Statement statementInsert = this.connection.createStatement()) {            
-                statementInsert.executeUpdate(query);
+        try (Statement statementInsert = this.connection.createStatement()) {
+            statementInsert.executeUpdate(query);
             System.out.println("Registro de Tarjeta Creada Exitosamente");
         } catch (SQLException e) {
             System.out.println("Error al crear un registro de Tarjeta en la BD " + e);
         }
-    
+
     }
-    
-    private void contruirCliente() {        
+
+    /**
+     * Metodo que obtiene de la Base de Datos los valores necesarios para poder
+     * Instanciar un Objeto del Tipo Cliente
+     */
+    private void contruirCliente() {
         String query = "SELECT * FROM cliente INNER JOIN solicitud ON cliente.id_cliente = solicitud.id_cliente INNER JOIN tipo_tarjeta ON solicitud.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_solicitud = " + this.numeroSolicitud;
         try (Statement statementConsulta = this.connection.createStatement();
                 ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
@@ -141,7 +167,11 @@ public class AutorizacionTarjetaDB {
             System.out.println("Error al construir un Cliente para la Autorizacion");
         }
     }
-    
+
+    /**
+     * Metodo que obtiene de la Base de Datos los valores necesarios para poder
+     * Instanciar un Objeto del Tipo Solicitud
+     */
     private void contruirSolicitud() {
         String query = "SELECT * FROM cliente INNER JOIN solicitud ON cliente.id_cliente = solicitud.id_cliente INNER JOIN tipo_tarjeta ON solicitud.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_solicitud = " + this.numeroSolicitud;
         try (Statement statementConsulta = this.connection.createStatement();
@@ -156,7 +186,12 @@ public class AutorizacionTarjetaDB {
             System.out.println("Error al construir una Solicitud para la Autorizacion");
         }
     }
-    
+
+    /**
+     * Metodo que obtiene de la Base de Datos los valores del Limite de Credito,
+     * Intereses y el Tipo de Tarjeta en base al numero de Solicitud que se
+     * tiene
+     */
     private void getDatosTipoTarjeta() {
         String query = "SELECT * FROM cliente INNER JOIN solicitud ON cliente.id_cliente = solicitud.id_cliente INNER JOIN tipo_tarjeta ON solicitud.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_solicitud = " + this.numeroSolicitud;
         try (Statement statementConsulta = this.connection.createStatement();
@@ -170,7 +205,16 @@ public class AutorizacionTarjetaDB {
             System.out.println("Error al obtener datos para el Tipo de Tarjeta");
         }
     }
-    
+
+    /**
+     * Metodo que obtienen de la Base de Datos todos los Numeros de Tarjetas que
+     * cumplan con la consicion del Numero Clave ingresado como parametro
+     *
+     * @param numeroClave es el numero clave de Tarjeta que identifica a cada
+     * Tipo de Tarjeta
+     * @return un Arreglo de String que contiene todos los numeros de Tarjetas
+     * obtenidos de la consulta
+     */
     public ArrayList<String> getNumeroTarjetas(String numeroClave) {
         String query = "SELECT numero_tarjeta FROM tarjeta WHERE numero_tarjeta LIKE '" + numeroClave + "%'";
         ArrayList<String> listaNumerosTarjetas = new ArrayList<>();
@@ -185,7 +229,14 @@ public class AutorizacionTarjetaDB {
         }
         return listaNumerosTarjetas;
     }
-    
+
+    /**
+     * Metodo que obtiene de la Base de Datos el Numero de Tarjeta que se Asocia
+     * con el Numero de Solicitud ingresado como parametro
+     *
+     * @param numeroSOlicitud es el numero de la Solicitud asociada a la Tarjeta
+     * @return el numero de Tarjeta
+     */
     public String getNumeroTarjeta(int numeroSOlicitud) {
         String query = "SELECT numero_tarjeta FROM tarjeta WHERE numero_solicitud = " + numeroSOlicitud;
         String numeroTarjeta = "";
@@ -199,5 +250,5 @@ public class AutorizacionTarjetaDB {
         }
         return numeroTarjeta;
     }
-    
+
 }

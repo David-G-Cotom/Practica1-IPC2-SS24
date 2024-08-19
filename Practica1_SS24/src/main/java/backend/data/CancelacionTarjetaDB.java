@@ -19,9 +19,17 @@ import java.util.Date;
  * @author Carlos Cotom
  */
 public class CancelacionTarjetaDB {
-    
+
     private Connection connection = ConexionDB.getConnection();
-    
+
+    /**
+     * Metodo que obtiene de la Base de Datos los valores para Instanciar una
+     * Cancelacion referente al Numero de Tarjeta recibido de parametro que se
+     * quiere cancelar
+     *
+     * @param numeroTarjeta es el Numero de Tarjeta que se quiere Cancelar
+     * @return una Instancia de Cancelacion
+     */
     public Cancelacion getCancelacion(String numeroTarjeta) {
         String query = "SELECT * FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente WHERE numero_tarjeta = '" + numeroTarjeta + "'";
         Cancelacion tarjetaCancelada = null;
@@ -44,10 +52,18 @@ public class CancelacionTarjetaDB {
             }
         } catch (SQLException e) {
             System.out.println("Error al consultar todos los numeros de Tarjetas en la BD");
-        }        
+        }
         return tarjetaCancelada;
     }
-    
+
+    /**
+     * Metodo que actualiza en la Base de Datos el valor del Estado y la Fecha
+     * en que se cambio el Estado de la Tarjeta que cumpla con el Numero de
+     * Tarjeta ingresado como parametro
+     *
+     * @param numeroTarjeta es el Numero de Tarjeta a la que se quiere
+     * Actualizar el Estado
+     */
     public void actualizarEstadoTarjeta(String numeroTarjeta) {
         Date fechaSistema = new Date();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
@@ -60,7 +76,14 @@ public class CancelacionTarjetaDB {
             System.out.println("Error en la Actualizacion de Estado de la Tarjeta" + e);
         }
     }
-    
+
+    /**
+     * Metodo que obtiene de la Base de Datos todos los Numeros de Tarjetas que
+     * estan Registradas en el Sistema
+     *
+     * @return un Arreglo de String que contiene los Numeros de Tarjetas
+     * Registradas
+     */
     public ArrayList<String> getNumeroTarjetas() {
         String query = "SELECT numero_tarjeta FROM tarjeta";
         ArrayList<String> listaNumerosTarjetas = new ArrayList<>();
@@ -68,12 +91,12 @@ public class CancelacionTarjetaDB {
                 ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
             while (resulConsulta.next()) {
                 String registro = resulConsulta.getString("numero_tarjeta");
-                listaNumerosTarjetas.add(registro);            
+                listaNumerosTarjetas.add(registro);
             }
         } catch (SQLException e) {
             System.out.println("Error al consultar todos los numeros de Tarjetas en la BD");
         }
         return listaNumerosTarjetas;
     }
-    
+
 }

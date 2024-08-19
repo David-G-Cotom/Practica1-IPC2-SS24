@@ -21,6 +21,14 @@ public class ListadoTarjetasDB {
     
     private Connection connection = ConexionDB.getConnection();
     
+    /**
+     * Metodo que obtiene de la Base de Datos los valores necesarios para
+     * Instancias de Listado de Tarjetas y agregarlos al Arreglo de Retorno
+     * 
+     * @param restoQuery es el resto de cadena para la Consulta
+     * @return un Arreglo de Listado Tarjeta por cada Tarjeta que cumpla con la
+     * Consulta
+     */
     public ArrayList<ListadoTarjetas> getListadoTarjetas(String restoQuery) {
         String query = "SELECT * FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON id_tipo = tipo_tarjeta" + restoQuery;
         System.out.println(query);

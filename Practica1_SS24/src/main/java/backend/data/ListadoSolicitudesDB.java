@@ -18,16 +18,24 @@ import java.util.ArrayList;
  * @author Carlos Cotom
  */
 public class ListadoSolicitudesDB {
-    
+
     private Connection connection = ConexionDB.getConnection();
-    
+
+    /**
+     * Metodo que obtiene de la Base de Datos los valores necesarios para
+     * Instancias de Listado de Solicitudes y agregarlos al Arreglo de Retorno
+     *
+     * @param restoQuery es el resto de cadena para la Consulta
+     * @return un Arreglo de Listado Solicitud por cada Solicitud que cumpla con
+     * la Consulta
+     */
     public ArrayList<ListadoSolicitudes> getListadoSolicitudes(String restoQuery) {
         String query = "SELECT * FROM solicitud INNER JOIN tipo_tarjeta ON tipo_tarjeta = id_tipo INNER JOIN cliente ON solicitud.id_cliente = cliente.id_cliente" + restoQuery;
         System.out.println(query);
         ArrayList<ListadoSolicitudes> listadoSolicitudes = new ArrayList<>();
         try (Statement statementConsulta = this.connection.createStatement();
-                ResultSet resulConsulta = statementConsulta.executeQuery(query)) {            
-            while (resulConsulta.next()) {                
+                ResultSet resulConsulta = statementConsulta.executeQuery(query)) {
+            while (resulConsulta.next()) {
                 String tipoSolicitud = resulConsulta.getString("tipo");
                 String estadoSolicitud = resulConsulta.getString("estado");
                 int numeroSolicitud = resulConsulta.getInt("numero_solicitud");
@@ -36,21 +44,25 @@ public class ListadoSolicitudesDB {
                 double salarioCliente = resulConsulta.getDouble("salario");
                 String direccionCliente = resulConsulta.getString("direccion");
                 ListadoSolicitudes registroSolicitud = new ListadoSolicitudes(TipoTarjetas.valueOf(tipoSolicitud), numeroSolicitud, fechaCambioEstado, nombreCliente, salarioCliente, direccionCliente);
-                if (estadoSolicitud.equals("1")) {
-                    registroSolicitud.setEstadoSolicitud(EstadosSolicitud.APROBADA);
-                    registroSolicitud.setHayEstadoSolicitud(true);
-                } else if (estadoSolicitud.equals("0")) {
-                    registroSolicitud.setEstadoSolicitud(EstadosSolicitud.RECHAZADA);
-                    registroSolicitud.setHayEstadoSolicitud(true);
-                } else {                        
-                    registroSolicitud.setHayEstadoSolicitud(false);
+                switch (estadoSolicitud) {
+                    case "1":
+                        registroSolicitud.setEstadoSolicitud(EstadosSolicitud.APROBADA);
+                        registroSolicitud.setHayEstadoSolicitud(true);
+                        break;
+                    case "0":
+                        registroSolicitud.setEstadoSolicitud(EstadosSolicitud.RECHAZADA);
+                        registroSolicitud.setHayEstadoSolicitud(true);
+                        break;
+                    default:
+                        registroSolicitud.setHayEstadoSolicitud(false);
+                        break;
                 }
-                listadoSolicitudes.add(registroSolicitud);            
+                listadoSolicitudes.add(registroSolicitud);
             }
         } catch (SQLException e) {
             System.out.println("Error al hacer la consulta para el Listado de Tarjetas en la BD " + e);
         }
         return listadoSolicitudes;
     }
-    
+
 }

@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
 
     private Bancario bancario;
-    
+
     /**
      * Creates new form JIFMovimientoTarjeta
      */
@@ -156,6 +156,7 @@ public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //---------------------------------------- METODOS DE EVENTO ----------------------------------------//
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (this.camposValidos()) {
             MovimientoTarjeta movimiento = new MovimientoTarjeta(this.txtNumeroTarjeta.getText(), this.txtFecha.getText(),
@@ -174,6 +175,14 @@ public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que evalua cada campo del formulario para verificar que esten
+     * completos y de ser asi verificar que sean datos correctos
+     *
+     * @return verdadero si los campos del formulario son validos, de los
+     * contrario retorna falso
+     */
     private boolean camposValidos() {
         if ("".equals(this.txtNumeroTarjeta.getText()) || "".equals(this.txtFecha.getText()) || "".equals(this.txtDescripcion.getText())
                 || "".equals(this.txtEstablecimiento.getText()) || "".equals(this.txtMontoEjecutado.getText())) {
@@ -203,10 +212,10 @@ public class JIFMovimientoTarjeta extends javax.swing.JInternalFrame {
         if (!this.bancario.isLongitudCadenaValida(this.txtDescripcion.getText(), 200)) {
             JOptionPane.showMessageDialog(this, "La descripcion es MUY Larga", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
-        }        
+        }
         return true;
     }
-    
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRegistrar;

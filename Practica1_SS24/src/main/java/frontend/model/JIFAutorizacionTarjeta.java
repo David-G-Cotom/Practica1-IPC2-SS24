@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 public class JIFAutorizacionTarjeta extends javax.swing.JInternalFrame {
 
     private Bancario bancario;
-    
+
     /**
      * Creates new form JIFAutorizacionTarjeta
      */
@@ -82,6 +82,7 @@ public class JIFAutorizacionTarjeta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //---------------------------------------- METODOS DE EVENTO ----------------------------------------//
     private void btnAutorizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutorizarActionPerformed
         if (this.isCamposValidos()) {
             if (bancario.verificarAutorizacionLeida(Integer.parseInt(this.txtNumeroSolicitud.getText()))) {
@@ -92,9 +93,17 @@ public class JIFAutorizacionTarjeta extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(this, "No se pudo realizar la Autorizacion");
             }
             this.txtNumeroSolicitud.setText("");
-        }            
+        }
     }//GEN-LAST:event_btnAutorizarActionPerformed
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que evalua cada campo del formulario para verificar que esten
+     * completos y de ser asi verificar que sean datos correctos
+     *
+     * @return verdadero si los campos del formulario son validos, de los
+     * contrario retorna falso
+     */
     private boolean isCamposValidos() {
         if (this.txtNumeroSolicitud.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Debe Completar el Campos del Formulario", "Error!!!", JOptionPane.ERROR_MESSAGE);

@@ -4,7 +4,6 @@
  */
 package frontend.model;
 
-import backend.model.SolicitudTarjeta;
 
 /**
  *

@@ -26,12 +26,14 @@ public class Autorizacion {
     private ArrayList<String> numerosRegistrados;
     private Tarjeta tarjeta;
 
+    //---------------------------------------- CONSTRUCTOR ----------------------------------------//
     public Autorizacion(double salarioCliente, double limiteCreditoTarjeta, TipoTarjetas tipoTarjeta) {
         this.salarioCliente = salarioCliente;
         this.limiteCreditoTipo = limiteCreditoTarjeta;
         this.tipoTarjeta = tipoTarjeta;
     }
 
+    //---------------------------------------- GETERS AND SETERS ----------------------------------------//
     public double getSalarioCliente() {
         return salarioCliente;
     }
@@ -62,7 +64,7 @@ public class Autorizacion {
 
     public void setNumeroTarjeta(String numeroTarjeta) {
         this.numeroTarjeta = numeroTarjeta;
-    }        
+    }
 
     public Tarjeta getTarjeta() {
         return tarjeta;
@@ -72,10 +74,26 @@ public class Autorizacion {
         this.tarjeta = tarjeta;
     }
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que multiplica el Salario del Cliente por el Porcentaje Bancario
+     * del 60% y verifica si es Mayor al Limite Minimo para la Tarjeta
+     * Solicitada
+     *
+     * @return verdadero si el Salario Cliente * Interes Bancario es mayor al
+     * Limite de Credito para la Tarjeta
+     */
     public boolean isLimiteCreditoAprobado() {
         return (this.salarioCliente * this.PORCENTAJE_BANCARIO) > this.limiteCreditoTipo;
     }
 
+    /**
+     * Metodo que Instancia una Tarjeta siempre que el Limite de Credito sea
+     * Mayor al Minimo requerido por el Tipo de Tarjeta
+     *
+     * @return verdadero si la Autorizacion de Tarjeta se hizo con Exito, de los
+     * contrario retorna falso
+     */
     public boolean exitoEnAutorizarTarjeta() {
         if (this.isLimiteCreditoAprobado()) {
             this.crearNumeroTarjeta();
@@ -87,6 +105,10 @@ public class Autorizacion {
         return false;
     }
 
+    /**
+     * Metodo que Crear el Numero de Tarjeta segun el Tipo de Tarjeta que se
+     * haya Solicitado
+     */
     private void crearNumeroTarjeta() {
         switch (this.tipoTarjeta) {
             case TipoTarjetas.NACIONAL:
@@ -103,11 +125,19 @@ public class Autorizacion {
         }
     }
 
+    /**
+     * Metodo que Crea el Numero de Tarjeta siguiente al Ultimo Registrado en el
+     * Sistema del mismo Tipo de Tarjeta
+     *
+     * @param numero es el Numero de Tarjeta Clave dependiendo del Tipo de
+     * Tarjeta Solicitada
+     * @return un Nuevo Numero de Tarjeta
+     */
     private String crearNumero(String numero) {
         AutorizacionTarjetaDB datos = new AutorizacionTarjetaDB();
         this.numerosRegistrados = datos.getNumeroTarjetas(numero);
         if (this.numerosRegistrados.isEmpty()) {
-            numero += "0 0000";            
+            numero += "0 0000";
             return numero;
         } else {
             String ultimoNumeroRegistrado = this.numerosRegistrados.getLast();
@@ -130,7 +160,7 @@ public class Autorizacion {
                     tercerGrupoCifras = penultimaCifra + "";
                 }
             } else {
-                ultimaCifra++;           
+                ultimaCifra++;
                 if (ultimaCifra < 10) { //0001
                     cuartoGrupoCifras = "000" + ultimaCifra;
                 } else if (ultimaCifra < 100) { //0010

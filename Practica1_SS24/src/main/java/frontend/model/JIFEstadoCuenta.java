@@ -24,7 +24,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
     private Bancario bancario;
     private int indiceDatos;
     private ArrayList<EstadoCuenta> datos;
-    
+
     /**
      * Creates new form JIFEstadoCuenta
      */
@@ -312,6 +312,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //---------------------------------------- METODOS DE EVENTO ----------------------------------------//
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
         this.indiceDatos++;
         this.mostrarDatos();
@@ -338,7 +339,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
             }
             if (this.bancario.isTipoTarjetaValido(this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex()))) {
                 filtro = new FiltroEstadoCuenta(this.txtNumeroTarjeta.getText(),
-                    TipoTarjetas.valueOf(this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex())), saldoMinimo, intereseMinimo);
+                        TipoTarjetas.valueOf(this.cmbTiposTarjeta.getItemAt(this.cmbTiposTarjeta.getSelectedIndex())), saldoMinimo, intereseMinimo);
             } else {
                 filtro = new FiltroEstadoCuenta(this.txtNumeroTarjeta.getText(), saldoMinimo, intereseMinimo);
             }
@@ -356,7 +357,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
                     return;
                 }
                 habilitarBotones();
-                mostrarDatos();  
+                mostrarDatos();
             } else {
                 JOptionPane.showMessageDialog(this, "Consulta para los Estados de Cuenta NO Valido para su Ejecucion. Vuelva a revisar los Campos Rellenados");
             }
@@ -372,6 +373,14 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnAnteriorActionPerformed
 
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que evalua cada campo del formulario para verificar que esten
+     * completos y de ser asi verificar que sean datos correctos
+     *
+     * @return verdadero si los campos del formulario son validos, de los
+     * contrario retorna falso
+     */
     private boolean camposValidos() {
         if (this.cmbTiposTarjeta.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(this, "No se seleccionó un Tipo de Tarjeta valido", "Error!!!", JOptionPane.ERROR_MESSAGE);
@@ -379,28 +388,43 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         }
         return true;
     }
-    
+
+    /**
+     * Metodo que habilita los botenes de Siguiente dependiendo si hay mas
+     * Estados de Cuenta por mostrar
+     */
     private void habilitarBotones() {
         if (this.datos.size() == (this.indiceDatos + 1)) {
             this.btnSiguiente.setEnabled(false);
         } else {
-            this.btnSiguiente.setEnabled(true);                            
+            this.btnSiguiente.setEnabled(true);
         }
     }
-    
+
+    /**
+     * Metodo que muestra en la interfaz los datos recibidos del Array de
+     * Estados de Cuenta que se tiene
+     */
     private void mostrarDatos() {
         this.lblNumeroTarjeta.setText(this.datos.get(this.indiceDatos).getNumeroTarjeta());
         this.lblTipoTarjeta.setText(this.datos.get(this.indiceDatos).getTipoTarjeta().toString());
         this.lblNombreCLiente.setText(this.datos.get(this.indiceDatos).getNombreCliente());
         this.lblDireccionCliente.setText(this.datos.get(this.indiceDatos).getDireccionCliente());
-        vaciarTabla();        
+        vaciarTabla();
         llenarTabla(this.datos.get(this.indiceDatos).getMovimientos());
         this.lblMontoTotal.setText(this.datos.get(this.indiceDatos).getMontoTotalEjecutado() + "");
-        this.lblIntereses.setText(this.datos.get(this.indiceDatos).getIntereses()+ "");
-        this.lblSaldoTotal.setText(this.datos.get(this.indiceDatos).getSaldoTotal()+ "");
+        this.lblIntereses.setText(this.datos.get(this.indiceDatos).getIntereses() + "");
+        this.lblSaldoTotal.setText(this.datos.get(this.indiceDatos).getSaldoTotal() + "");
     }
-    
-    private void llenarTabla(ArrayList<MovimientoTarjeta> datosMovimiento) {                
+
+    /**
+     * Metodo que muestra en la Tabla de la interfaz los datos de Mopvimiento
+     * por Tarjeta del Array recibido como parametro
+     *
+     * @param datosMovimiento son los datos de cada movimiento hecho por la
+     * Tarjeta respectiva
+     */
+    private void llenarTabla(ArrayList<MovimientoTarjeta> datosMovimiento) {
         Object[] fila;
         for (int i = 0; i < datosMovimiento.size(); i++) {
             fila = new Object[5];
@@ -412,17 +436,25 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
             this.modeloTabla.addRow(fila);
         }
     }
-    
+
+    /**
+     * Metodo que limpia la Tabla de la Interfaz para no tener problemas de
+     * colapsos
+     */
     private void vaciarTabla() {
         this.tblListadoMovimientos.removeAll();
         int filasTabla = this.modeloTabla.getRowCount();
         if (filasTabla != 0) {
-            for (int i = 0; i < filasTabla; i++) {            
-                this.modeloTabla.removeRow(0);           
-            }            
+            for (int i = 0; i < filasTabla; i++) {
+                this.modeloTabla.removeRow(0);
+            }
         }
     }
-    
+
+    /**
+     * Metodo que limpia los campos en donde se muestran los datos del Estado de
+     * Cuenta de las Tarjetas
+     */
     private void vaciarCampos() {
         this.lblDireccionCliente.setText("");
         this.lblIntereses.setText("");
@@ -432,7 +464,11 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         this.lblSaldoTotal.setText("");
         this.lblTipoTarjeta.setText("");
     }
-    
+
+    /**
+     * Metodo que le da a la Tabla de la interfaz el modelo adecuado para su
+     * visualizacion
+     */
     private void iniciarTablero() {
         this.tblListadoMovimientos.setModel(modeloTabla);
         this.modeloTabla.addColumn("Fecha");
@@ -440,7 +476,7 @@ public class JIFEstadoCuenta extends javax.swing.JInternalFrame {
         this.modeloTabla.addColumn("Descripcion");
         this.modeloTabla.addColumn("Establecimiento");
         this.modeloTabla.addColumn("Monto");
-    }    
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnterior;

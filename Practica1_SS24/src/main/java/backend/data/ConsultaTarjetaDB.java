@@ -21,6 +21,14 @@ public class ConsultaTarjetaDB {
     
     private Connection connection = ConexionDB.getConnection();
     
+    /**
+     * Metodo que obtiene de la Base de Datos los valores para Instanciar una
+     * Consulta referente al Numero de Tarjeta recibido de parametro que se
+     * quiere consultar
+     * 
+     * @param numeroTarjeta es el Numero de Tarjeta que se quiere Consultar
+     * @return una Instancia de Consulta
+     */
     public Consulta getConsulta(String numeroTarjeta) {        
         String query = "SELECT * FROM cliente INNER JOIN tarjeta ON cliente.id_cliente = tarjeta.id_cliente INNER JOIN tipo_tarjeta ON tarjeta.tipo_tarjeta = tipo_tarjeta.id_tipo WHERE numero_tarjeta = '" + numeroTarjeta + "'";
         Consulta tarjetaConsultada = null;
@@ -47,6 +55,13 @@ public class ConsultaTarjetaDB {
         return tarjetaConsultada;
     }
     
+    /**
+     * Metodo que obtiene de la Base de Datos todos los Numeros de Tarjetas que
+     * estan Registradas en el Sistema
+     * 
+     * @return un Arreglo de String que contiene los Numeros de Tarjetas
+     * Registradas
+     */
     public ArrayList<String> getNumeroTarjetas() {
         String query = "SELECT numero_tarjeta FROM tarjeta";
         ArrayList<String> listaNumerosTarjetas = new ArrayList<>();

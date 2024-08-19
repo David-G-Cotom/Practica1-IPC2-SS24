@@ -26,8 +26,8 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
 
     public void setPathCarpeta(String pathCarpeta) {
         this.pathCarpeta = pathCarpeta;
-    }    
-    
+    }
+
     /**
      * Creates new form JIFIngresoArchivo
      */
@@ -157,6 +157,7 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //---------------------------------------- METODOS DE EVENTO ----------------------------------------//
     private void btnSeleccionarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarArchivoActionPerformed
         FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.txt", "txt");
         jFileChooser1.setFileFilter(filtro);
@@ -176,11 +177,19 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
             this.btnProcesar.setEnabled(false);
             this.btnSeleccionarArchivo.setEnabled(false);
             this.btnSeleccionarRuta.setEnabled(false);
-            this.lector.start();            
+            this.lector.start();
         }
     }//GEN-LAST:event_btnProcesarActionPerformed
-    
-    private boolean validarCampos() {                  
+
+    //---------------------------------------- METODOS PROPIOS ----------------------------------------//
+    /**
+     * Metodo que evalua cada campo del formulario para verificar que esten
+     * completos y de ser asi verificar que sean datos correctos
+     *
+     * @return verdadero si los campos del formulario son validos, de los
+     * contrario retorna falso
+     */
+    private boolean validarCampos() {
         if (respuestaArchivo != jFileChooser1.APPROVE_OPTION || jFileChooser1.getSelectedFile() == null) {
             JOptionPane.showMessageDialog(this, "Debe Seleccionar el Archivo a Procesar", "Error!!!", JOptionPane.ERROR_MESSAGE);
             return false;
@@ -198,7 +207,13 @@ public class JIFIngresoArchivo extends javax.swing.JInternalFrame {
         this.lector = new LectorArchivo(jFileChooser1.getSelectedFile(), this, lblDescripcion, lblProceso, Integer.parseInt(this.txtTiempo.getText()));
         return true;
     }
-    
+
+    /**
+     * Metodo que muesra en una ventana emergente el mensaje recibido como
+     * parametro
+     *
+     * @param mensaje es el texto que se mostrara;
+     */
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje);
     }
