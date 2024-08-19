@@ -44,18 +44,20 @@ public class ListadoSolicitudesDB {
                 double salarioCliente = resulConsulta.getDouble("salario");
                 String direccionCliente = resulConsulta.getString("direccion");
                 ListadoSolicitudes registroSolicitud = new ListadoSolicitudes(TipoTarjetas.valueOf(tipoSolicitud), numeroSolicitud, fechaCambioEstado, nombreCliente, salarioCliente, direccionCliente);
-                switch (estadoSolicitud) {
-                    case "1":
-                        registroSolicitud.setEstadoSolicitud(EstadosSolicitud.APROBADA);
-                        registroSolicitud.setHayEstadoSolicitud(true);
-                        break;
-                    case "0":
-                        registroSolicitud.setEstadoSolicitud(EstadosSolicitud.RECHAZADA);
-                        registroSolicitud.setHayEstadoSolicitud(true);
-                        break;
-                    default:
-                        registroSolicitud.setHayEstadoSolicitud(false);
-                        break;
+                if (estadoSolicitud != null) {
+                    switch (estadoSolicitud) {
+                        case "1":
+                            registroSolicitud.setEstadoSolicitud(EstadosSolicitud.APROBADA);
+                            registroSolicitud.setHayEstadoSolicitud(true);
+                            break;
+                        case "0":
+                            registroSolicitud.setEstadoSolicitud(EstadosSolicitud.RECHAZADA);
+                            registroSolicitud.setHayEstadoSolicitud(true);
+                            break;
+                        default:
+                            registroSolicitud.setHayEstadoSolicitud(false);
+                            break;
+                    }
                 }
                 listadoSolicitudes.add(registroSolicitud);
             }

@@ -119,7 +119,7 @@ public class Consulta {
      * @return la cabecera de etiquetas que tendra el archivo HTML
      */
     private String obtenerDataActual() {
-        this.file = new File(pathCarpeta + "\\Consulta de Tarjeta " + this.numeroTarjeta + ".html");
+        this.file = new File(pathCarpeta + File.separatorChar + "Consulta de Tarjeta " + this.numeroTarjeta + ".html");
         System.out.println(file.getAbsolutePath());
         if (file.exists()) {
             file.delete();
